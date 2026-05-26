@@ -1,0 +1,54 @@
+404:              onClick={() => setIsMenuOpen(true)}
+411:              onClick={toggleLang}
+420:               onClick={(e) => { e.preventDefault(); setCurrentPage('home'); window.scrollTo(0, 0); }}
+430:              onClick={toggleLang}
+436:              onClick={() => setIsCartOpen(true)}
+443:              onClick={() => {
+499:                    onClick={() => {
+594:                          <button type="button" onClick={() => setIsCheckoutLoginOpen(true)} className="text-sm font-semibold uppercase tracking-widest border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] transition-colors">{t.checkout_login_link}</button>
+600:                             <button type="button" onClick={() => setIsCheckoutLoginOpen(false)} className="text-[#8C7C6D] hover:text-[#2C2119]"><X size={16} /></button>
+611:                              <button type="button" onClick={(e) => { e.preventDefault(); setIsLoggedIn(true); setIsCheckoutLoginOpen(false); }} className="w-full py-4 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#3A2D23] transition-colors mt-6">
+690:                  <button type="button" onClick={() => setCheckoutDelivery('locker')} className={`border p-6 flex flex-col items-start gap-4 transition-colors ${checkoutDelivery === 'locker' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
+696:                  <button type="button" onClick={() => setCheckoutDelivery('courier')} className={`border p-6 flex flex-col items-start gap-4 transition-colors ${checkoutDelivery === 'courier' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
+709:                  <button type="button" onClick={() => setCheckoutPayment('blik')} className={`border py-6 px-4 flex flex-col items-center justify-center text-center transition-colors ${checkoutPayment === 'blik' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
+712:                  <button type="button" onClick={() => setCheckoutPayment('card')} className={`border py-6 px-4 flex flex-col items-center justify-center text-center transition-colors ${checkoutPayment === 'card' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
+715:                  <button type="button" onClick={() => setCheckoutPayment('transfer')} className={`border py-6 px-4 flex flex-col items-center justify-center text-center transition-colors ${checkoutPayment === 'transfer' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
+758:              onClick={() => { setCurrentPage('thankyou'); window.scrollTo(0, 0); }}
+790:                    <button onClick={() => setIsRegistering(!isRegistering)} className="hover:text-[#2C2119] border-b border-transparent hover:border-[#2C2119] transition-all pb-1">
+805:               <button onClick={() => { setIsLoggedIn(false); setCurrentPage('home'); window.scrollTo(0,0); }} className="text-sm uppercase tracking-widest text-[#8C7C6D] hover:text-[#2C2119] border-b border-transparent hover:border-[#2C2119] pb-1 transition-colors">
+816:                       <button onClick={() => setViewingOrder(false)} className="self-start text-xs uppercase tracking-widest text-[#8C7C6D] border-b border-transparent hover:text-[#2C2119] hover:border-[#2C2119] pb-1 transition-all mb-8 flex items-center space-x-2">
+841:                          onClick={() => setViewingOrder(true)} 
+875:                       onClick={() => setIsEditingAccount(true)}
+903:                     onClick={() => setIsEditingPassword(true)}
+938:              onClick={() => { setCurrentPage('home'); window.scrollTo(0, 0); }}
+964:                  onClick={() => { setCurrentPostId(post.id); setCurrentPage('post'); window.scrollTo(0,0); }}
+992:                  onClick={() => { setCurrentPage('journal'); window.scrollTo(0,0); }}
+1030:                        onClick={() => { setCurrentPostId(otherPost.id); window.scrollTo(0, 0); }}
+1113:            onClick={() => scrollToSection('shop')}
+1138:                 onClick={() => {
+1150:                 onClick={() => {
+1208:                      onClick={() => setCurrentImageIndex(idx)}
+1217:                   <button onClick={handlePrevImage} className="p-4 text-white/70 hover:text-white drop-shadow-md transition-colors">
+1222:                   <button onClick={handleNextImage} className="p-4 text-white/70 hover:text-white drop-shadow-md transition-colors">
+1255:                      onClick={() => setSelectedVariantId(variant.id)}
+1274:                onClick={() => { setCartCount(1); setIsCartOpen(true); }}
+1438:              onClick={() => { setCurrentPage('journal'); window.scrollTo(0,0); }}
+1454:                onClick={() => { setCurrentPostId(post.id); setCurrentPage('post'); window.scrollTo(0,0); }}
+1549:              <li><a href="#shop" onClick={(e) => { e.preventDefault(); scrollToSection('shop'); }} className="hover:text-white transition-colors">{t.shop}</a></li>
+1550:              <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('about'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.about}</a></li>
+1551:              <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('journal'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.journal}</a></li>
+1558:              <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('contact'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.contact}</a></li>
+1559:              <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('terms'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.terms}</a></li>
+1560:              <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('privacy'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.privacy}</a></li>
+1573:             <button onClick={toggleLang} className="hover:text-white transition-colors">{t.lang_switch} VERSION</button>
+1587:            <div className="absolute inset-0 bg-[#2C2119]/40 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} />
+1596:                onClick={() => setIsMenuOpen(false)}
+1603:                <a href="#shop" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); scrollToSection('shop'); }} className="hover:text-[#8C7C6D] transition-colors">{t.shop}</a>
+1604:                <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('about'); window.scrollTo(0,0); }} className="hover:text-[#8C7C6D] transition-colors">{t.about}</a>
+1605:                <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('journal'); window.scrollTo(0, 0); }} className="hover:text-[#8C7C6D] transition-colors">{t.journal}</a>
+1606:                <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('contact'); window.scrollTo(0,0); }} className="hover:text-[#8C7C6D] transition-colors">{t.contact}</a>
+1627:            <div className="absolute inset-0 bg-[#2C2119]/40 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} />
+1638:                  onClick={() => setIsCartOpen(false)}
+1651:                      onClick={() => setIsCartOpen(false)}
+1666:                           <button onClick={() => setCartCount(0)} className="text-[#8C7C6D] hover:text-[#2C2119]"><X size={16} /></button>
+1679:                        onClick={() => { setIsCartOpen(false); setCurrentPage('checkout'); window.scrollTo(0, 0); }}
