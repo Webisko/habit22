@@ -295,9 +295,9 @@ const PRODUCT = {
       design: { pl: "Złodziej Truskawek", en: "Strawberry Thief" },
       hex: "#63272e", // Dark red / maroon matching the floral bag
       images: [
-        "./produkt__1-1.webp",
-        "./produkt__1-2.webp",
-        "./produkt__1-3.webp",
+        `${import.meta.env.BASE_URL}produkt__1-1.webp`,
+        `${import.meta.env.BASE_URL}produkt__1-2.webp`,
+        `${import.meta.env.BASE_URL}produkt__1-3.webp`,
       ]
     },
     {
@@ -306,9 +306,9 @@ const PRODUCT = {
       design: { pl: "Gałązki Eukaliptusa", en: "Eucalyptus Branches" },
       hex: "#8A9A86", // Sage green
       images: [
-        "./produkt__2-1.webp",
-        "./produkt__2-2.webp",
-        "./produkt__2-3.webp",
+        `${import.meta.env.BASE_URL}produkt__2-1.webp`,
+        `${import.meta.env.BASE_URL}produkt__2-2.webp`,
+        `${import.meta.env.BASE_URL}produkt__2-3.webp`,
       ]
     },
     {
@@ -317,9 +317,9 @@ const PRODUCT = {
       design: { pl: "Japoński Ginkgo", en: "Japanese Ginkgo" },
       hex: "#1a2b4c", // Deep navy blue
       images: [
-        "./produkt__3-1.webp",
-        "./produkt__3-2.webp",
-        "./produkt__3-3.webp",
+        `${import.meta.env.BASE_URL}produkt__3-1.webp`,
+        `${import.meta.env.BASE_URL}produkt__3-2.webp`,
+        `${import.meta.env.BASE_URL}produkt__3-3.webp`,
       ]
     }
   ]
@@ -547,7 +547,7 @@ export default function App() {
                 transition={{ duration: 0.8 }}
                 className="w-full md:w-5/12 aspect-[4/5] md:sticky md:top-32 overflow-hidden bg-[#EBE2D3]"
               >
-                <img src="./Adriana.webp" className="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[10%]" alt="Habit22 About" />
+                <img src={`${import.meta.env.BASE_URL}Adriana.webp`} className="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[10%]" alt="Habit22 About" />
               </motion.div>
 
               <div className="flex flex-col w-full md:w-7/12 space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed text-left pt-0 md:pt-8">
@@ -600,7 +600,7 @@ export default function App() {
                transition={{ duration: 0.8 }}
                className="w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-[#EBE2D3]"
              >
-               <img src="./produkt__1-2.webp" className="w-full h-full object-cover mix-blend-multiply opacity-90" alt="Habit22 Studio" />
+               <img src={`${import.meta.env.BASE_URL}produkt__1-2.webp`} className="w-full h-full object-cover mix-blend-multiply opacity-90" alt="Habit22 Studio" />
              </motion.div>
           </div>
         </main>
@@ -612,7 +612,7 @@ export default function App() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="w-full md:w-1/2 aspect-[4/5] overflow-hidden bg-[#EBE2D3]"
           >
-            <img src="./produkt__2-2.webp" className="w-full h-full object-cover mix-blend-multiply opacity-90" alt="Habit22 Contact" />
+            <img src={`${import.meta.env.BASE_URL}produkt__2-2.webp`} className="w-full h-full object-cover mix-blend-multiply opacity-90" alt="Habit22 Contact" />
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -904,7 +904,7 @@ export default function App() {
                        <div className="flex flex-col space-y-4 border-t border-[#E6DCC9] pt-6">
                           <div className="flex justify-between items-center text-base font-serif text-[#2C2119]">
                              <div className="flex items-center space-x-4">
-                                <img src="./produkt__1-2.webp" className="w-12 h-12 object-cover bg-[#EBE2D3]" />
+                                <img src={`${import.meta.env.BASE_URL}produkt__1-2.webp`} className="w-12 h-12 object-cover bg-[#EBE2D3]" />
                                 <span>Habit22 Daily Bag (Oat) x 1</span>
                              </div>
                              <span>890 PLN</span>
@@ -1045,7 +1045,7 @@ export default function App() {
                 >
                   <div className="w-full aspect-[4/3] overflow-hidden bg-[#EBE2D3] mb-6 relative">
                      <img 
-                       src={`./wpis-${post.id}.webp`} 
+                       src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`} 
                        alt={post.title} 
                        className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100" 
                      />
@@ -1082,7 +1082,7 @@ export default function App() {
 
                 <div className="w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden bg-[#EBE2D3] mb-12 md:mb-16">
                    <img 
-                     src={`./wpis-${post.id}.webp`} 
+                     src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`} 
                      alt={post.title} 
                      className="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[10%]" 
                    />
@@ -1111,7 +1111,7 @@ export default function App() {
                       >
                         <div className="w-full aspect-[4/3] overflow-hidden bg-[#EBE2D3] mb-6 relative">
                            <img 
-                             src={`./wpis-${otherPost.id}.webp`}
+                             src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
                              alt={otherPost.title} 
                              className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100" 
                            />
@@ -1127,11 +1127,11 @@ export default function App() {
           })()}
         </main>
       ) : currentPage === 'terms' ? (
-        <MarkdownPage url="/regulamin-habit22.md" title={t.terms} />
+        <MarkdownPage url={`${import.meta.env.BASE_URL}regulamin-habit22.md`} title={t.terms} />
       ) : currentPage === 'privacy' ? (
-        <MarkdownPage url="/polityka-prywatnosci-habit22.md" title={t.privacy} />
+        <MarkdownPage url={`${import.meta.env.BASE_URL}polityka-prywatnosci-habit22.md`} title={t.privacy} />
       ) : currentPage === 'cookies' ? (
-        <MarkdownPage url="/polityka-cookies-habit22.md" title={t.cookies} />
+        <MarkdownPage url={`${import.meta.env.BASE_URL}polityka-cookies-habit22.md`} title={t.cookies} />
       ) : (
         <main>
       {/* Hero Section */}
@@ -1143,7 +1143,7 @@ export default function App() {
           className="absolute inset-0 z-0 bg-[#EBE2D3]"
         >
           <img 
-            src="./hero__1.webp" 
+            src={`${import.meta.env.BASE_URL}hero__1.webp`} 
             alt="Habit22 Hero Background" 
             className="w-full h-full object-cover opacity-90 mix-blend-multiply"
           />
@@ -1398,7 +1398,7 @@ export default function App() {
                  <motion.img 
                    whileHover={{ scale: 1.03 }}
                    transition={{ duration: 5, ease: "easeOut" }}
-                   src="./produkt__1-2.webp" alt="Product view" className="w-full h-full object-cover mix-blend-multiply opacity-90" 
+                   src={`${import.meta.env.BASE_URL}produkt__1-2.webp`} alt="Product view" className="w-full h-full object-cover mix-blend-multiply opacity-90" 
                  />
               </motion.div>
               
@@ -1417,7 +1417,7 @@ export default function App() {
                  <motion.img 
                    whileHover={{ scale: 1.03 }}
                    transition={{ duration: 5, ease: "easeOut" }}
-                   src="./Adriana.webp" alt="Habit22 Studio" className="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[20%]" 
+                   src={`${import.meta.env.BASE_URL}Adriana.webp`} alt="Habit22 Studio" className="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[20%]" 
                  />
               </motion.div>
             </div>
@@ -1441,7 +1441,7 @@ export default function App() {
                    <motion.img 
                      whileHover={{ scale: 1.02 }}
                      transition={{ duration: 8, ease: "easeOut" }}
-                     src="./produkt__2-2.webp" alt="Detail view" className="w-full h-full object-cover mix-blend-multiply opacity-90" 
+                     src={`${import.meta.env.BASE_URL}produkt__2-2.webp`} alt="Detail view" className="w-full h-full object-cover mix-blend-multiply opacity-90" 
                    />
                 </motion.div>
                 
@@ -1456,7 +1456,7 @@ export default function App() {
                      <motion.img 
                        whileHover={{ scale: 1.02 }}
                        transition={{ duration: 8, ease: "easeOut" }}
-                       src="./hero__1.webp" alt="Detail view" className="w-full h-full object-cover mix-blend-multiply opacity-90" 
+                       src={`${import.meta.env.BASE_URL}hero__1.webp`} alt="Detail view" className="w-full h-full object-cover mix-blend-multiply opacity-90" 
                      />
                   </motion.div>
 
@@ -1478,7 +1478,7 @@ export default function App() {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   className="w-full md:w-[95%] aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-[#EBE2D3]"
                 >
-                   <img src="./produkt__2-2.webp" alt="Mood" className="w-full h-full object-cover mix-blend-multiply opacity-90 object-[50%_70%]" />
+                   <img src={`${import.meta.env.BASE_URL}produkt__2-2.webp`} alt="Mood" className="w-full h-full object-cover mix-blend-multiply opacity-90 object-[50%_70%]" />
                 </motion.div>
               </div>
             </div>
@@ -1528,7 +1528,7 @@ export default function App() {
               >
                 <div className="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3]">
                   <img 
-                    src={`./wpis-${post.id}.webp`}
+                    src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`}
                     alt={post.title}
                     className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
                   />
