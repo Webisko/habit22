@@ -1,6 +1,6 @@
 {
-  "name": "Minimalist Handbag Boutique",
-  "description": "A minimalist e-commerce store for designer handbags inspired by Zara and Anne Ventzel.",
+  "name": "Habit22",
+  "description": "Sklep z torbami projektowymi",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
