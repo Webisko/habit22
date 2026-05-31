@@ -11,7 +11,7 @@ const TRANSLATIONS = {
     menu: "Menu",
     cart: "Koszyk",
     shop: "Kolekcja",
-    about: "O mnie",
+    about: "Marka",
     journal: "Dziennik",
     contact: "Kontakt",
     shortcuts: "Na skróty",
@@ -38,7 +38,7 @@ const TRANSLATIONS = {
     contact_email: "Adres e-mail",
     contact_message: "Wiadomość",
     contact_send: "Wyślij wiadomość",
-    discover: "Odkryj kolekcję",
+    discover: "Odkryj Habit 22",
     about_title: "O MARCE",
     about_text: [
       "Nie interesuje mnie podążanie za trendami. Znacznie bliższe jest mi kolekcjonowanie rzeczy ponadczasowych — tworzonych powoli i z intencją.",
@@ -49,7 +49,7 @@ const TRANSLATIONS = {
     about_values_title: "UWAŻNOŚĆ",
     about_values_text: "Bliskie jest mi myślenie o rzeczach, które zostają z nami na długo — pięknych, funkcjonalnych i stworzonych z intencją.",
     about_conclusion: "Zaprojektowane, by porządkować twórczy chaos i wiernie towarzyszyć Ci w odkrywaniu nowych splotów.",
-    aboutme_title: "O MNIE",
+    aboutme_title: "MARKA",
     aboutme_paragraphs: [
       "Nie interesuje mnie podążanie za trendami. Znacznie bliższe jest mi kolekcjonowanie rzeczy ponadczasowych — dobrze zaprojektowanych, tworzonych powoli i z intencją.",
       "Od lat fascynują mnie tkaniny — ich struktura, ciężar, sposób w jaki pracują w świetle, opowiadają historię wzorem i kolorem. To niezwykłe w jaki sposób materiał potrafi budować atmosferę wnętrza, codzienności, chwili.",
@@ -72,6 +72,7 @@ const TRANSLATIONS = {
     empty_cart: "Twój koszyk jest pusty.",
     continue_shopping: "Kontynuuj zakupy",
     back_to_home: "Wróć na stronę główną",
+    back_to_shop: "Wróć do kolekcji",
     checkout: "Zamówienie",
     checkout_details: "Dane klienta",
     checkout_delivery: "Dostawa",
@@ -182,7 +183,7 @@ const TRANSLATIONS = {
     contact_email: "Email address",
     contact_message: "Message",
     contact_send: "Send message",
-    discover: "Discover the collection",
+    discover: "Discover Habit 22",
     about_title: "THE BRAND",
     about_text: [
       "I am not interested in following trends. I am drawn to timeless things — created slowly and with intention.",
@@ -210,12 +211,13 @@ const TRANSLATIONS = {
     product_desc: "Each of our bags is the result of hand-crafted artisan work driven by a passion for natural materials. Designed to facilitate and enhance the execution of your favorite projects - from knitting to other creative tasks at home, in a cafe, or outdoors.",
     product_long_desc: "Our bags are created in a small studio with knitting and craft enthusiasts in mind. Each piece is cut by hand, and the sewing process takes hours of careful work. We use 100% natural European cotton, carefully selected for durability. Inside, the bag is divided into practical sections - smaller ones for needles and accessories so you don't have to search for anything, and a main open space dedicated to yarn, from which you can knit freely without tangling skeins. Designed so that its minimalist, classic, slightly Japanese style looks beautiful both at home on the sofa and when you take your workshop to the city.",
     product_dimensions: "Dimensions: height 25 cm, width 36 cm, depth 18 cm",
-    add_to_cart: "Add to bag",
+    add_to_cart: "Add to cart",
     color: "Color",
     newsletter: "Newsletter",
     empty_cart: "Your bag is empty.",
     continue_shopping: "Continue shopping",
     back_to_home: "Back to home page",
+    back_to_shop: "Back to collection",
     checkout: "Checkout",
     checkout_details: "Customer details",
     checkout_delivery: "Delivery",
@@ -376,12 +378,27 @@ const MarkdownPage = ({ url, title }: { url: string; title: string }) => {
 
 export default function App() {
   const [lang, setLang] = useState<Lang>('pl');
-  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'contact' | 'checkout' | 'login' | 'account' | 'thankyou' | 'journal' | 'post' | 'terms' | 'privacy' | 'cookies'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'contact' | 'checkout' | 'login' | 'account' | 'thankyou' | 'journal' | 'post' | 'terms' | 'privacy' | 'cookies' | 'product' | 'shop'>('home');
   const [currentPostId, setCurrentPostId] = useState<number | null>(null);
   const [selectedVariantId, setSelectedVariantId] = useState(PRODUCT.variants[0].id);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState<{id: string, quantity: number}[]>([]);
+  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const addToCart = (variantId: string, qty: number) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.id === variantId);
+      if (existing) {
+        return prev.map(item => item.id === variantId ? { ...item, quantity: item.quantity + qty } : item);
+      }
+      return [...prev, { id: variantId, quantity: qty }];
+    });
+  };
+
+  const removeFromCart = (variantId: string) => {
+    setCartItems(prev => prev.filter(item => item.id !== variantId));
+  };
   const [quantity, setQuantity] = useState(1);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckoutLoginOpen, setIsCheckoutLoginOpen] = useState(false);
@@ -398,6 +415,7 @@ export default function App() {
   const [checkoutPayment, setCheckoutPayment] = useState('blik');
   const [isCompany, setIsCompany] = useState(false);
   const [isEditingAccount, setIsEditingAccount] = useState(false);
+  const [collectionFilter, setCollectionFilter] = useState('all');
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [viewingOrder, setViewingOrder] = useState(false);
   const desktopScrollRef = useRef<HTMLDivElement>(null);
@@ -620,11 +638,11 @@ export default function App() {
             
             <div className="w-full flex flex-col items-start pt-0 md:pt-12 min-w-0">
               <button 
-                  onClick={() => { setCurrentPage('home'); window.scrollTo(0,0); }}
+                  onClick={() => { setCurrentPage('shop'); window.scrollTo(0,0); }}
                   className="self-start flex items-center space-x-2 text-sm uppercase tracking-widest text-[#8C7C6D] hover:text-[#2C2119] transition-colors mb-12"
                 >
                   <ChevronLeft size={16} />
-                  <span>{t.back_to_home}</span>
+                  <span>{t.back_to_shop}</span>
                 </button>
               
               <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] mb-4">{t.product_section_title}</h1>
@@ -643,7 +661,7 @@ export default function App() {
               </p>
               
               <div className="space-y-6 mb-12 w-full">
-                 <h3 className="text-sm font-[400] uppercase tracking-widest text-[#2C2119]">{t.color} : {selectedVariant.name[lang]}</h3>
+                 <h3 className="text-sm font-[400] text-[#2C2119]"><span className="uppercase tracking-widest">{t.color}</span>: {selectedVariant.name[lang]}</h3>
                  <div className="flex space-x-4">
                   {PRODUCT.variants.map(variant => (
                     <motion.button
@@ -651,7 +669,8 @@ export default function App() {
                       onClick={() => setSelectedVariantId(variant.id)}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${selectedVariant.id === variant.id ? 'ring-2 ring-offset-4 ring-[#2C2119]' : 'hover:ring-2 hover:ring-offset-2 hover:ring-[#E6DCC9]'}`}
+                      transition={{ duration: 0.15 }}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center transition-transform duration-150 ${selectedVariant.id === variant.id ? 'ring-2 ring-offset-4 ring-[#2C2119]' : 'hover:ring-2 hover:ring-offset-2 hover:ring-[#E6DCC9]'}`}
                     >
                       <span 
                         className="w-full h-full rounded-full shadow-inner"
@@ -678,7 +697,7 @@ export default function App() {
               </div>
 
               <motion.button 
-                onClick={() => { setCartCount(cartCount + quantity); setIsCartOpen(true); }}
+                onClick={() => { addToCart(selectedVariantId, quantity); setIsCartOpen(true); }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-[#2C2119] text-white py-5 text-sm font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-16 flex items-center justify-center space-x-3 group relative overflow-hidden"
@@ -1044,29 +1063,40 @@ export default function App() {
           >
             <h3 className="text-sm uppercase tracking-[0.2em] mb-8 font-semibold text-[#8C7C6D]">{t.cart}</h3>
             
-            <div className="flex items-center gap-6 mb-8 border-b border-[#E6DCC9] pb-8">
-              <div className="w-24 h-32 bg-[#FAF7F2] overflow-hidden flex-shrink-0">
-                <img src={selectedVariant.images[0]} alt="Habit22 Bag" className="w-full h-full object-contain p-1 mix-blend-multiply opacity-90 grayscale-[10%]" />
-              </div>
-              <div className="flex flex-col flex-1">
-                <h4 className="font-serif text-[#2C2119] text-xl mb-2">{t.product_section_title} - {selectedVariant.design[lang]}</h4>
-                <p className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-4">{selectedVariant.name[lang]}</p>
-                <p className="text-[#5C4E43] font-serif">{t.product_price}</p>
-              </div>
+            <div className="flex flex-col mb-8 border-b border-[#E6DCC9] pb-8 space-y-6">
+              {cartItems.map((item) => {
+                 const variantItem = PRODUCT.variants.find(v => v.id === item.id);
+                 if (!variantItem) return null;
+                 return (
+                    <div key={item.id} className="flex items-center gap-6">
+                      <div className="w-24 h-32 bg-[#FAF7F2] overflow-hidden flex-shrink-0">
+                        <img src={variantItem.images[0]} alt="Habit22 Bag" className="w-full h-full object-contain p-1 mix-blend-multiply opacity-90 grayscale-[10%]" />
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <h4 className="font-serif text-[#2C2119] text-xl mb-2">{t.product_section_title} - {variantItem.design[lang]}</h4>
+                        <p className="text-sm text-[#8C7C6D] mb-4">{variantItem.name[lang]}</p>
+                        <div className="flex justify-between items-center">
+                          <p className="text-[#5C4E43] font-serif">{t.product_price}</p>
+                          <span className="text-xs text-[#8C7C6D] uppercase font-semibold">{lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}</span>
+                        </div>
+                      </div>
+                    </div>
+                 );
+              })}
             </div>
 
             <div className="flex flex-col space-y-4 mb-8 text-base">
               <div className="flex justify-between items-center text-[#5C4E43]">
-                <span className="font-serif italic">Suma / Subtotal</span>
-                <span className="font-serif">{t.product_price}</span>
+                <span className="font-serif italic">{lang === 'pl' ? 'Suma' : 'Subtotal'}</span>
+                <span className="font-serif">{lang === 'pl' ? `${350 * cartCount},00 zł` : `€ ${(80 * cartCount).toFixed(2)}`}</span>
               </div>
               <div className="flex justify-between items-center text-[#5C4E43]">
                 <span className="font-serif italic">{t.checkout_delivery}</span>
                 <span className="font-serif text-sm uppercase tracking-widest">0,00</span>
               </div>
               <div className="flex justify-between items-center font-serif text-xl border-t border-[#E6DCC9] pt-6 mt-2 text-[#2C2119]">
-                <span>Total</span>
-                <span>{t.product_price}</span>
+                <span>{t.order_total}</span>
+                <span>{lang === 'pl' ? `${350 * cartCount},00 zł` : `€ ${(80 * cartCount).toFixed(2)}`}</span>
               </div>
             </div>
 
@@ -1368,6 +1398,90 @@ export default function App() {
         <MarkdownPage url={`${import.meta.env.BASE_URL}polityka-prywatnosci-habit22.md`} title={t.privacy} />
       ) : currentPage === 'cookies' ? (
         <MarkdownPage url={`${import.meta.env.BASE_URL}polityka-cookies-habit22.md`} title={t.cookies} />
+      ) : currentPage === 'shop' ? (
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex flex-col items-center mb-16 md:mb-24 text-center"
+          >
+            <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-6">{t.shop}</h1>
+            <p className="text-[#5C4E43] max-w-2xl text-base md:text-lg font-serif mb-12 leading-relaxed">
+               {lang === 'pl' 
+                 ? 'Odkryj naszą kolekcję ręcznie szytych toreb dziewiarskich. Każda z nich została starannie zaprojektowana i wykonana z myślą o miłośniczkach rzemiosła, ceniących funkcjonalność i ponadczasowy styl.' 
+                 : 'Discover our collection of hand-sewn knitting bags. Each piece is carefully designed and crafted for craft enthusiasts, valuing functionality and timeless style.'}
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-6 md:gap-10 text-base md:text-lg font-semibold tracking-widest uppercase text-[#8C7C6D] mb-12">
+              <button 
+                onClick={() => setCollectionFilter('all')}
+                className={`pb-1 border-b transition-colors ${collectionFilter === 'all' ? 'border-[#2C2119] text-[#2C2119]' : 'border-transparent hover:text-[#2C2119] hover:border-[#2C2119]'}`}
+              >
+                {lang === 'pl' ? 'Wszystkie' : 'All'}
+              </button>
+              <button 
+                onClick={() => setCollectionFilter('floral')}
+                className={`pb-1 border-b transition-colors ${collectionFilter === 'floral' ? 'border-[#2C2119] text-[#2C2119]' : 'border-transparent hover:text-[#2C2119] hover:border-[#2C2119]'}`}
+              >
+                {lang === 'pl' ? 'Burgund' : 'Burgundy'}
+              </button>
+              <button 
+                onClick={() => setCollectionFilter('len')}
+                className={`pb-1 border-b transition-colors ${collectionFilter === 'len' ? 'border-[#2C2119] text-[#2C2119]' : 'border-transparent hover:text-[#2C2119] hover:border-[#2C2119]'}`}
+              >
+                {lang === 'pl' ? 'Zieleń' : 'Green'}
+              </button>
+              <button 
+                onClick={() => setCollectionFilter('oliwa')}
+                className={`pb-1 border-b transition-colors ${collectionFilter === 'oliwa' ? 'border-[#2C2119] text-[#2C2119]' : 'border-transparent hover:text-[#2C2119] hover:border-[#2C2119]'}`}
+              >
+                {lang === 'pl' ? 'Granat' : 'Navy'}
+              </button>
+            </div>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-16 w-full max-w-7xl mx-auto">
+            {PRODUCT.variants.filter(v => collectionFilter === 'all' || v.id === collectionFilter).map((variant, index) => (
+              <motion.div
+                key={variant.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className="group flex flex-col cursor-pointer h-full"
+                onClick={() => {
+                  setSelectedVariantId(variant.id);
+                  setProductImageIndex(0);
+                  setCurrentPage('product');
+                  window.scrollTo(0, 0);
+                }}
+              >
+                <div className="w-full aspect-square mb-6 overflow-hidden relative">
+                  <img src={variant.images[0]} alt={variant.name[lang]} className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
+                </div>
+                <h3 className="text-xl font-serif text-[#2C2119] mb-2">{variant.design[lang]}</h3>
+                <p className="text-[#8C7C6D] mb-5 font-normal tracking-wide">{variant.name[lang]}</p>
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#E6DCC9] mb-6">
+                  <span className="text-[#2C2119] font-serif text-lg">{t.product_price}</span>
+                  <span className="w-6 h-6 rounded-full border border-black/10" style={{ backgroundColor: variant.hex }} />
+                </div>
+                <button 
+                  onClick={(e) => { 
+                      e.stopPropagation();
+                      setSelectedVariantId(variant.id);
+                      addToCart(variant.id, 1); 
+                      setIsCartOpen(true); 
+                  }}
+                  className="w-full border border-[#2C2119] text-[#2C2119] py-3 text-xs font-normal uppercase tracking-[0.2em] hover:bg-[#2C2119] hover:text-white transition-colors flex items-center justify-center space-x-2 relative group/cartbtn overflow-hidden"
+                >
+                  <span className="relative z-20">{t.add_to_cart}</span>
+                  <Plus size={14} className="opacity-0 group-hover/cartbtn:opacity-100 transition-all duration-300 -ml-6 group-hover/cartbtn:ml-0 relative z-20" />
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </main>
       ) : (
         <main>
       {/* Hero Section */}
@@ -1383,7 +1497,7 @@ export default function App() {
             alt="Habit22 Hero Background" 
             className="w-full h-full object-cover opacity-90 mix-blend-multiply"
           />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-black/60 via-black/10 to-transparent z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-black/80 via-black/40 to-black/20 z-10" />
         </motion.div>
         
         <div className="relative z-10 flex flex-col items-center text-center text-white px-6">
@@ -1412,7 +1526,7 @@ export default function App() {
           className="absolute bottom-12 z-10 flex flex-col items-center"
         >
           <button 
-            onClick={() => scrollToSection('shop')}
+            onClick={(e) => { e.preventDefault(); scrollToSection('shop'); }}
             className="text-sm uppercase tracking-[0.3em] text-white hover:text-white/70 transition-colors flex flex-col items-center space-y-4"
           >
             <span>{t.discover}</span>
@@ -1428,7 +1542,7 @@ export default function App() {
       </section>
 
       {/* Main Content Layout - Product Feature */}
-      <section id="shop" className="w-full pt-12 md:pt-0 border-b border-[#E6DCC9]">
+      <section id="shop" className="w-full pt-12 md:pt-0">
         <div className="grid grid-cols-1 md:grid-cols-2 md:h-screen">
           
           {/* Images Section (Left Side on Desktop) */}
@@ -1522,7 +1636,7 @@ export default function App() {
               </div>
               
               <div className="space-y-6 mb-12 w-full">
-                 <h3 className="text-sm font-[400] uppercase tracking-widest text-[#2C2119]">{t.color} : {selectedVariant.name[lang]}</h3>
+                 <h3 className="text-sm font-[400] text-[#2C2119]"><span className="uppercase tracking-widest">{t.color}</span>: {selectedVariant.name[lang]}</h3>
                  <div className="flex space-x-4">
                   {PRODUCT.variants.map(variant => (
                     <motion.button
@@ -1530,7 +1644,8 @@ export default function App() {
                       onClick={() => setSelectedVariantId(variant.id)}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${selectedVariant.id === variant.id ? 'ring-2 ring-offset-4 ring-[#2C2119]' : 'hover:ring-2 hover:ring-offset-2 hover:ring-[#E6DCC9]'}`}
+                      transition={{ duration: 0.15 }}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center transition-transform duration-150 ${selectedVariant.id === variant.id ? 'ring-2 ring-offset-4 ring-[#2C2119]' : 'hover:ring-2 hover:ring-offset-2 hover:ring-[#E6DCC9]'}`}
                     >
                       <span 
                         className="w-full h-full rounded-full shadow-inner"
@@ -1545,7 +1660,7 @@ export default function App() {
               {/* Actions */}
               <div className="flex flex-col space-y-4 mb-16">
                 <motion.button 
-                  onClick={() => { setCartCount(1); setIsCartOpen(true); }}
+                  onClick={() => { addToCart(selectedVariant.id, 1); setIsCartOpen(true); }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full bg-[#2C2119] text-white py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
@@ -1574,9 +1689,6 @@ export default function App() {
 
       {/* About Section - Editorial Redesign V2 */}
       <section id="about" className="relative w-full py-32 md:py-48 bg-[#F3EDE3] overflow-hidden">
-        
-        {/* Background Decorative Motif */}
-        <div className="absolute top-0 right-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#CBBFA8]/30 to-transparent" />
         
         <div className="w-full px-4 md:px-8 relative z-10">
           
@@ -1840,7 +1952,7 @@ export default function App() {
           <div>
             <h4 className="mb-6 font-semibold text-[#F3EDE3]">{t.explore}</h4>
             <ul className="space-y-4 text-[#CBBFA8]">
-              <li><a href="#shop" onClick={(e) => { e.preventDefault(); scrollToSection('shop'); }} className="hover:text-white transition-colors">{t.shop}</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('shop'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.shop}</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('about'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.about}</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('journal'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.journal}</a></li>
             </ul>
@@ -1853,7 +1965,7 @@ export default function App() {
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('terms'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.terms}</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('privacy'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.privacy}</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('cookies'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.cookies}</a></li>
-              <li><a href="mailto:hello@habit22.eu" className="hover:text-white transition-colors normal-case tracking-normal mt-2 inline-block">hello@habit22.eu</a></li>
+              <li><a href="mailto:habitworld22@gmail.com" className="hover:text-white transition-colors normal-case tracking-normal mt-2 inline-block">habitworld22@gmail.com</a></li>
             </ul>
           </div>
           
@@ -1895,7 +2007,7 @@ export default function App() {
               </button>
               
               <nav className="flex flex-col space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase">
-                <a href="#shop" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); scrollToSection('shop'); }} className="hover:text-[#8C7C6D] transition-colors">{t.shop}</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('shop'); window.scrollTo(0, 0); }} className="hover:text-[#8C7C6D] transition-colors">{t.shop}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('about'); window.scrollTo(0,0); }} className="hover:text-[#8C7C6D] transition-colors">{t.about}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('journal'); window.scrollTo(0, 0); }} className="hover:text-[#8C7C6D] transition-colors">{t.journal}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('contact'); window.scrollTo(0,0); }} className="hover:text-[#8C7C6D] transition-colors">{t.contact}</a>
@@ -1951,24 +2063,36 @@ export default function App() {
                   </div>
                 ) : (
                   <div className="flex flex-col h-full w-full justify-between pt-8">
-                    <div className="flex items-center gap-6 mb-8 border-b border-[#E6DCC9] pb-8 text-left">
-                      <div className="w-24 h-32 bg-[#FAF7F2] overflow-hidden flex-shrink-0">
-                        <img src={selectedVariant.images[0]} alt="Habit22 Bag" className="w-full h-full object-contain p-1 mix-blend-multiply opacity-90 grayscale-[10%]" />
-                      </div>
-                      <div className="flex flex-col flex-1">
-                        <div className="flex justify-between items-start mb-2">
-                           <h4 className="font-serif text-[#2C2119] text-lg">{t.product_section_title} - {selectedVariant.design[lang]}</h4>
-                           <button onClick={() => setCartCount(0)} className="text-[#8C7C6D] hover:text-[#2C2119]"><X size={16} /></button>
-                        </div>
-                        <p className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-4">{selectedVariant.name[lang]}</p>
-                        <p className="text-[#5C4E43] font-serif">{t.product_price}</p>
-                      </div>
+                    <div className="flex-1 overflow-y-auto mb-6 pr-2 no-scrollbar space-y-6 pt-4">
+                      {cartItems.map((item) => {
+                        const variantItem = PRODUCT.variants.find(v => v.id === item.id);
+                        if (!variantItem) return null;
+                        
+                        return (
+                          <div key={item.id} className="flex items-center gap-6 border-b border-[#E6DCC9] pb-6 text-left">
+                            <div className="w-24 h-32 bg-[#FAF7F2] overflow-hidden flex-shrink-0">
+                              <img src={variantItem.images[0]} alt="Habit22 Bag" className="w-full h-full object-contain p-1 mix-blend-multiply opacity-90 grayscale-[10%]" />
+                            </div>
+                            <div className="flex flex-col flex-1">
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-serif text-[#2C2119] text-lg">{t.product_section_title} - {variantItem.design[lang]}</h4>
+                                <button onClick={() => removeFromCart(item.id)} className="text-[#8C7C6D] hover:text-[#2C2119]"><X size={16} /></button>
+                              </div>
+                              <p className="text-sm text-[#8C7C6D] mb-4">{variantItem.name[lang]}</p>
+                              <div className="flex items-center justify-between">
+                                <span className="text-[#5C4E43] font-serif pr-2">{t.product_price}</span>
+                                <span className="text-xs text-[#8C7C6D] uppercase font-semibold">{lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
 
                     <div className="mt-auto">
                       <div className="flex justify-between items-center font-serif text-xl border-t border-[#E6DCC9] pt-6 mb-8 text-[#2C2119]">
-                        <span>Total</span>
-                        <span>{t.product_price}</span>
+                        <span>{t.order_total}</span>
+                        <span>{lang === 'pl' ? `${350 * cartCount},00 zł` : `€ ${(80 * cartCount).toFixed(2)}`}</span>
                       </div>
                       <button 
                         onClick={() => { setIsCartOpen(false); setCurrentPage('checkout'); window.scrollTo(0, 0); }}
