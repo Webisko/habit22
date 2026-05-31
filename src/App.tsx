@@ -11,13 +11,40 @@ const TRANSLATIONS = {
     menu: "Menu",
     cart: "Koszyk",
     shop: "Kolekcja",
-    about: "Marka",
+    about: "O marce",
     journal: "Dziennik",
     contact: "Kontakt",
     shortcuts: "Na skróty",
     terms: "Regulamin sklepu",
     privacy: "Polityka prywatności",
     cookies: "Polityka cookies",
+    faq: "FAQ",
+    faq_title: "Często zadawane pytania",
+    faq_page_content: [
+      {
+        title: "Nasze produkty",
+        items: [
+          { q: "Z jakich materiałów są uszyte torby?", a: "Każda z toreb jest szyta z najwyższej jakości naturalnych tkanin. Tkanina zewnętrzna i wewnętrzna to w 100% bawełna." },
+          { q: "Jakie są wymiary torby i jej wnętrze?", a: "Wymiary toreb to: wysokość 25 cm, szerokość 36 cm, głębokość 18 cm. W środku każda ma trzy pojemne kieszenie i rączki z bawełnianej taśmy." },
+          { q: "Do czego najlepiej sprawdzają się torby?", a: "Tworzę je głównie z myślą o projektach dziewiarskich. Z łatwością na boku i bez plątania włóczki pomieszczą robótki. Torba jest super funkcjonalna podczas pracy - włóczka rozwija się na bieżąco, miękko układając." },
+          { q: "Jak powinnam dbać o torbę?", a: "Zalecamy delikatne pranie ręczne w niskich temperaturach lub czyszczenie miejscowe z pomocą wilgotnej ściereczki. Wtedy posłuży przez lata." },
+          { q: "Czy torba pomieści duży projekt np. sweter?", a: "Tak, nasze torby są zaprojektowane tak, aby pomieścić do 4-5 motków wełny, potrzebne druty i sam projekt w dość zaawansowanym stadium." },
+          { q: "Gdzie są produkowane torby?", a: "Wszystkie nasze torby są krojone i szyte ręcznie w Polsce, w naszej małej rzemieślniczej pracowni." }
+        ]
+      },
+      {
+        title: "Dostawa, płatności, zwroty",
+        items: [
+           { q: "Jakie są formy płatności?", a: "Możesz opłacić zamówienie za pomocą Blik, przelewem tradycyjnym, kartą płatniczą lub szybkimi przelewami online poprzez bramkę Przelewy24." },
+           { q: "Jaki jest czas i koszt dostawy?", a: "Zamówienia realizujemy w ciągu 2-3 dni roboczych. Koszt dostawy na terenie Polski wynosi 15 zł (paczkomat InPost) lub 20 zł (kurier). Dostawa powyżej 400 zł jest darmowa." },
+           { q: "Czy wysyłacie zamówienia zagranicę?", a: "Tak, wysyłamy na terenie Unii Europejskiej. Koszt dostawy jest obliczany w koszyku po podaniu adresu doręczenia i zwykle wynosi ok. 15-20 EUR." },
+           { q: "Jak mogę dokonać zwrotu?", a: "Produkty można zwrócić do 14 dni od momentu odebrania przesyłki, bez podawania przyczyny. Upewnij się, że torba nie nosi śladów użytkowania i ma oryginalnie przypięte metki. Skontaktuj się z nami na adres habitworld22@gmail.com, a my prześlemy formularz zwrotu." },
+           { q: "Ile mam czasu na opłacenie zamówienia?", a: "Na wpłatę czekamy 3 dni robocze od momentu złożenia zamówienia. Jeśli opłacasz zamówienie przelewem tradycyjnym, pamiętaj że czasem księgowanie trwa 1-2 dni." },
+           { q: "Kiedy otrzymam zwrot pieniędzy za odesłany towar?", a: "Zwrot środków następuje w ciągu 14 dni roboczych od momentu w którym otrzymamy i zweryfikujemy zwrócony produkt." },
+           { q: "Czy można zamienić produkt po złożeniu zamówienia?", a: "Tak, pod warunkiem, że zamówienie nie zostało jeszcze wysłane. W takiej sytuacji prosimy o jak najszybszy kontakt mailowy." }
+        ]
+      }
+    ],
     terms_content: [
       { title: "1. Postanowienia ogólne", text: "Regulamin określa zasady korzystania ze sklepu internetowego Habit22 oraz warunki zawierania umów sprzedaży produktów." },
       { title: "2. Składanie zamówień", text: "Zamówienia można składać przez całą dobę. Przez złożenie zamówienia rozumie się wybór produktów oraz realizację płatności za pośrednictwem dostępnych bramek płatniczych." },
@@ -31,14 +58,15 @@ const TRANSLATIONS = {
       { title: "3. Udostępnianie danych", text: "Państwa dane nie są przekazywane osobom trzecim, za wyjątkiem operatorów płatności i firm kurierskich w celu sprawnej realizacji zamówienia." },
       { title: "4. Pliki cookies", text: "Serwis wykorzystuje pliki cookies (tzw. ciasteczka), aby ułatwić Państwu korzystanie ze strony www oraz w celach statystycznych." }
     ],
-    hero_title: "Habit 22",
+    hero_title: "Habit22",
     hero_subtitle: "Ręcznie szyte z naturalnych tkanin.\nPrzeznaczone do projektów dziewiarskich.",
     contact_title: "Kontakt",
     contact_name: "Imię i nazwisko",
     contact_email: "Adres e-mail",
     contact_message: "Wiadomość",
     contact_send: "Wyślij wiadomość",
-    discover: "Odkryj Habit 22",
+    discover: "Odkryj Habit22",
+    discover_collection: "Odkryj kolekcję",
     about_title: "O MARCE",
     about_text: [
       "Nie interesuje mnie podążanie za trendami. Znacznie bliższe jest mi kolekcjonowanie rzeczy ponadczasowych — tworzonych powoli i z intencją.",
@@ -49,7 +77,7 @@ const TRANSLATIONS = {
     about_values_title: "UWAŻNOŚĆ",
     about_values_text: "Bliskie jest mi myślenie o rzeczach, które zostają z nami na długo — pięknych, funkcjonalnych i stworzonych z intencją.",
     about_conclusion: "Zaprojektowane, by porządkować twórczy chaos i wiernie towarzyszyć Ci w odkrywaniu nowych splotów.",
-    aboutme_title: "MARKA",
+    aboutme_title: "O MARCE",
     aboutme_paragraphs: [
       "Nie interesuje mnie podążanie za trendami. Znacznie bliższe jest mi kolekcjonowanie rzeczy ponadczasowych — dobrze zaprojektowanych, tworzonych powoli i z intencją.",
       "Od lat fascynują mnie tkaniny — ich struktura, ciężar, sposób w jaki pracują w świetle, opowiadają historię wzorem i kolorem. To niezwykłe w jaki sposób materiał potrafi budować atmosferę wnętrza, codzienności, chwili.",
@@ -63,9 +91,12 @@ const TRANSLATIONS = {
     product_price: "350,00 zł",
     product_handmade: "Handmade • 100% Naturalne",
     product_details: "Szczegóły produktu",
-    product_desc: "Każda z naszych toreb to efekt ręcznej rzemieślniczej pracy z zamiłowania do naturalnych materiałów. Zaprojektowana tak, aby ułatwić i uprzyjemnić realizację ulubionych projektów – od dziewiarstwa, po inne kreatywne zajęcia w domu, kawiarni czy plenerze.",
-    product_long_desc: "Nasze torby powstają w małej pracowni z myślą o pasjonatach dziewiarstwa i rękodzieła. Każda sztuka krojoa jest ręcznie, a proces szycia to godziny uważnej pracy. Używamy w 100% naturalnej bawełny produkcji europejskiej, starannie selekcjonowanej pod kątem wytrzymałości. Torba posiada wewnątrz podział na praktyczne sekcje – mniejsze na druty i akcesoria, by niczego nie szukać, i główną otwartą przestrzeń dedykowaną włóczce, z której można swobodnie dziergać bez plątania motków. Zaprojektowana tak, aby jej minimalistyczny, klasyczny, lekko japoński styl pięknie prezentował się zarówno w domu na kanapie, jak i wtedy, kiedy zabierasz swój warsztat na miasto.",
-    product_dimensions: "Wymiary: wysokość 25 cm, szerokość 36 cm, głębokość 18 cm",
+    product_desc: (designName: string) => `Pojemna i niezwykle funkcjonalna torba, stworzona by towarzyszyć Ci podczas ulubionych projektów dziewiarskich. Uszyta w 100% ręcznie z dbałością o każdy detal, by wygodnie pomieścić włóczki, druty i notatki w jednym miejscu.`,
+    product_long_desc: (designName: string) => `Na początek wybrałam wzór, który uwielbiam od lat — ${designName}. Jest dla mnie absolutnie ponadczasowy.\n\nKażda z toreb jest szyta z najwyższej jakości naturalnych tkanin, dbając o detale i funkcjonalność.\n\nW środku ma trzy pojemne kieszenie i rączki z bawełnianej taśmy.\n\nTworzę je z myślą o przechowywaniu projektów, włóczek, drutów i wszystkiego co warto mieć podczas tworzenia blisko siebie. Torba jest także super funkcjonalna podczas dziergania - jest w niej dużo miejsca na włóczki, które swobodnie się rozwijają leżąc grzecznie i wygodnie:)`,
+    product_dimensions_title: "Wymiary",
+    product_dimensions: "Wysokość: 25 cm\nSzerokość: 36 cm\nGłębokość: 18 cm",
+    product_materials_title: "Materiały & Pielęgnacja",
+    product_materials: "Materiał wierzchni: 100% bawełna\nPodszewka: 100% bawełna\nUsztywnienie: gruba bawełna 100%",
     add_to_cart: "Dodaj do koszyka",
     color: "Kolor",
     newsletter: "Newsletter",
@@ -101,12 +132,14 @@ const TRANSLATIONS = {
     login_password: "Hasło",
     login_btn: "Zaloguj się",
     register_btn: "Załóż konto",
+    register_verify_msg: "Link weryfikacyjny został wysłany na podany adres e-mail. Kliknij w niego, aby aktywować swoje konto.",
+    checkout_register_info: "Na podany adres e-mail zostanie wysłany link weryfikacyjny. Kliknij w niego, aby aktywować swoje konto.",
     account_title: "Twoje konto",
     account_orders: "Historia zamówień",
     account_details: "Dane konta",
     logout: "Wyloguj",
     checkout_login_prompt: "Masz już konto?",
-    checkout_login_link: "Zaloguj się przed zakupem.",
+    checkout_login_link: "Zaloguj się przed zakupem",
     checkout_create_account: "Chcę założyć konto (opcjonalnie)",
     checkout_buy_as_company: "Kupuję na firmę",
     checkout_company_nip: "NIP",
@@ -130,12 +163,10 @@ const TRANSLATIONS = {
     thank_you_title: "Dziękujemy za zamówienie",
     thank_you_message: "Twoje zamówienie zostało przyjęte do realizacji. Potwierdzenie zostało wysłane na adres e-mail.",
     thank_you_order_number: "Numer zamówienia: #230894",
-    back_to_home: "Wróć na stronę główną",
     no_orders: "Brak historii zamówień.",
     footer_p1: "Rzemieślnicze torby, które organizują Twoją pasję i wspierają twórczy proces.",
     lang_switch: "EN",
     developed_by: "Realizacja:",
-    faq_title: "Często zadawane pytania",
     faq_items: [
       { q: "Z jakich materiałów są uszyte torby?", a: "Każda z toreb jest szyta z najwyższej jakości naturalnych tkanin. Tkanina zewnętrzna i wewnętrzna to w 100% bawełna." },
       { q: "Jakie są wymiary torby i jej wnętrze?", a: "Wymiary toreb to: wysokość 25 cm, szerokość 36 cm, głębokość 18 cm. W środku każda ma trzy pojemne kieszenie i rączki z bawełnianej taśmy." },
@@ -149,7 +180,7 @@ const TRANSLATIONS = {
       { id: 2, date: "10 Kwi 2026", title: "Rytuały codzienności", excerpt: "Dlaczego to czym się otaczamy ma znaczenie i jak z uważnością budować swoją przestrzeń.", content: ["Poranna kawa w ulubionym kubku, kilka stron książki przed pracą, chwila z robótką ręczną po południu – to właśnie te momenty budują nasz dzień.", "Często zapominamy, że przestrzeń, w której żyjemy, kształtuje nasze myśli i emocje. Wybór przedmiotów codziennego użytku to nie tylko kwestia estetyki, ale przede wszystkim tego, jak dana rzecz na nas wpływa. Zwracanie uwagi na detale, materiały z których wykonane są rzeczy, z którymi obcujemy na co dzień, może przynieść niespodziewaną ulgę ze stresu.", "Budujmy naszą przestrzeń z intencją. Rezygnujmy z rzeczy, których nie używamy i zostawmy to, co piękne i użyteczne."] },
       { id: 3, date: "22 Mar 2026", title: "Wybór ma znaczenie", excerpt: "Proces wyboru odpowiednich tkanin i rzemieślnicze podejście do każdego detalu naszej torby.", content: ["Kiedy projektowałam pierwsze torby dziewiarskie, wiedziałam jedno: materiał musi być w 100% naturalny i wytrzymały.", "Testowanie tkanin zajęło wiele tygodni. Sztywna bawełna z odpowiednim splotem okazała się idealna, aby torba mogła samodzielnie stać, podczas gdy my wygodnie nabieramy kolejne oczka. Detale takie jak szwy, taśmy czy wykończenie kieszeni wewnątrz były dopracowywane we współpracy z zaprzyjaźnioną rzemieślniczką.", "Każdy element musi mieć swoje miejsce i cel, by ułatwiać pracę nad Twoimi projektami."] }
     ],
-    back_to_journal: "Wróć do archiwum",
+    back_to_journal: "Wróć do dziennika",
     all_posts: "Wszystkie wpisy",
   },
   en: {
@@ -163,6 +194,33 @@ const TRANSLATIONS = {
     terms: "Terms of Service",
     privacy: "Privacy Policy",
     cookies: "Cookie Policy",
+    faq: "FAQ",
+    faq_title: "Frequently Asked Questions",
+    faq_page_content: [
+      {
+        title: "About the product",
+        items: [
+          { q: "What materials do you use?", a: "Each bag is sewn from the highest quality natural fabrics. Both the outer and inner lining are 100% cotton." },
+          { q: "What are the dimensions and inner features?", a: "The dimensions are: height 25 cm, width 36 cm, depth 18 cm. Inside, there are three spacious pockets and cotton webbing handles." },
+          { q: "What are they best used for?", a: "I create them specifically for knitting projects. They easily hold yarn, needles, and notes. The bag is super functional while knitting—yarn unwinds smoothly and comfortably." },
+          { q: "How should I care for my bag?", a: "We recommend gentle hand washing at low temperatures or spot cleaning with a damp cloth so the fabric will last for years." },
+          { q: "Can the bag fit a large project, e.g., a sweater?", a: "Yes, our bags are designed to hold up to 4-5 skeins of yarn, necessary needles, and the project itself even in a rather advanced stage." },
+          { q: "Where are the bags produced?", a: "All our bags are cut and sewn by hand in Poland, in our small artisanal studio." }
+        ]
+      },
+      {
+        title: "Delivery, Payments, Returns",
+        items: [
+           { q: "What payment methods are accepted?", a: "You can pay for your order using BLIK, standard bank transfer, payment card, or fast online transfers via the Przelewy24 gateway." },
+           { q: "What is the delivery time and cost?", a: "We process orders within 2-3 business days. Delivery within Poland costs PLN 15 (InPost locker) or PLN 20 (courier). Delivery for orders over PLN 400 is free." },
+           { q: "Do you ship internationally?", a: "Yes, we ship across the European Union. Shipping costs are calculated at checkout upon entering your delivery address and typically cost around 15-20 EUR." },
+           { q: "How can I make a return?", a: "Products can be returned within 14 days of receiving your package without giving a reason. Please ensure the bag shows no signs of use and has the original tags intact. Contact us at habitworld22@gmail.com and we will send you a return form." },
+           { q: "How much time do I have to pay for the order?", a: "We wait 3 business days for payment from the moment the order is placed. If you pay via standard bank transfer, keep in mind clearance can sometimes take 1-2 days." },
+           { q: "When will I receive my refund for returned items?", a: "Refunds are processed within 14 business days from the moment we receive and verify the returned product." },
+           { q: "Can I swap a product after placing an order?", a: "Yes, provided the order has not been dispatched yet. In such a situation, please contact us by email as quickly as possible." }
+        ]
+      }
+    ],
     terms_content: [
       { title: "1. General Provisions", text: "These terms outline the rules and regulations for using the Habit22 store and conditions covering the sale of our products." },
       { title: "2. Orders & Payments", text: "Orders can be placed anytime. By confirming an order, you commit to purchase and pay through our designated secure payment providers." },
@@ -176,14 +234,15 @@ const TRANSLATIONS = {
       { title: "3. Data Sharing", text: "We do not share your data with third parties, except for payment processors and delivery services strictly required to fulfill your order." },
       { title: "4. Cookies", text: "Our website uses cookies to provide a better browsing experience and for analytical purposes." }
     ],
-    hero_title: "Habit 22",
+    hero_title: "Habit22",
     hero_subtitle: "Hand-sewn from natural fabrics.\nDesigned for your knitting projects.",
     contact_title: "Contact",
     contact_name: "Name",
     contact_email: "Email address",
     contact_message: "Message",
     contact_send: "Send message",
-    discover: "Discover Habit 22",
+    discover: "Discover Habit22",
+    discover_collection: "Discover the collection",
     about_title: "THE BRAND",
     about_text: [
       "I am not interested in following trends. I am drawn to timeless things — created slowly and with intention.",
@@ -208,9 +267,12 @@ const TRANSLATIONS = {
     product_price: "€ 80.00",
     product_handmade: "Handmade • 100% Natural",
     product_details: "Product Details",
-    product_desc: "Each of our bags is the result of hand-crafted artisan work driven by a passion for natural materials. Designed to facilitate and enhance the execution of your favorite projects - from knitting to other creative tasks at home, in a cafe, or outdoors.",
-    product_long_desc: "Our bags are created in a small studio with knitting and craft enthusiasts in mind. Each piece is cut by hand, and the sewing process takes hours of careful work. We use 100% natural European cotton, carefully selected for durability. Inside, the bag is divided into practical sections - smaller ones for needles and accessories so you don't have to search for anything, and a main open space dedicated to yarn, from which you can knit freely without tangling skeins. Designed so that its minimalist, classic, slightly Japanese style looks beautiful both at home on the sofa and when you take your workshop to the city.",
-    product_dimensions: "Dimensions: height 25 cm, width 36 cm, depth 18 cm",
+    product_desc: (designName: string) => `A spacious and highly functional project bag, designed to accompany you during your favorite knitting sessions. 100% handmade with attention to detail, keeping your yarn, needles, and notes perfectly organized.`,
+    product_long_desc: (designName: string) => `To begin with, I chose a pattern I've loved for years — ${designName}. To me, it feels entirely timeless.\n\nEach bag is carefully handmade using the highest quality natural fabrics, with close attention paid to both detail and functionality.\n\nInside, there are three spacious pockets and soft cotton webbing handles.\n\nI create these bags to hold knitting projects, yarn, needles, and all the little essentials worth keeping close while making. They're also wonderfully practical to knit from — roomy enough for yarn to unwind freely while staying neatly in place.`,
+    product_dimensions_title: "Dimensions",
+    product_dimensions: "Height: 25 cm\nWidth: 36 cm\nDepth: 18 cm",
+    product_materials_title: "Materials & Care",
+    product_materials: "Outer fabric: 100% cotton\nLining: 100% cotton\nInterfacing: 100% heavy cotton",
     add_to_cart: "Add to cart",
     color: "Color",
     newsletter: "Newsletter",
@@ -246,12 +308,14 @@ const TRANSLATIONS = {
     login_password: "Password",
     login_btn: "Log in",
     register_btn: "Create account",
+    register_verify_msg: "A verification link has been sent to the provided email address. Click it to activate your account.",
+    checkout_register_info: "A verification link will be sent to the provided email address. Click it to activate your account.",
     account_title: "Your Account",
     account_orders: "Order history",
     account_details: "Account details",
     logout: "Log out",
     checkout_login_prompt: "Already have an account?",
-    checkout_login_link: "Log in.",
+    checkout_login_link: "Log in",
     checkout_create_account: "I want to create an account (optional)",
     checkout_buy_as_company: "I'm buying as a company",
     checkout_company_nip: "NIP / VAT ID",
@@ -275,12 +339,10 @@ const TRANSLATIONS = {
     thank_you_title: "Thank you for your order",
     thank_you_message: "Your order has been received and is being processed. A confirmation has been sent to your email address.",
     thank_you_order_number: "Order number: #230894",
-    back_to_home: "Back to home",
     no_orders: "No order history.",
     footer_p1: "Artisanal bags that organize your passion and support the creative process.",
     lang_switch: "PL",
     developed_by: "Developed by:",
-    faq_title: "Frequently Asked Questions",
     faq_items: [
       { q: "What materials do you use?", a: "Each bag is sewn from the highest quality natural fabrics. Both the outer and inner lining are 100% cotton." },
       { q: "What are the dimensions and inner features?", a: "The dimensions are: height 25 cm, width 36 cm, depth 18 cm. Inside, there are three spacious pockets and cotton webbing handles." },
@@ -303,9 +365,9 @@ const PRODUCT = {
   variants: [
     {
       id: "floral",
-      name: { pl: "Szlachetny burgund", en: "Noble Burgundy" },
-      design: { pl: "Złodziej Truskawek", en: "Strawberry Thief" },
-      hex: "#63272e", // Dark red / maroon matching the floral bag
+      name: { pl: "Kratka Vichy", en: "Vichy Check" },
+      design: { pl: "Kolekcja Gingham / Vichy", en: "Gingham / Vichy Collection" },
+      hex: "#8B4513", // Updated roughly to match
       images: [
         `${import.meta.env.BASE_URL}produkt__1-1.webp`,
         `${import.meta.env.BASE_URL}produkt__1-2.webp`,
@@ -318,7 +380,7 @@ const PRODUCT = {
     {
       id: "len",
       name: { pl: "Szałwiowa zieleń", en: "Sage Green" },
-      design: { pl: "Gałązki Eukaliptusa", en: "Eucalyptus Branches" },
+      design: { pl: "Kolekcja Eucalyptus / Linen", en: "Eucalyptus / Linen Collection" },
       hex: "#8A9A86", // Sage green
       images: [
         `${import.meta.env.BASE_URL}produkt__2-1.webp`,
@@ -329,7 +391,7 @@ const PRODUCT = {
     {
       id: "oliwa",
       name: { pl: "Głęboki granat", en: "Deep Navy" },
-      design: { pl: "Japoński Ginkgo", en: "Japanese Ginkgo" },
+      design: { pl: "Kolekcja Ginkgo / Navy", en: "Ginkgo / Navy Collection" },
       hex: "#1a2b4c", // Deep navy blue
       images: [
         `${import.meta.env.BASE_URL}produkt__3-1.webp`,
@@ -378,7 +440,7 @@ const MarkdownPage = ({ url, title }: { url: string; title: string }) => {
 
 export default function App() {
   const [lang, setLang] = useState<Lang>('pl');
-  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'contact' | 'checkout' | 'login' | 'account' | 'thankyou' | 'journal' | 'post' | 'terms' | 'privacy' | 'cookies' | 'product' | 'shop'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'contact' | 'checkout' | 'login' | 'account' | 'thankyou' | 'journal' | 'post' | 'terms' | 'privacy' | 'cookies' | 'product' | 'shop' | 'faq'>('home');
   const [currentPostId, setCurrentPostId] = useState<number | null>(null);
   const [selectedVariantId, setSelectedVariantId] = useState(PRODUCT.variants[0].id);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -403,6 +465,8 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckoutLoginOpen, setIsCheckoutLoginOpen] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
+  const [createAccountChecked, setCreateAccountChecked] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [productImageIndex, setProductImageIndex] = useState(0);
@@ -657,7 +721,7 @@ export default function App() {
               </div>
               
               <p className="text-[#5C4E43] font-serif leading-relaxed mb-12 text-lg">
-                {t.product_desc}
+                {t.product_desc(selectedVariant.design[lang])}
               </p>
               
               <div className="space-y-6 mb-12 w-full">
@@ -679,7 +743,6 @@ export default function App() {
                     </motion.button>
                   ))}
                  </div>
-                 <p className="text-sm text-[#8C7C6D] uppercase font-[400] tracking-widest mt-6">{t.product_dimensions}</p>
               </div>
 
               {/* Quantity */}
@@ -698,7 +761,6 @@ export default function App() {
 
               <motion.button 
                 onClick={() => { addToCart(selectedVariantId, quantity); setIsCartOpen(true); }}
-                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-[#2C2119] text-white py-5 text-sm font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-16 flex items-center justify-center space-x-3 group relative overflow-hidden"
               >
@@ -715,24 +777,35 @@ export default function App() {
             <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-16">
                <div className="w-full md:w-3/5">
                  <h2 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-8">{lang === 'pl' ? 'Opis produktu' : 'Product Description'}</h2>
-                 <p className="text-[#5C4E43] font-serif leading-relaxed text-lg">
-                   {t.product_long_desc}
+                 <p className="text-[#5C4E43] font-serif leading-relaxed text-lg whitespace-pre-line">
+                   {t.product_long_desc(selectedVariant.design[lang])}
                  </p>
                </div>
-               <div className="w-full hidden md:flex md:w-2/5 items-center justify-center">
-                 <img src={selectedVariant.images[0]} alt="Zdjęcie produktu" className="w-full max-w-sm h-auto object-contain mix-blend-multiply opacity-90 drop-shadow-sm" />
+               <div className="w-full md:w-2/5 flex flex-col pt-0 md:pt-[68px]">
+                 <div className="text-[#5C4E43] font-serif leading-relaxed text-lg space-y-8">
+                   <div>
+                     <strong className="block text-xl font-bold mb-2 text-[#2C2119]">{t.product_dimensions_title}</strong>
+                     <div className="whitespace-pre-line">{t.product_dimensions}</div>
+                   </div>
+                   <div>
+                     <strong className="block text-xl font-bold mb-2 text-[#2C2119]">{t.product_materials_title}</strong>
+                     <div className="whitespace-pre-line">{t.product_materials}</div>
+                   </div>
+                 </div>
                </div>
             </div>
            
-           <h2 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-8">{t.faq_title}</h2>
-           <div className="flex flex-col md:flex-row md:space-y-0 md:flex-wrap gap-y-12">
-             {t.faq_items.map((item: any, idx: number) => (
-               <div key={idx} className="w-full md:w-1/2 pr-8 md:pr-16 relative">
-                 <h4 className="text-xl font-serif text-[#2C2119] mb-4 pr-8">{item.q}</h4>
-                 <p className="text-[#5C4E43] font-serif leading-relaxed opacity-90">{item.a}</p>
-               </div>
-             ))}
-           </div>
+            <div className="w-full border-t border-[#E6DCC9] pt-24 mt-24">
+              <h2 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-8">{t.faq_title}</h2>
+              <div className="flex flex-col md:flex-row md:space-y-0 md:flex-wrap gap-y-12">
+                {t.faq_items.map((item: any, idx: number) => (
+                  <div key={idx} className="w-full md:w-1/2 pr-8 md:pr-16 relative">
+                    <h4 className="text-xl font-serif text-[#2C2119] mb-4 pr-8">{item.q}</h4>
+                    <p className="text-[#5C4E43] font-serif leading-relaxed opacity-90">{item.a}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
           
           <AnimatePresence>
@@ -825,20 +898,17 @@ export default function App() {
                   className="pt-12"
                 >
                   <button 
-                    onClick={() => {
-                      setCurrentPage('home');
-                      setTimeout(() => {
-                        const el = document.getElementById('shop');
-                        if (el) {
-                          el.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }, 100);
+                    onClick={() => { 
+                      setCurrentPage('shop'); 
+                      window.scrollTo(0, 0); 
                     }}
-                    className="group flex flex-col items-start gap-4 text-[#2C2119] hover:text-[#8C7C6D] transition-colors"
+                    className="bg-[#2C2119] text-[#F3EDE3] py-5 px-8 w-72 md:w-80 text-sm font-sans font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
                   >
-                    <span className="text-base font-semibold tracking-[0.2em] uppercase border-b border-[#2C2119] pb-1 group-hover:border-[#8C7C6D] transition-colors">
-                      {t.discover}
-                    </span>
+                    <span className="relative z-20">{t.discover_collection}</span>
+                    <MoveRight size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                    
+                    {/* Button shine effect */}
+                    <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
                   </button>
                 </motion.div>
               </div>
@@ -889,7 +959,7 @@ export default function App() {
                 <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.contact_message}</label>
                 <textarea rows={4} className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] resize-none transition-colors font-serif"></textarea>
               </div>
-              <p className="text-xs text-[#8C7C6D] mb-6 leading-relaxed">
+              <p className="text-sm text-[#8C7C6D] mb-6 leading-relaxed">
                 {t.contact_consent}
                 <button type="button" onClick={() => { setCurrentPage('privacy'); window.scrollTo(0,0); }} className="underline hover:text-[#2C2119] transition-colors">{t.privacy.toLowerCase()}</button>.
               </p>
@@ -929,22 +999,24 @@ export default function App() {
                           <button type="button" onClick={() => setIsCheckoutLoginOpen(true)} className="text-sm font-semibold uppercase tracking-widest border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] transition-colors">{t.checkout_login_link}</button>
                        </div>
                    ) : (
-                       <div className="flex flex-col w-full max-w-sm">
+                       <div className="flex flex-col w-full">
                            <div className="flex justify-between items-center mb-6">
                              <h3 className="text-sm font-semibold uppercase tracking-widest">{t.login_btn}</h3>
                              <button type="button" onClick={() => setIsCheckoutLoginOpen(false)} className="text-[#8C7C6D] hover:text-[#2C2119]"><X size={16} /></button>
                            </div>
                            <div className="space-y-4">
                               <div className="flex flex-col">
-                                 <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_email}</label>
+                                 <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_email}</label>
                                  <input type="email" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] font-serif" />
                               </div>
                               <div className="flex flex-col">
-                                 <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_password}</label>
+                                 <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_password}</label>
                                  <input type="password" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] font-serif" />
                               </div>
-                              <button type="button" onClick={(e) => { e.preventDefault(); setIsLoggedIn(true); setIsCheckoutLoginOpen(false); }} className="w-full py-4 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#3A2D23] transition-colors mt-6">
-                                 {t.login_btn}
+                              <button type="button" onClick={(e) => { e.preventDefault(); setIsLoggedIn(true); setIsCheckoutLoginOpen(false); }} className="w-full py-4 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-6 flex items-center justify-center space-x-3 group relative overflow-hidden">
+                                 <span className="relative z-20">{t.login_btn}</span>
+                                 <User size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                                 <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
                               </button>
                            </div>
                        </div>
@@ -967,53 +1039,66 @@ export default function App() {
                   {isCompany ? (
                     <>
                       <div className="flex flex-col">
-                        <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_company_name}</label>
+                        <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_company_name}</label>
                         <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                       </div>
                       <div className="flex flex-col">
-                        <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_company_nip}</label>
+                        <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_company_nip}</label>
                         <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="flex flex-col">
-                        <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_first_name}</label>
+                        <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_first_name}</label>
                         <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                       </div>
                       <div className="flex flex-col">
-                        <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_last_name}</label>
+                        <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_last_name}</label>
                         <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                       </div>
                     </>
                   )}
                   <div className="flex flex-col">
-                    <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.contact_email}</label>
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.contact_email}</label>
                     <input type="email" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                   </div>
                   <div className="flex flex-col">
-                    <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_phone}</label>
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_phone}</label>
                     <input type="tel" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                   </div>
                   <div className="flex flex-col md:col-span-2">
-                    <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_street}</label>
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_street}</label>
                     <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                   </div>
                   <div className="flex flex-col">
-                    <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_city}</label>
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_city}</label>
                     <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                   </div>
                   <div className="flex flex-col">
-                    <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_zip}</label>
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.checkout_zip}</label>
                     <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                   </div>
                 </div>
                 {!isLoggedIn && (
-                  <div className="flex items-center space-x-3 pt-4">
-                    <input type="checkbox" id="create-account" className="w-4 h-4 accent-[#2C2119] bg-transparent border-[#E6DCC9]" />
-                    <label htmlFor="create-account" className="text-base font-serif text-[#5C4E43] cursor-pointer selection:bg-transparent">
-                      {t.checkout_create_account}
-                    </label>
+                  <div className="flex flex-col space-y-3 pt-4">
+                    <div className="flex items-center space-x-3">
+                      <input 
+                        type="checkbox" 
+                        id="create-account" 
+                        className="w-4 h-4 accent-[#2C2119] bg-transparent border-[#E6DCC9]"
+                        checked={createAccountChecked}
+                        onChange={(e) => setCreateAccountChecked(e.target.checked)}
+                      />
+                      <label htmlFor="create-account" className="text-base font-serif text-[#5C4E43] cursor-pointer selection:bg-transparent">
+                        {t.checkout_create_account}
+                      </label>
+                    </div>
+                    {createAccountChecked && (
+                      <p className="text-sm text-[#8C7C6D] leading-relaxed pl-7">
+                        {t.checkout_register_info}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
@@ -1042,13 +1127,13 @@ export default function App() {
                 <h2 className="text-base font-semibold tracking-widest uppercase border-b border-[#E6DCC9] pb-4 text-[#2C2119]">{t.checkout_payment}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <button type="button" onClick={() => setCheckoutPayment('blik')} className={`border py-6 px-4 flex flex-col items-center justify-center text-center transition-colors ${checkoutPayment === 'blik' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
-                    <span className="text-xs font-semibold uppercase tracking-widest">{t.checkout_payment_blik}</span>
+                    <span className="text-sm font-semibold uppercase tracking-widest">{t.checkout_payment_blik}</span>
                   </button>
                   <button type="button" onClick={() => setCheckoutPayment('card')} className={`border py-6 px-4 flex flex-col items-center justify-center text-center transition-colors ${checkoutPayment === 'card' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
-                    <span className="text-xs font-semibold uppercase tracking-widest">{t.checkout_payment_card}</span>
+                    <span className="text-sm font-semibold uppercase tracking-widest">{t.checkout_payment_card}</span>
                   </button>
                   <button type="button" onClick={() => setCheckoutPayment('transfer')} className={`border py-6 px-4 flex flex-col items-center justify-center text-center transition-colors ${checkoutPayment === 'transfer' ? 'border-[#2C2119] bg-[#EBE2D3]' : 'border-[#E6DCC9] hover:bg-[#FAF7F2]'}`}>
-                     <span className="text-xs font-semibold uppercase tracking-widest leading-relaxed">{t.checkout_payment_transfer}</span>
+                     <span className="text-sm font-semibold uppercase tracking-widest leading-relaxed">{t.checkout_payment_transfer}</span>
                   </button>
                 </div>
               </div>
@@ -1077,7 +1162,7 @@ export default function App() {
                         <p className="text-sm text-[#8C7C6D] mb-4">{variantItem.name[lang]}</p>
                         <div className="flex justify-between items-center">
                           <p className="text-[#5C4E43] font-serif">{t.product_price}</p>
-                          <span className="text-xs text-[#8C7C6D] uppercase font-semibold">{lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}</span>
+                          <span className="text-sm text-[#8C7C6D] uppercase font-semibold">{lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}</span>
                         </div>
                       </div>
                     </div>
@@ -1102,9 +1187,13 @@ export default function App() {
 
             <button 
               onClick={() => { setCurrentPage('thankyou'); window.scrollTo(0, 0); }}
-              className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#3A2D23] transition-colors mt-auto"
+              className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-auto flex items-center justify-center space-x-3 group relative overflow-hidden"
             >
-              {t.checkout_submit}
+              <span className="relative z-20">{t.checkout_submit}</span>
+              <MoveRight size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+              
+              {/* Button shine effect */}
+              <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
             </button>
           </motion.div>
         </main>
@@ -1119,24 +1208,51 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-serif text-[#2C2119] tracking-wider uppercase mb-12 text-center">
                    {isRegistering ? t.register_btn : t.login_btn}
                 </h1>
-                <form className="w-full flex flex-col space-y-8" onSubmit={(e) => { e.preventDefault(); setIsLoggedIn(true); setCurrentPage('account'); window.scrollTo(0, 0); }}>
+                
+                {isRegistrationSuccess ? (
+                  <div className="w-full flex flex-col items-center text-center space-y-6">
+                    <p className="text-[#5C4E43] font-serif text-lg leading-relaxed">{t.register_verify_msg}</p>
+                    <button 
+                      onClick={() => { setIsRegistrationSuccess(false); setIsRegistering(false); }}
+                      className="border-b border-[#2C2119] pb-1 text-sm font-semibold tracking-widest uppercase hover:text-[#8C7C6D] transition-colors mt-8"
+                    >
+                      {t.login_btn}
+                    </button>
+                  </div>
+                ) : (
+                <form className="w-full flex flex-col space-y-8" onSubmit={(e) => { 
+                  e.preventDefault(); 
+                  if (isRegistering) {
+                    setIsRegistrationSuccess(true);
+                  } else {
+                    setIsLoggedIn(true); 
+                    setCurrentPage('account'); 
+                    window.scrollTo(0, 0); 
+                  }
+                }}>
                     <div className="flex flex-col">
-                        <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_email}</label>
+                        <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_email}</label>
                         <input type="email" required className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                     </div>
                     <div className="flex flex-col">
-                        <label className="text-xs uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_password}</label>
+                        <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.login_password}</label>
                         <input type="password" required minLength={6} className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
                     </div>
-                    <button className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#3A2D23] transition-colors mt-4">
-                        {isRegistering ? t.register_btn : t.login_btn}
+                    <button className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-4 flex items-center justify-center space-x-3 group relative overflow-hidden">
+                        <span className="relative z-20">{isRegistering ? t.register_btn : t.login_btn}</span>
+                        <User size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                        <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
                     </button>
                 </form>
-                <div className="mt-8 text-xs tracking-widest uppercase text-[#8C7C6D]">
+                )}
+                
+                {!isRegistrationSuccess && (
+                <div className="mt-8 text-sm tracking-widest uppercase text-[#8C7C6D]">
                     <button onClick={() => setIsRegistering(!isRegistering)} className="hover:text-[#2C2119] border-b border-transparent hover:border-[#2C2119] transition-all pb-1">
                         {isRegistering ? t.login_btn : t.register_btn}
                     </button>
                 </div>
+                )}
             </motion.div>
         </main>
       ) : currentPage === 'account' ? (
@@ -1159,12 +1275,12 @@ export default function App() {
                  </h2>
                  {viewingOrder ? (
                     <div className="flex flex-col border border-[#E6DCC9] p-8 bg-[#FAF7F2]">
-                       <button onClick={() => setViewingOrder(false)} className="self-start text-xs uppercase tracking-widest text-[#8C7C6D] border-b border-transparent hover:text-[#2C2119] hover:border-[#2C2119] pb-1 transition-all mb-8 flex items-center space-x-2">
+                       <button onClick={() => setViewingOrder(false)} className="self-start text-sm uppercase tracking-widest text-[#8C7C6D] border-b border-transparent hover:text-[#2C2119] hover:border-[#2C2119] pb-1 transition-all mb-8 flex items-center space-x-2">
                           <ChevronLeft size={12} /><span>{t.order_back}</span>
                        </button>
                        <div className="flex justify-between items-start mb-6">
                           <h3 className="text-lg font-serif text-[#2C2119]">{t.order_str} #230894</h3>
-                          <span className="text-xs uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9]">{t.status_processing}</span>
+                          <span className="text-sm uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9]">{t.status_processing}</span>
                        </div>
                        <p className="text-base font-serif text-[#5C4E43] mb-8">{t.order_date_str}</p>
                        <div className="flex flex-col space-y-4 border-t border-[#E6DCC9] pt-6">
@@ -1192,7 +1308,7 @@ export default function App() {
                              <span className="text-sm font-serif text-[#5C4E43]">{t.order_date_short} • 890 PLN</span>
                           </div>
                           <div className="flex items-center space-x-4">
-                             <span className="text-xs uppercase tracking-widest text-[#8C7C6D] hidden md:inline-block">{t.status_processing}</span>
+                             <span className="text-sm uppercase tracking-widest text-[#8C7C6D] hidden md:inline-block">{t.status_processing}</span>
                              <ChevronRight size={16} className="text-[#8C7C6D] group-hover:text-[#2C2119] transition-colors" />
                           </div>
                        </div>
@@ -1219,7 +1335,7 @@ export default function App() {
                      </div>
                      <button 
                        onClick={() => setIsEditingAccount(true)}
-                       className="self-start text-xs uppercase tracking-widest font-semibold border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] mt-4 transition-colors"
+                       className="self-start text-sm uppercase tracking-widest font-semibold border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] mt-4 transition-colors"
                      >
                        {t.account_edit_details}
                      </button>
@@ -1247,7 +1363,7 @@ export default function App() {
                  {!isEditingPassword ? (
                    <button 
                      onClick={() => setIsEditingPassword(true)}
-                     className="self-start text-xs uppercase tracking-widest font-semibold text-[#8C7C6D] border-b border-transparent hover:border-[#8C7C6D] hover:text-[#2C2119] mt-8 transition-colors"
+                     className="self-start text-sm uppercase tracking-widest font-semibold text-[#8C7C6D] border-b border-transparent hover:border-[#8C7C6D] hover:text-[#2C2119] mt-8 transition-colors"
                    >
                      {t.account_change_password}
                    </button>
@@ -1355,7 +1471,7 @@ export default function App() {
                 </div>
 
                 <div className="flex flex-col space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed max-w-3xl mx-auto">
-                  <p className="font-medium text-[#2C2119] text-xl md:text-2xl mb-4 italic">{post.excerpt}</p>
+                  <p className="font-medium text-[#2C2119] text-xl md:text-2xl mb-4">{post.excerpt}</p>
                   {(post.content as string[]).map((paragraph, idx) => (
                     <p key={idx}>{paragraph}</p>
                   ))}
@@ -1398,6 +1514,33 @@ export default function App() {
         <MarkdownPage url={`${import.meta.env.BASE_URL}polityka-prywatnosci-habit22.md`} title={t.privacy} />
       ) : currentPage === 'cookies' ? (
         <MarkdownPage url={`${import.meta.env.BASE_URL}polityka-cookies-habit22.md`} title={t.cookies} />
+      ) : currentPage === 'faq' ? (
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex flex-col mb-16"
+          >
+            <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16">{t.faq_title}</h1>
+            
+            <div className="flex flex-col space-y-16">
+              {t.faq_page_content.map((section: any, sectionIdx: number) => (
+                <div key={sectionIdx} className="flex flex-col">
+                  <h2 className="text-3xl font-serif font-bold text-[#2C2119] mb-8 uppercase tracking-wider">{section.title}</h2>
+                  <div className="flex flex-col space-y-8">
+                    {section.items.map((item: any, idx: number) => (
+                      <div key={idx} className="flex flex-col border-b border-[#E6DCC9] pb-6 last:border-b-0 last:pb-0">
+                        <h3 className="text-xl font-serif text-[#2C2119] mb-4">{item.q}</h3>
+                        <p className="text-[#5C4E43] leading-relaxed font-serif">{item.a}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </main>
       ) : currentPage === 'shop' ? (
         <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div 
@@ -1473,7 +1616,7 @@ export default function App() {
                       addToCart(variant.id, 1); 
                       setIsCartOpen(true); 
                   }}
-                  className="w-full border border-[#2C2119] text-[#2C2119] py-3 text-xs font-normal uppercase tracking-[0.2em] hover:bg-[#2C2119] hover:text-white transition-colors flex items-center justify-center space-x-2 relative group/cartbtn overflow-hidden"
+                  className="w-full border border-[#2C2119] text-[#2C2119] py-3 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#2C2119] hover:text-white transition-colors flex items-center justify-center space-x-2 relative group/cartbtn overflow-hidden"
                 >
                   <span className="relative z-20">{t.add_to_cart}</span>
                   <Plus size={14} className="opacity-0 group-hover/cartbtn:opacity-100 transition-all duration-300 -ml-6 group-hover/cartbtn:ml-0 relative z-20" />
@@ -1654,14 +1797,12 @@ export default function App() {
                     </motion.button>
                   ))}
                  </div>
-                 <p className="text-sm text-[#8C7C6D] uppercase font-[400] tracking-widest mt-6">{t.product_dimensions}</p>
               </div>
 
               {/* Actions */}
               <div className="flex flex-col space-y-4 mb-16">
                 <motion.button 
                   onClick={() => { addToCart(selectedVariant.id, 1); setIsCartOpen(true); }}
-                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full bg-[#2C2119] text-white py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
                 >
@@ -1674,7 +1815,6 @@ export default function App() {
 
                 <motion.button 
                   onClick={() => { setCurrentPage('product'); window.scrollTo(0, 0); }}
-                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full border border-[#2C2119] text-[#2C2119] py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#2C2119] hover:text-white transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
                 >
@@ -1699,7 +1839,7 @@ export default function App() {
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
                transition={{ duration: 0.8 }}
-               className="text-xs sm:text-sm tracking-[0.3em] uppercase text-[#8C7C6D] mb-16 md:mb-24 flex items-center space-x-4"
+               className="text-sm sm:text-sm tracking-[0.3em] uppercase text-[#8C7C6D] mb-16 md:mb-24 flex items-center space-x-4"
              >
                <span className="w-8 sm:w-16 h-[1px] bg-[#E6DCC9]" />
                <span>{t.about_title}</span>
@@ -1814,11 +1954,23 @@ export default function App() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="pt-12 md:pt-24 border-t border-[#E6DCC9] mt-16 md:mt-32 w-full flex justify-start"
+            className="pt-12 md:pt-24 border-t border-[#E6DCC9] mt-16 md:mt-32 w-full flex flex-col items-center space-y-12 text-center"
           >
-              <p className="text-2xl md:text-3xl lg:text-4xl text-[#2C2119] font-serif leading-snug text-left md:w-[60%]">
+              <p className="text-2xl md:text-3xl lg:text-4xl text-[#2C2119] font-serif leading-snug md:w-[60%]">
                 {t.about_conclusion}
               </p>
+              <div className="w-full flex justify-center mt-12 md:mt-24">
+                <button 
+                  onClick={() => { setCurrentPage('shop'); window.scrollTo(0,0); }}
+                  className="bg-[#2C2119] text-[#F3EDE3] py-5 px-8 w-72 md:w-80 text-sm font-sans font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
+                >
+                  <span className="relative z-20">{t.discover_collection}</span>
+                  <MoveRight size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                  
+                  {/* Button shine effect */}
+                  <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
+                </button>
+              </div>
           </motion.div>
         
         </div>
@@ -1833,7 +1985,7 @@ export default function App() {
             </h2>
             <button 
               onClick={() => { setCurrentPage('journal'); window.scrollTo(0,0); }}
-              className="text-xs font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] transition-colors"
+              className="text-sm font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] transition-colors"
             >
               {t.all_posts}
             </button>
@@ -1862,7 +2014,7 @@ export default function App() {
                   {post.excerpt}
                 </p>
                 <div className="mt-auto self-start">
-                  <span className="text-xs font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 group-hover:text-[#8C7C6D] group-hover:border-[#8C7C6D] transition-colors inline-block relative overflow-hidden group-hover:pr-4">
+                  <span className="text-sm font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 group-hover:text-[#8C7C6D] group-hover:border-[#8C7C6D] transition-colors inline-block relative overflow-hidden group-hover:pr-4">
                     <span className="relative z-10">{t.journal_read_more}</span>
                     <ChevronRight size={12} className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" strokeWidth={2}/>
                   </span>
@@ -1876,14 +2028,18 @@ export default function App() {
       {/* FAQ Section */}
       <section className="w-full py-24 md:py-32 px-6 md:px-12 bg-[#F3EDE3] border-t border-[#E6DCC9]">
         <div className="max-w-[1440px] mx-auto">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16 md:mb-24"
-          >
-            <h2 className="text-xs tracking-[0.3em] uppercase text-[#8C7C6D] mb-4">{t.faq_title}</h2>
-          </motion.div>
+          <div className="flex justify-center mb-16 md:mb-24">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-sm tracking-[0.3em] uppercase text-[#8C7C6D] flex items-center space-x-4"
+            >
+              <span className="w-8 sm:w-16 h-[1px] bg-[#E6DCC9]" />
+              <span>{t.faq_title}</span>
+              <span className="w-8 sm:w-16 h-[1px] bg-[#E6DCC9]" />
+            </motion.h2>
+          </div>
 
           <div className="grid grid-cols-1 gap-12 md:gap-16">
             {t.faq_items.map((item, idx) => (
@@ -1921,13 +2077,13 @@ export default function App() {
                  placeholder={t.newsletter_placeholder} 
                  className="w-full bg-transparent border-b border-[#2C2119] py-3 md:py-4 px-2 text-[#2C2119] font-serif focus:outline-none placeholder:text-[#8C7C6D]" 
                />
-               <button type="submit" className="w-full md:w-auto md:absolute md:right-0 md:bottom-0 text-xs font-semibold uppercase tracking-widest text-[#2C2119] hover:text-[#8C7C6D] transition-colors py-3 md:py-4 md:px-4">
+               <button type="submit" className="w-full md:w-auto md:absolute md:right-0 md:bottom-0 text-sm font-semibold uppercase tracking-widest text-[#2C2119] hover:text-[#8C7C6D] transition-colors py-3 md:py-4 md:px-4">
                   {t.newsletter_submit}
                </button>
              </div>
              <label className="flex items-start space-x-3 text-left cursor-pointer group mt-4">
                <input type="checkbox" required className="w-4 h-4 accent-[#2C2119] bg-transparent border-[#E6DCC9] mt-0.5" />
-               <span className="text-xs text-[#8C7C6D] leading-relaxed select-none">
+               <span className="text-sm text-[#8C7C6D] leading-relaxed select-none">
                  {t.newsletter_consent}
                  <button type="button" onClick={() => { setCurrentPage('privacy'); window.scrollTo(0, 0); }} className="underline hover:text-[#2C2119] transition-colors">{t.privacy.toLowerCase()}</button>.
                </span>
@@ -1962,6 +2118,7 @@ export default function App() {
             <h4 className="mb-6 font-semibold text-[#F3EDE3]">{t.shortcuts}</h4>
             <ul className="space-y-4 text-[#CBBFA8]">
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('contact'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.contact}</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('faq'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.faq}</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('terms'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.terms}</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('privacy'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.privacy}</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('cookies'); window.scrollTo(0, 0); }} className="hover:text-white transition-colors">{t.cookies}</a></li>
@@ -1971,7 +2128,7 @@ export default function App() {
           
         </div>
         
-        <div className="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-[#3A2D23] flex flex-col md:flex-row justify-between items-center text-xs text-[#CBBFA8]">
+        <div className="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-[#3A2D23] flex flex-col md:flex-row justify-between items-center text-sm text-[#CBBFA8]">
           <div className="flex flex-col md:flex-row items-center gap-2 md:gap-8 text-center md:text-left">
             <p>&copy; {new Date().getFullYear()} Habit22 . {t.all_rights_reserved}</p>
             <p className="normal-case">{t.developed_by} <a href="https://webisko.pl" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Webisko.pl</a></p>
@@ -2010,6 +2167,7 @@ export default function App() {
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('shop'); window.scrollTo(0, 0); }} className="hover:text-[#8C7C6D] transition-colors">{t.shop}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('about'); window.scrollTo(0,0); }} className="hover:text-[#8C7C6D] transition-colors">{t.about}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('journal'); window.scrollTo(0, 0); }} className="hover:text-[#8C7C6D] transition-colors">{t.journal}</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('faq'); window.scrollTo(0, 0); }} className="hover:text-[#8C7C6D] transition-colors">{t.faq}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); setCurrentPage('contact'); window.scrollTo(0,0); }} className="hover:text-[#8C7C6D] transition-colors">{t.contact}</a>
               </nav>
 
@@ -2081,7 +2239,7 @@ export default function App() {
                               <p className="text-sm text-[#8C7C6D] mb-4">{variantItem.name[lang]}</p>
                               <div className="flex items-center justify-between">
                                 <span className="text-[#5C4E43] font-serif pr-2">{t.product_price}</span>
-                                <span className="text-xs text-[#8C7C6D] uppercase font-semibold">{lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}</span>
+                                <span className="text-sm text-[#8C7C6D] uppercase font-semibold">{lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}</span>
                               </div>
                             </div>
                           </div>
@@ -2096,9 +2254,13 @@ export default function App() {
                       </div>
                       <button 
                         onClick={() => { setIsCartOpen(false); setCurrentPage('checkout'); window.scrollTo(0, 0); }}
-                        className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#3A2D23] transition-colors"
+                        className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
                       >
-                        {t.go_to_checkout}
+                        <span className="relative z-20">{t.go_to_checkout}</span>
+                        <MoveRight size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                        
+                        {/* Button shine effect */}
+                        <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
                       </button>
                     </div>
                   </div>
