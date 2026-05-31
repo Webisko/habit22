@@ -62,11 +62,16 @@ const TRANSLATIONS = {
     product_section_title: "Torba Projektowa",
     product_price: "350,00 zł",
     product_handmade: "Handmade • 100% Naturalne",
+    product_details: "Szczegóły produktu",
+    product_desc: "Każda z naszych toreb to efekt ręcznej rzemieślniczej pracy z zamiłowania do naturalnych materiałów. Zaprojektowana tak, aby ułatwić i uprzyjemnić realizację ulubionych projektów – od dziewiarstwa, po inne kreatywne zajęcia w domu, kawiarni czy plenerze.",
+    product_long_desc: "Nasze torby powstają w małej pracowni z myślą o pasjonatach dziewiarstwa i rękodzieła. Każda sztuka krojoa jest ręcznie, a proces szycia to godziny uważnej pracy. Używamy w 100% naturalnej bawełny produkcji europejskiej, starannie selekcjonowanej pod kątem wytrzymałości. Torba posiada wewnątrz podział na praktyczne sekcje – mniejsze na druty i akcesoria, by niczego nie szukać, i główną otwartą przestrzeń dedykowaną włóczce, z której można swobodnie dziergać bez plątania motków. Zaprojektowana tak, aby jej minimalistyczny, klasyczny, lekko japoński styl pięknie prezentował się zarówno w domu na kanapie, jak i wtedy, kiedy zabierasz swój warsztat na miasto.",
+    product_dimensions: "Wymiary: wysokość 25 cm, szerokość 36 cm, głębokość 18 cm",
     add_to_cart: "Dodaj do koszyka",
     color: "Kolor",
     newsletter: "Newsletter",
     empty_cart: "Twój koszyk jest pusty.",
     continue_shopping: "Kontynuuj zakupy",
+    back_to_home: "Wróć na stronę główną",
     checkout: "Zamówienie",
     checkout_details: "Dane klienta",
     checkout_delivery: "Dostawa",
@@ -201,11 +206,16 @@ const TRANSLATIONS = {
     product_section_title: "The Project Bag",
     product_price: "€ 80.00",
     product_handmade: "Handmade • 100% Natural",
+    product_details: "Product Details",
+    product_desc: "Each of our bags is the result of hand-crafted artisan work driven by a passion for natural materials. Designed to facilitate and enhance the execution of your favorite projects - from knitting to other creative tasks at home, in a cafe, or outdoors.",
+    product_long_desc: "Our bags are created in a small studio with knitting and craft enthusiasts in mind. Each piece is cut by hand, and the sewing process takes hours of careful work. We use 100% natural European cotton, carefully selected for durability. Inside, the bag is divided into practical sections - smaller ones for needles and accessories so you don't have to search for anything, and a main open space dedicated to yarn, from which you can knit freely without tangling skeins. Designed so that its minimalist, classic, slightly Japanese style looks beautiful both at home on the sofa and when you take your workshop to the city.",
+    product_dimensions: "Dimensions: height 25 cm, width 36 cm, depth 18 cm",
     add_to_cart: "Add to bag",
     color: "Color",
     newsletter: "Newsletter",
     empty_cart: "Your bag is empty.",
     continue_shopping: "Continue shopping",
+    back_to_home: "Back to home page",
     checkout: "Checkout",
     checkout_details: "Customer details",
     checkout_delivery: "Delivery",
@@ -298,6 +308,9 @@ const PRODUCT = {
         `${import.meta.env.BASE_URL}produkt__1-1.webp`,
         `${import.meta.env.BASE_URL}produkt__1-2.webp`,
         `${import.meta.env.BASE_URL}produkt__1-3.webp`,
+        `${import.meta.env.BASE_URL}produkt__1-1.webp`,
+        `${import.meta.env.BASE_URL}produkt__1-2.webp`,
+        `${import.meta.env.BASE_URL}produkt__1-3.webp`,
       ]
     },
     {
@@ -331,7 +344,7 @@ const MarkdownPage = ({ url, title }: { url: string; title: string }) => {
     fetch(url).then(r => r.text()).then(setContent);
   }, [url]);
   return (
-    <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-4xl mx-auto flex flex-col">
+    <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
         <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16 text-center">{title}</h1>
         <div className="prose prose-[#5C4E43] font-serif prose-lg max-w-none">
@@ -369,11 +382,18 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckoutLoginOpen, setIsCheckoutLoginOpen] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [productImageIndex, setProductImageIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftState, setScrollLeftState] = useState(0);
   const [checkoutDelivery, setCheckoutDelivery] = useState('locker');
   const [checkoutPayment, setCheckoutPayment] = useState('blik');
   const [isCompany, setIsCompany] = useState(false);
@@ -396,8 +416,9 @@ export default function App() {
 
   useEffect(() => {
     setCurrentImageIndex(0);
+    setProductImageIndex(0);
     if (desktopScrollRef.current) {
-      desktopScrollRef.current.scrollTo({ top: 0, behavior: 'auto' });
+      desktopScrollRef.current.scrollTo({ left: 0, top: 0, behavior: 'auto' });
     }
   }, [selectedVariantId]);
 
@@ -413,19 +434,17 @@ export default function App() {
   }, [selectedVariant]);
 
   useEffect(() => {
-    // Autoplay for desktop vertical scroll
+    // Autoplay for main slider (horizontal)
     const desktopInterval = setInterval(() => {
       if (desktopScrollRef.current && !isHoveredRef.current) {
         const container = desktopScrollRef.current;
-        if (window.innerWidth >= 768) { // Only run on md screens and up
-           const currentScroll = container.scrollTop;
-           const maxScroll = container.scrollHeight - container.clientHeight;
-           
-           if (currentScroll >= maxScroll - 10) {
-              container.scrollTo({ top: 0, behavior: 'smooth' });
-           } else {
-              container.scrollBy({ top: container.clientHeight, behavior: 'smooth' });
-           }
+        const currentScroll = container.scrollLeft;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        
+        if (currentScroll >= maxScroll - 10) {
+            container.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
         }
       }
     }, 4500);
@@ -478,14 +497,14 @@ export default function App() {
           <div className="flex-1 flex space-x-6 items-center">
             <button 
               onClick={() => setIsMenuOpen(true)}
-              className="group flex items-center space-x-2 text-sm font-medium tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
+              className="group flex items-center space-x-2 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
             >
               <Menu size={18} strokeWidth={1.5} />
               <span className="hidden sm:inline-block">{t.menu}</span>
             </button>
             <button 
               onClick={toggleLang}
-              className="text-sm font-semibold tracking-widest hover:text-[#8C7C6D] transition-colors hidden sm:block"
+              className="text-sm font-normal tracking-widest hover:text-[#8C7C6D] transition-colors hidden sm:block"
             >
               {t.lang_switch}
             </button>
@@ -504,13 +523,13 @@ export default function App() {
           <div className="flex-1 flex justify-end space-x-6 items-center">
              <button 
               onClick={toggleLang}
-              className="text-sm font-semibold tracking-widest hover:text-[#8C7C6D] transition-colors sm:hidden"
+              className="text-sm font-normal tracking-widest hover:text-[#8C7C6D] transition-colors sm:hidden"
             >
               {t.lang_switch}
             </button>
             <button 
               onClick={() => setIsCartOpen(true)}
-              className="group flex items-center space-x-2 text-sm font-medium tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
+              className="group flex items-center space-x-2 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
             >
               <span className="hidden sm:inline-block">{t.cart} ({cartCount})</span>
               <ShoppingBag size={18} strokeWidth={1.5} />
@@ -521,7 +540,7 @@ export default function App() {
                 else setCurrentPage('login');
                 window.scrollTo(0,0);
               }}
-              className="group flex items-center space-x-2 text-sm font-medium tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
+              className="group flex items-center space-x-2 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
             >
                <User size={18} strokeWidth={1.5} />
             </button>
@@ -529,8 +548,223 @@ export default function App() {
         </div>
       </header>
 
-      {currentPage === 'about' ? (
-        <main className="flex-grow pt-32 md:pt-48 pb-24 px-6 md:px-12 w-full max-w-6xl mx-auto">
+      {currentPage === 'product' ? (
+        <main className="flex-grow pt-32 md:pt-48 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 mb-16">
+            <div className="w-full flex flex-col space-y-6 min-w-0">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full overflow-hidden relative group cursor-pointer"
+                onClick={() => setIsLightboxOpen(true)}
+              >
+                <img src={selectedVariant.images[productImageIndex]} alt={t.product_section_title} className="w-full h-auto object-contain mix-blend-multiply opacity-90 transition-transform duration-700 ease-out group-hover:scale-105" />
+              </motion.div>
+              <div className="relative w-full group/slider">
+                <button 
+                  onClick={() => {
+                    if (scrollContainerRef.current) {
+                      scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+                    }
+                  }}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                
+                <div 
+                  ref={scrollContainerRef}
+                  className={`w-full overflow-x-auto hide-scrollbar snap-x snap-mandatory ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                  onMouseDown={(e) => {
+                    if (!scrollContainerRef.current) return;
+                    setIsDragging(true);
+                    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+                    setScrollLeftState(scrollContainerRef.current.scrollLeft);
+                  }}
+                  onMouseLeave={() => setIsDragging(false)}
+                  onMouseUp={() => setIsDragging(false)}
+                  onMouseMove={(e) => {
+                    if (!isDragging || !scrollContainerRef.current) return;
+                    e.preventDefault();
+                    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    scrollContainerRef.current.scrollLeft = scrollLeftState - walk;
+                  }}
+                >
+                  <div className="flex space-x-4 w-max">
+                    {selectedVariant.images.map((img, idx) => (
+                      <button 
+                        key={idx}
+                        onClick={() => setProductImageIndex(idx)}
+                        className={`relative snap-start flex-shrink-0 w-24 h-24 md:w-32 md:h-32 overflow-hidden bg-[#EBE2D3] transition-all ${productImageIndex === idx ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`}
+                        draggable={false}
+                      >
+                        <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover mix-blend-multiply pointer-events-none" draggable={false} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => {
+                    if (scrollContainerRef.current) {
+                      scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+                    }
+                  }}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="w-full flex flex-col items-start pt-0 md:pt-12 min-w-0">
+              <button 
+                  onClick={() => { setCurrentPage('home'); window.scrollTo(0,0); }}
+                  className="self-start flex items-center space-x-2 text-sm uppercase tracking-widest text-[#8C7C6D] hover:text-[#2C2119] transition-colors mb-12"
+                >
+                  <ChevronLeft size={16} />
+                  <span>{t.back_to_home}</span>
+                </button>
+              
+              <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] mb-4">{t.product_section_title}</h1>
+              <p className="text-xl font-serif text-[#5C4E43] italic mb-6">{selectedVariant.design[lang]}</p>
+              
+              <div className="text-2xl font-serif text-[#2C2119] mb-4 tracking-wider">
+                {t.product_price}
+              </div>
+
+              <div className="flex items-center gap-4 mb-8 text-sm tracking-[0.2em] uppercase text-[#8C7C6D] font-[400] border-b border-[#E6DCC9] pb-8 w-full">
+                <span>{t.product_handmade}</span>
+              </div>
+              
+              <p className="text-[#5C4E43] font-serif leading-relaxed mb-12 text-lg">
+                {t.product_desc}
+              </p>
+              
+              <div className="space-y-6 mb-12 w-full">
+                 <h3 className="text-sm font-[400] uppercase tracking-widest text-[#2C2119]">{t.color} : {selectedVariant.name[lang]}</h3>
+                 <div className="flex space-x-4">
+                  {PRODUCT.variants.map(variant => (
+                    <motion.button
+                      key={variant.id}
+                      onClick={() => setSelectedVariantId(variant.id)}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${selectedVariant.id === variant.id ? 'ring-2 ring-offset-4 ring-[#2C2119]' : 'hover:ring-2 hover:ring-offset-2 hover:ring-[#E6DCC9]'}`}
+                    >
+                      <span 
+                        className="w-full h-full rounded-full shadow-inner"
+                        style={{ backgroundColor: variant.hex }}
+                      />
+                    </motion.button>
+                  ))}
+                 </div>
+                 <p className="text-sm text-[#8C7C6D] uppercase font-[400] tracking-widest mt-6">{t.product_dimensions}</p>
+              </div>
+
+              {/* Quantity */}
+              <div className="flex items-center space-x-6 mb-8">
+                 <span className="text-sm font-[400] uppercase tracking-widest text-[#2C2119]">{lang === 'pl' ? 'Ilość' : 'Quantity'}</span>
+                 <div className="flex items-center border border-[#E6DCC9] py-2 px-2 space-x-4">
+                   <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="text-[#8C7C6D] hover:text-[#2C2119] p-2 focus:outline-none">
+                     <ChevronLeft size={16} />
+                   </button>
+                   <span className="text-[#2C2119] font-medium w-4 text-center">{quantity}</span>
+                   <button onClick={() => setQuantity(quantity + 1)} className="text-[#8C7C6D] hover:text-[#2C2119] p-2 focus:outline-none">
+                     <ChevronRight size={16} />
+                   </button>
+                 </div>
+              </div>
+
+              <motion.button 
+                onClick={() => { setCartCount(cartCount + quantity); setIsCartOpen(true); }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-[#2C2119] text-white py-5 text-sm font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-16 flex items-center justify-center space-x-3 group relative overflow-hidden"
+              >
+                <span className="relative z-20">{t.add_to_cart}</span>
+                <Plus size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                 {/* Button shine effect */}
+                 <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
+              </motion.button>
+              
+            </div>
+          </div>
+          
+          <div className="w-full border-t border-[#E6DCC9] pt-16">
+            <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-16">
+               <div className="w-full md:w-3/5">
+                 <h2 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-8">{lang === 'pl' ? 'Opis produktu' : 'Product Description'}</h2>
+                 <p className="text-[#5C4E43] font-serif leading-relaxed text-lg">
+                   {t.product_long_desc}
+                 </p>
+               </div>
+               <div className="w-full hidden md:flex md:w-2/5 items-center justify-center">
+                 <img src={selectedVariant.images[0]} alt="Zdjęcie produktu" className="w-full max-w-sm h-auto object-contain mix-blend-multiply opacity-90 drop-shadow-sm" />
+               </div>
+            </div>
+           
+           <h2 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-8">{t.faq_title}</h2>
+           <div className="flex flex-col md:flex-row md:space-y-0 md:flex-wrap gap-y-12">
+             {t.faq_items.map((item: any, idx: number) => (
+               <div key={idx} className="w-full md:w-1/2 pr-8 md:pr-16 relative">
+                 <h4 className="text-xl font-serif text-[#2C2119] mb-4 pr-8">{item.q}</h4>
+                 <p className="text-[#5C4E43] font-serif leading-relaxed opacity-90">{item.a}</p>
+               </div>
+             ))}
+           </div>
+          </div>
+          
+          <AnimatePresence>
+            {isLightboxOpen && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 bg-[#FAF7F2] flex items-center justify-center pt-24 pb-12 px-6"
+              >
+                <div className="relative w-full h-full max-w-[1440px] mx-auto flex flex-col">
+                   <button 
+                     onClick={() => setIsLightboxOpen(false)}
+                     className="absolute -top-4 -right-4 md:top-8 md:right-8 text-[#2C2119] hover:opacity-50 transition-opacity z-50 bg-[#EBE2D3] p-4 rounded-full shadow-lg"
+                   >
+                     <X size={24} />
+                   </button>
+                   
+                   <div className="flex-1 relative flex items-center justify-center w-full h-full">
+                     <AnimatePresence mode="wait">
+                       <motion.img 
+                         key={productImageIndex}
+                         src={selectedVariant.images[productImageIndex]}
+                         initial={{ opacity: 0, scale: 0.95 }}
+                         animate={{ opacity: 1, scale: 1 }}
+                         exit={{ opacity: 0, scale: 1.05 }}
+                         transition={{ duration: 0.3 }}
+                         className="max-h-full max-w-full object-contain mix-blend-multiply drop-shadow-sm"
+                       />
+                     </AnimatePresence>
+                     
+                     <button
+                        onClick={(e) => { e.stopPropagation(); setProductImageIndex(prev => prev > 0 ? prev - 1 : selectedVariant.images.length - 1); }}
+                        className="absolute left-0 md:left-12 top-1/2 -translate-y-1/2 p-4 text-[#2C2119] bg-[#EBE2D3]/80 hover:bg-[#EBE2D3] rounded-full transition-colors backdrop-blur-sm"
+                     >
+                        <ChevronLeft size={32} strokeWidth={1.5} />
+                     </button>
+                     <button
+                        onClick={(e) => { e.stopPropagation(); setProductImageIndex(prev => prev < selectedVariant.images.length - 1 ? prev + 1 : 0); }}
+                        className="absolute right-0 md:right-12 top-1/2 -translate-y-1/2 p-4 text-[#2C2119] bg-[#EBE2D3]/80 hover:bg-[#EBE2D3] rounded-full transition-colors backdrop-blur-sm"
+                     >
+                        <ChevronRight size={32} strokeWidth={1.5} />
+                     </button>
+                   </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+      ) : currentPage === 'about' ? (
+        <main className="flex-grow pt-32 md:pt-48 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -605,24 +839,25 @@ export default function App() {
           </div>
         </main>
       ) : currentPage === 'contact' ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-start">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-stretch">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
-            className="w-full md:w-1/2 aspect-[4/5] overflow-hidden bg-[#EBE2D3]"
+            className="w-full md:w-1/2 h-[60vh] md:h-auto overflow-hidden bg-[#EBE2D3] relative"
           >
-            <img src={`${import.meta.env.BASE_URL}produkt__2-2.webp`} className="w-full h-full object-cover mix-blend-multiply opacity-90" alt="Habit22 Contact" />
+            <img src={`${import.meta.env.BASE_URL}produkt__2-2.webp`} className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90" alt="Habit22 Contact" />
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-full md:w-1/2 flex flex-col pt-0 md:pt-12"
+            className="w-full md:w-1/2 flex flex-col pt-0"
           >
-            <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-12">{t.contact_title}</h1>
-            
-            <form className="flex flex-col space-y-8 w-full max-w-md" onSubmit={(e) => e.preventDefault()}>
+            <div className="flex-1">
+              <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-12 leading-none -mt-1 md:-mt-2">{t.contact_title}</h1>
+              
+              <form className="flex flex-col space-y-8 w-full max-w-md mb-20" onSubmit={(e) => e.preventDefault()}>
               <div className="flex flex-col">
                 <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">{t.contact_name}</label>
                 <input type="text" className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif" />
@@ -643,19 +878,20 @@ export default function App() {
                 {t.contact_send}
               </button>
             </form>
+            </div>
 
-            <div className="mt-20 pt-8 border-t border-[#E6DCC9] w-full max-w-md">
+            <div className="mt-auto pt-8 border-t border-[#E6DCC9] w-full max-w-md">
               <p className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-4">SOCIAL MEDIA</p>
-              <div className="flex space-x-6 text-[#2C2119]">
-                <a href="#" className="hover:text-[#8C7C6D] transition-colors text-base font-serif">Instagram</a>
-                <a href="#" className="hover:text-[#8C7C6D] transition-colors text-base font-serif">Pinterest</a>
-                <a href="#" className="hover:text-[#8C7C6D] transition-colors text-base font-serif">Facebook</a>
+              <div className="flex space-x-6 text-[#2C2119] leading-none mb-0 pb-0 md:-mb-1">
+                <a href="#" className="hover:text-[#8C7C6D] transition-colors text-base font-serif block">Instagram</a>
+                <a href="#" className="hover:text-[#8C7C6D] transition-colors text-base font-serif block">Pinterest</a>
+                <a href="#" className="hover:text-[#8C7C6D] transition-colors text-base font-serif block">Facebook</a>
               </div>
             </div>
           </motion.div>
         </main>
       ) : currentPage === 'checkout' ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-start">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-start">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -843,7 +1079,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === 'login' ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col items-center justify-center">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center">
             <motion.div 
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
@@ -874,7 +1110,7 @@ export default function App() {
             </motion.div>
         </main>
       ) : currentPage === 'account' ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-5xl mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -998,7 +1234,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === 'thankyou' ? (
-        <main className="flex-grow w-full min-h-screen pt-48 pb-24 px-6 md:px-12 max-w-5xl mx-auto flex flex-col items-center justify-center text-center">
+        <main className="flex-grow w-full min-h-screen pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center text-center">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -1023,7 +1259,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === 'journal' ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1058,7 +1294,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === 'post' && currentPostId !== null ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-4xl mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
           {(() => {
             const post = t.journal_posts.find((p: any) => p.id === currentPostId) || t.journal_posts[0];
             return (
@@ -1196,101 +1432,72 @@ export default function App() {
         <div className="grid grid-cols-1 md:grid-cols-2 md:h-screen">
           
           {/* Images Section (Left Side on Desktop) */}
-          <div className="relative w-full h-auto md:h-screen">
-            
-            {/* Desktop Visual Indicator for Scrolling */}
-            <div className="hidden md:flex absolute right-6 md:right-10 top-1/2 -translate-y-1/2 flex-col items-center justify-center pointer-events-auto z-20 gap-6">
-               <motion.button
-                 onClick={() => {
-                   if (desktopScrollRef.current) {
-                     desktopScrollRef.current.scrollBy({ top: -window.innerHeight, left: 0, behavior: 'smooth' });
-                   }
-                 }}
-                 animate={{ y: [0, -10, 0] }}
-                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                 className="text-[#EBE2D3] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
-               >
-                 <ChevronUp size={44} strokeWidth={1.5} />
-               </motion.button>
-               <motion.button
-                 onClick={() => {
-                   if (desktopScrollRef.current) {
-                     desktopScrollRef.current.scrollBy({ top: window.innerHeight, left: 0, behavior: 'smooth' });
-                   }
-                 }}
-                 animate={{ y: [0, 10, 0] }}
-                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                 className="text-[#EBE2D3] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
-               >
-                 <ChevronDown size={44} strokeWidth={1.5} />
-               </motion.button>
-            </div>
+          <div 
+            className="relative w-full h-[65vh] md:h-screen group/mainslider"
+            onMouseEnter={() => isHoveredRef.current = true}
+            onMouseLeave={() => isHoveredRef.current = false}
+            onTouchStart={() => isHoveredRef.current = true}
+            onTouchEnd={() => { setTimeout(() => isHoveredRef.current = false, 3000) }}
+          >
+            <button 
+              onClick={() => {
+                if (desktopScrollRef.current) {
+                  desktopScrollRef.current.scrollBy({ left: -desktopScrollRef.current.clientWidth, behavior: 'smooth' });
+                }
+              }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/mainslider:opacity-100 transition-opacity z-10 hidden md:block"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button 
+              onClick={() => {
+                if (desktopScrollRef.current) {
+                  desktopScrollRef.current.scrollBy({ left: -desktopScrollRef.current.clientWidth, behavior: 'smooth' });
+                }
+              }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 md:hidden shadow-sm"
+            >
+              <ChevronLeft size={24} />
+            </button>
 
             <div 
               ref={desktopScrollRef}
-              onMouseEnter={() => isHoveredRef.current = true}
-              onMouseLeave={() => isHoveredRef.current = false}
-              className="w-full h-full bg-[#FAF7F2] flex flex-col md:overflow-y-auto no-scrollbar snap-y snap-mandatory scroll-smooth relative"
+              className="w-full h-full bg-[#FAF7F2] flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth relative"
             >
-              {/* Desktop: Scrollable Stack of Images */}
-            <div className="hidden md:block w-full">
               {selectedVariant.images.map((img, idx) => (
-                <div key={idx} className="w-full h-screen snap-center relative">
-                  <img 
-                    src={img} 
-                    alt={`${t.product_section_title} - ${selectedVariant.name[lang]}`}
-                    className={`w-full h-full ${idx === 0 ? "object-contain p-2 md:p-8 object-center" : "object-cover"}`}
-                    loading={idx === 0 ? "eager" : "lazy"}
-                  />
-                </div>
-              ))}
+                 <div key={idx} className="w-full h-full flex-shrink-0 snap-start relative">
+                   <img 
+                     src={img} 
+                     alt={`${t.product_section_title} - ${selectedVariant.name[lang]}`}
+                     className={`w-full h-full ${idx === 0 ? "object-contain p-2 md:p-8 object-center" : "object-cover"}`}
+                     loading={idx === 0 ? "eager" : "lazy"}
+                     draggable={false}
+                   />
+                 </div>
+               ))}
             </div>
-
-            {/* Mobile: Simple Image Carousel */}
-            <div 
-              className="md:hidden w-full h-[65vh] relative overflow-hidden group"
-              onMouseEnter={() => isHoveredRef.current = true}
-              onMouseLeave={() => isHoveredRef.current = false}
-              onTouchStart={() => isHoveredRef.current = true}
-              onTouchEnd={() => { setTimeout(() => isHoveredRef.current = false, 3000) }}
+            
+            <button 
+              onClick={() => {
+                if (desktopScrollRef.current) {
+                  desktopScrollRef.current.scrollBy({ left: desktopScrollRef.current.clientWidth, behavior: 'smooth' });
+                }
+              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/mainslider:opacity-100 transition-opacity z-10 hidden md:block"
             >
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={currentImageIndex}
-                    src={selectedVariant.images[currentImageIndex]}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`w-full h-full ${currentImageIndex === 0 ? "object-contain p-2 md:p-8 object-center" : "object-cover"}`}
-                  />
-                </AnimatePresence>
-                
-                {/* Carousel Controls */}
-                <div className="absolute inset-x-0 bottom-6 flex justify-center space-x-3">
-                  {selectedVariant.images.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentImageIndex(idx)}
-                      className={`h-[2px] transition-all ${
-                        idx === currentImageIndex ? 'bg-[#2C2119] w-8' : 'bg-[#2C2119]/30 w-4'
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                <div className="absolute inset-y-0 left-0 flex items-center">
-                   <button onClick={handlePrevImage} className="p-4 text-white/70 hover:text-white drop-shadow-md transition-colors">
-                     <ChevronLeft strokeWidth={2} size={32}/>
-                   </button>
-                </div>
-                <div className="absolute inset-y-0 right-0 flex items-center">
-                   <button onClick={handleNextImage} className="p-4 text-white/70 hover:text-white drop-shadow-md transition-colors">
-                     <ChevronRight strokeWidth={2} size={32}/>
-                   </button>
-                </div>
-            </div>
-            </div>
+              <ChevronRight size={20} />
+            </button>
+            <button 
+              onClick={() => {
+                if (desktopScrollRef.current) {
+                  desktopScrollRef.current.scrollBy({ left: desktopScrollRef.current.clientWidth, behavior: 'smooth' });
+                }
+              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 md:hidden shadow-sm"
+            >
+              <ChevronRight size={24} />
+            </button>
+            <div className="absolute top-0 right-0 w-[2px] h-full bg-[#FAF7F2] z-20 pointer-events-none hidden md:block" />
           </div>
 
           {/* Product Info Section */}
@@ -1301,37 +1508,29 @@ export default function App() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="max-w-md mx-auto md:mx-0 w-full my-auto"
+              className="max-w-xl mx-auto md:mx-0 w-full my-auto"
             >
-              <h2 className="text-3xl md:text-4xl font-serif mb-4 uppercase">{t.product_section_title} - {selectedVariant.design[lang]}</h2>
-              <div className="flex flex-col space-y-4 mb-12">
-                <p className="text-lg md:text-xl text-[#5C4E43]">{t.product_price}</p>
-                <div className="flex items-center space-x-2">
-                  <span className="inline-block text-xs uppercase tracking-widest text-[#8C7C6D] border border-[#E6DCC9] px-3 py-1 bg-[#EBE2D3]/50">
-                    {t.product_handmade}
-                  </span>
-                </div>
+              <h2 className="text-3xl md:text-5xl font-serif text-[#2C2119] mb-4">{t.product_section_title}</h2>
+              <p className="text-xl font-serif text-[#5C4E43] italic mb-6">{selectedVariant.design[lang]}</p>
+              
+              <div className="text-xl md:text-2xl font-serif text-[#5C4E43] mb-8">
+                {t.product_price}
               </div>
 
-              {/* Color Selector */}
-              <div className="mb-12">
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-sm uppercase tracking-widest font-medium text-[#8C7C6D]">{t.color}</span>
-                  <span className="text-sm uppercase tracking-widest">{selectedVariant.name[lang]}</span>
-                </div>
-                <div className="flex space-x-6">
+              <div className="flex items-center gap-4 mb-8 text-sm tracking-[0.2em] uppercase text-[#8C7C6D] font-[400] border-b border-[#E6DCC9] pb-8 w-full">
+                <span>{t.product_handmade}</span>
+              </div>
+              
+              <div className="space-y-6 mb-12 w-full">
+                 <h3 className="text-sm font-[400] uppercase tracking-widest text-[#2C2119]">{t.color} : {selectedVariant.name[lang]}</h3>
+                 <div className="flex space-x-4">
                   {PRODUCT.variants.map(variant => (
                     <motion.button
                       key={variant.id}
+                      onClick={() => setSelectedVariantId(variant.id)}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setSelectedVariantId(variant.id)}
-                      className={`w-10 h-10 rounded-full border-[1px] transition-all flex items-center justify-center relative overflow-hidden group ${
-                        selectedVariantId === variant.id 
-                          ? 'border-[#2C2119] p-[3px]' 
-                          : 'border-transparent'
-                      }`}
-                      aria-label={`Select ${variant.name[lang]}`}
+                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${selectedVariant.id === variant.id ? 'ring-2 ring-offset-4 ring-[#2C2119]' : 'hover:ring-2 hover:ring-offset-2 hover:ring-[#E6DCC9]'}`}
                     >
                       <span 
                         className="w-full h-full rounded-full shadow-inner"
@@ -1339,22 +1538,35 @@ export default function App() {
                       />
                     </motion.button>
                   ))}
-                </div>
+                 </div>
+                 <p className="text-sm text-[#8C7C6D] uppercase font-[400] tracking-widest mt-6">{t.product_dimensions}</p>
               </div>
 
-              {/* Add to Cart */}
-              <motion.button 
-                onClick={() => { setCartCount(1); setIsCartOpen(true); }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full bg-[#2C2119] text-white py-5 text-sm font-semibold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-16 flex items-center justify-center space-x-3 group relative overflow-hidden"
-              >
-                <span className="relative z-20">{t.add_to_cart}</span>
-                <Plus size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
-                
-                {/* Button shine effect */}
-                <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
-              </motion.button>
+              {/* Actions */}
+              <div className="flex flex-col space-y-4 mb-16">
+                <motion.button 
+                  onClick={() => { setCartCount(1); setIsCartOpen(true); }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-[#2C2119] text-white py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
+                >
+                  <span className="relative z-20">{t.add_to_cart}</span>
+                  <Plus size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                  
+                  {/* Button shine effect */}
+                  <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
+                </motion.button>
+
+                <motion.button 
+                  onClick={() => { setCurrentPage('product'); window.scrollTo(0, 0); }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full border border-[#2C2119] text-[#2C2119] py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#2C2119] hover:text-white transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
+                >
+                  <span className="relative z-20">{t.product_details}</span>
+                  <MoveRight size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20" />
+                </motion.button>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -1502,7 +1714,7 @@ export default function App() {
 
       {/* Journal Section */}
       <section id="journal" className="w-full py-24 md:py-32 px-6 md:px-12 bg-[#FAF7F2]">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1440px] mx-auto">
           <div className="flex justify-between items-end mb-16 border-b border-[#E6DCC9] pb-6">
             <h2 className="text-sm tracking-[0.3em] uppercase text-[#8C7C6D]">
               {t.journal_section_title}
@@ -1551,7 +1763,7 @@ export default function App() {
 
       {/* FAQ Section */}
       <section className="w-full py-24 md:py-32 px-6 md:px-12 bg-[#F3EDE3] border-t border-[#E6DCC9]">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-[1440px] mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1580,7 +1792,7 @@ export default function App() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="w-full py-24 md:py-32 px-6 md:px-12 bg-[#FAF7F2] border-t border-[#E6DCC9] flex flex-col items-center justify-center text-center">
+      <section id="newsletter" className="w-full py-24 md:py-32 px-6 md:px-12 bg-[#FAF7F2] border-t border-[#E6DCC9] flex flex-col items-center justify-center text-center">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1616,7 +1828,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="w-full py-16 md:py-24 px-6 md:px-12 bg-[#2C2119] font-sans text-[#E6DCC9] text-sm uppercase tracking-widest">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-xl font-serif text-[#F3EDE3] mb-6 uppercase">Habit22</h3>
@@ -1647,7 +1859,7 @@ export default function App() {
           
         </div>
         
-        <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-[#3A2D23] flex flex-col md:flex-row justify-between items-center text-xs text-[#CBBFA8]">
+        <div className="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-[#3A2D23] flex flex-col md:flex-row justify-between items-center text-xs text-[#CBBFA8]">
           <div className="flex flex-col md:flex-row items-center gap-2 md:gap-8 text-center md:text-left">
             <p>&copy; {new Date().getFullYear()} Habit22 . {t.all_rights_reserved}</p>
             <p className="normal-case">{t.developed_by} <a href="https://webisko.pl" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Webisko.pl</a></p>
@@ -1690,8 +1902,8 @@ export default function App() {
               </nav>
 
               <div className="mt-auto pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4">
-                <p className="hover:text-[#2C2119] cursor-pointer">{t.newsletter}</p>
-                <p className="hover:text-[#2C2119] cursor-pointer">Instagram</p>
+                <a href="#newsletter" onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); scrollToSection('newsletter'); }} className="hover:text-[#2C2119] cursor-pointer block">{t.newsletter}</a>
+                <p className="hover:text-[#2C2119] cursor-pointer block">Instagram</p>
               </div>
             </motion.div>
           </motion.div>
