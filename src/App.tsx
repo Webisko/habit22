@@ -12,6 +12,7 @@ import {
   ChevronUp,
   ChevronDown,
   User,
+  Globe,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
@@ -147,7 +148,6 @@ const TRANSLATIONS = {
     contact_send: "Wyślij wiadomość",
     discover: "Odkryj Habit22",
     discover_collection: "Odkryj kolekcję",
-    product_details: "Szczegóły produktu",
     about_title: "O MARCE",
     about_text: [
       "Nie interesuje mnie podążanie za trendami. Znacznie bliższe jest mi kolekcjonowanie rzeczy ponadczasowych — tworzonych powoli i z intencją.",
@@ -449,7 +449,6 @@ const TRANSLATIONS = {
     contact_send: "Send message",
     discover: "Discover Habit22",
     discover_collection: "Discover the collection",
-    product_details: "Product details",
     about_title: "THE BRAND",
     about_text: [
       "I am not interested in following trends. I am drawn to timeless things — created slowly and with intention.",
@@ -697,7 +696,7 @@ const MarkdownPage = ({ url, title }: { url: string; title: string }) => {
       .then(setContent);
   }, [url]);
   return (
-    <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
+    <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -858,6 +857,7 @@ export default function App() {
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [viewingOrder, setViewingOrder] = useState(false);
   const desktopScrollRef = useRef<HTMLDivElement>(null);
+  const journalScrollRef = useRef<HTMLDivElement>(null);
   const isHoveredRef = useRef(false);
 
   const t = TRANSLATIONS[lang];
@@ -873,10 +873,36 @@ export default function App() {
   useEffect(() => {
     setCurrentImageIndex(0);
     setProductImageIndex(0);
-    if (desktopScrollRef.current) {
-      desktopScrollRef.current.scrollTo({ left: 0, top: 0, behavior: "auto" });
-    }
-  }, [selectedProductId, selectedSizeId]);
+
+    const initScroll = () => {
+      if (desktopScrollRef.current) {
+        const container = desktopScrollRef.current;
+        const itemWidth = container.clientWidth || window.innerWidth * 0.618;
+        if (itemWidth > 0) {
+          container.scrollTo({ left: itemWidth * 3, top: 0, behavior: "auto" });
+        }
+      }
+      if (scrollContainerRef.current) {
+        const container = scrollContainerRef.current;
+        const firstChild = container.firstElementChild
+          ?.firstElementChild as HTMLElement;
+        if (firstChild) {
+          const itemWidth = firstChild.getBoundingClientRect().width + 16;
+          if (itemWidth > 0) {
+            container.scrollTo({
+              left: itemWidth * 3,
+              top: 0,
+              behavior: "auto",
+            });
+          }
+        }
+      }
+    };
+
+    initScroll();
+    const timer = setTimeout(initScroll, 150);
+    return () => clearTimeout(timer);
+  }, [selectedProductId, selectedSizeId, currentPage]);
 
   useEffect(() => {
     // Autoplay for mobile carousel
@@ -896,21 +922,14 @@ export default function App() {
     const desktopInterval = setInterval(() => {
       if (desktopScrollRef.current && !isHoveredRef.current) {
         const container = desktopScrollRef.current;
-        const currentScroll = container.scrollLeft;
-        const maxScroll = container.scrollWidth - container.clientWidth;
-
-        if (currentScroll >= maxScroll - 10) {
-          container.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          container.scrollBy({
-            left: container.clientWidth,
-            behavior: "smooth",
-          });
-        }
+        container.scrollBy({
+          left: container.clientWidth,
+          behavior: "smooth",
+        });
       }
     }, 4500);
     return () => clearInterval(desktopInterval);
-  }, [currentProduct]);
+  }, []);
 
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % currentProduct.images.length);
@@ -973,9 +992,10 @@ export default function App() {
             </button>
             <button
               onClick={toggleLang}
-              className="text-sm font-normal tracking-widest hover:text-[#8C7C6D] transition-colors hidden sm:block"
+              className="group hidden sm:flex items-center space-x-2 text-sm font-normal tracking-widest hover:text-[#8C7C6D] transition-colors"
             >
-              {t.lang_switch}
+              <Globe size={18} strokeWidth={1.5} />
+              <span>{t.lang_switch}</span>
             </button>
           </div>
 
@@ -987,11 +1007,7 @@ export default function App() {
                 setCurrentPage("home");
                 window.scrollTo(0, 0);
               }}
-              className={`text-xl md:text-3xl font-serif tracking-widest uppercase font-semibold transition-colors ${
-                isScrolled || currentPage !== "home"
-                  ? "text-[#2C2119]"
-                  : "text-white md:text-[#2C2119]"
-              }`}
+              className="text-xl md:text-3xl font-serif tracking-widest uppercase font-semibold transition-colors text-[#2C2119]"
             >
               Habit22
             </a>
@@ -999,55 +1015,74 @@ export default function App() {
 
           <div className="flex-1 flex justify-end space-x-6 items-center">
             <button
-              onClick={toggleLang}
-              className="text-sm font-normal tracking-widest hover:text-[#8C7C6D] transition-colors sm:hidden"
-            >
-              {t.lang_switch}
-            </button>
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="group flex items-center space-x-2 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
-            >
-              <span className="hidden sm:inline-block">
-                {t.cart} ({cartCount})
-              </span>
-              <ShoppingBag size={18} strokeWidth={1.5} />
-            </button>
-            <button
               onClick={() => {
                 if (isLoggedIn) setCurrentPage("account");
                 else setCurrentPage("login");
                 window.scrollTo(0, 0);
               }}
-              className="group flex items-center space-x-2 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
+              className="group hidden sm:flex items-center space-x-2 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
             >
               <User size={18} strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="group flex items-center space-x-1.5 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
+            >
+              <ShoppingBag size={18} strokeWidth={1.5} />
+              <span>({cartCount})</span>
             </button>
           </div>
         </div>
       </header>
 
       {currentPage === "product" ? (
-        <main className="flex-grow pt-32 md:pt-48 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
+        <main className="flex-grow pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
           <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-16">
             <div className="w-full md:w-[61.8%] flex flex-col space-y-6 min-w-0">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full overflow-hidden relative group cursor-pointer"
+                className="w-full h-[65vh] landscape:h-[85vh] md:h-[550px] lg:h-[650px] overflow-hidden relative group cursor-pointer bg-[#FAF7F2] rounded-2xl flex items-center justify-center p-4 md:p-8"
                 onClick={() => setIsLightboxOpen(true)}
               >
                 <img
                   src={currentProduct.images[productImageIndex]}
                   alt={t.product_section_title}
-                  className="w-full h-auto object-contain mix-blend-multiply opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+                  className="w-full h-full object-contain mix-blend-multiply opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               </motion.div>
+
+              {/* Mobile portrait-only arrows under the product template image */}
+              <div className="flex sm:hidden justify-center items-center space-x-12 py-2">
+                <button
+                  onClick={() => {
+                    setProductImageIndex((prev) =>
+                      prev > 0 ? prev - 1 : currentProduct.images.length - 1,
+                    );
+                  }}
+                  className="text-[#2C2119] hover:text-[#8C7C6D] transition-colors focus:outline-none"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={36} strokeWidth={1.5} />
+                </button>
+                <button
+                  onClick={() => {
+                    setProductImageIndex((prev) =>
+                      prev < currentProduct.images.length - 1 ? prev + 1 : 0,
+                    );
+                  }}
+                  className="text-[#2C2119] hover:text-[#8C7C6D] transition-colors focus:outline-none"
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={36} strokeWidth={1.5} />
+                </button>
+              </div>
               <div className="relative w-full group/slider">
                 <button
                   onClick={() => {
                     if (scrollContainerRef.current) {
-                      scrollContainerRef.current.scrollBy({
+                      const container = scrollContainerRef.current;
+                      container.scrollBy({
                         left: -200,
                         behavior: "smooth",
                       });
@@ -1060,6 +1095,32 @@ export default function App() {
 
                 <div
                   ref={scrollContainerRef}
+                  onScroll={(e) => {
+                    const container = e.currentTarget;
+                    if (container.dataset.scrollTimeoutId) {
+                      clearTimeout(Number(container.dataset.scrollTimeoutId));
+                    }
+                    const timeoutId = window.setTimeout(() => {
+                      const firstChild = container.firstElementChild
+                        ?.firstElementChild as HTMLElement;
+                      if (!firstChild) return;
+                      const itemWidth =
+                        firstChild.getBoundingClientRect().width + 16; // 16 is space-x-4
+                      const N = 3;
+                      const scrollLeft = container.scrollLeft;
+
+                      if (scrollLeft >= (2 * N - 0.5) * itemWidth) {
+                        container.style.scrollBehavior = "auto";
+                        container.scrollLeft = scrollLeft - N * itemWidth;
+                        container.style.scrollBehavior = "smooth";
+                      } else if (scrollLeft <= (N - 0.5) * itemWidth) {
+                        container.style.scrollBehavior = "auto";
+                        container.scrollLeft = scrollLeft + N * itemWidth;
+                        container.style.scrollBehavior = "smooth";
+                      }
+                    }, 150);
+                    container.dataset.scrollTimeoutId = String(timeoutId);
+                  }}
                   className={`w-full overflow-x-auto hide-scrollbar snap-x snap-mandatory ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
                   onMouseDown={(e) => {
                     if (!scrollContainerRef.current) return;
@@ -1079,11 +1140,15 @@ export default function App() {
                   }}
                 >
                   <div className="flex space-x-4 w-max">
-                    {currentProduct.images.map((img, idx) => (
+                    {[
+                      ...currentProduct.images.slice(0, 3),
+                      ...currentProduct.images.slice(0, 3),
+                      ...currentProduct.images.slice(0, 3),
+                    ].map((img, idx) => (
                       <button
                         key={idx}
-                        onClick={() => setProductImageIndex(idx)}
-                        className={`relative snap-start flex-shrink-0 w-24 h-24 md:w-32 md:h-32 overflow-hidden bg-[#EBE2D3] transition-all ${productImageIndex === idx ? "opacity-100" : "opacity-50 hover:opacity-100"}`}
+                        onClick={() => setProductImageIndex(idx % 3)}
+                        className={`relative snap-start flex-shrink-0 w-24 h-24 md:w-32 md:h-32 overflow-hidden bg-[#EBE2D3] transition-all ${productImageIndex === idx % 3 ? "opacity-100" : "opacity-50 hover:opacity-100"}`}
                         draggable={false}
                       >
                         <img
@@ -1100,7 +1165,8 @@ export default function App() {
                 <button
                   onClick={() => {
                     if (scrollContainerRef.current) {
-                      scrollContainerRef.current.scrollBy({
+                      const container = scrollContainerRef.current;
+                      container.scrollBy({
                         left: 200,
                         behavior: "smooth",
                       });
@@ -1326,7 +1392,7 @@ export default function App() {
           </AnimatePresence>
         </main>
       ) : currentPage === "about" ? (
-        <main className="flex-grow pt-32 md:pt-48 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
+        <main className="flex-grow pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1337,7 +1403,7 @@ export default function App() {
               {t.aboutme_title}
             </h1>
 
-            <div className="flex flex-col md:flex-row gap-12 md:gap-24 items-start w-full">
+            <div className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 xl:gap-24 items-start w-full">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1352,7 +1418,7 @@ export default function App() {
                 />
               </motion.div>
 
-              <div className="flex flex-col w-full md:w-7/12 space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed text-left pt-0 md:pt-8">
+              <div className="flex flex-col w-full md:w-7/12 space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed text-left pt-0">
                 {t.aboutme_paragraphs.map((p, idx) => (
                   <motion.p
                     key={idx}
@@ -1371,14 +1437,14 @@ export default function App() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
-                  className="pt-12"
+                  className="pt-12 w-full"
                 >
                   <button
                     onClick={() => {
                       setCurrentPage("shop");
                       window.scrollTo(0, 0);
                     }}
-                    className="bg-[#2C2119] text-[#F3EDE3] py-5 px-8 w-72 md:w-80 text-sm font-sans font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
+                    className="bg-[#2C2119] text-[#F3EDE3] py-5 px-8 w-full md:w-80 text-sm font-sans font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
                   >
                     <span className="relative z-20">
                       {t.discover_collection}
@@ -1396,7 +1462,7 @@ export default function App() {
             </div>
           </motion.div>
 
-          <div className="mt-24 md:mt-32 w-full">
+          <div className="hidden md:block mt-24 md:mt-32 w-full">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1413,12 +1479,12 @@ export default function App() {
           </div>
         </main>
       ) : currentPage === "contact" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-stretch">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 xl:gap-24 items-stretch">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
-            className="w-full md:w-1/2 h-[60vh] md:h-auto overflow-hidden bg-[#EBE2D3] relative"
+            className="hidden md:block w-full md:w-1/2 h-[60vh] md:h-auto overflow-hidden bg-[#EBE2D3] relative"
           >
             <img
               src={`${import.meta.env.BASE_URL}produkt__2-2.webp`}
@@ -1438,7 +1504,7 @@ export default function App() {
               </h1>
 
               <form
-                className="flex flex-col space-y-8 w-full max-w-md mb-20"
+                className="flex flex-col space-y-6 md:space-y-8 w-full max-w-none md:max-w-md mb-12 md:mb-20"
                 onSubmit={(e) => e.preventDefault()}
               >
                 <div className="flex flex-col">
@@ -1488,7 +1554,7 @@ export default function App() {
               </form>
             </div>
 
-            <div className="mt-auto pt-8 border-t border-[#E6DCC9] w-full max-w-md">
+            <div className="mt-auto pt-8 border-t border-[#E6DCC9] w-full max-w-none md:max-w-md">
               <p className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-4">
                 SOCIAL MEDIA
               </p>
@@ -1516,7 +1582,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "checkout" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-start">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1914,7 +1980,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "login" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2001,7 +2067,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "account" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2228,7 +2294,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "thankyou" ? (
-        <main className="flex-grow w-full min-h-screen pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center text-center">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -2262,7 +2328,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "journal" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2273,7 +2339,7 @@ export default function App() {
               {t.journal_section_title}
             </h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
               {t.journal_posts.map((post: any, idx: number) => (
                 <motion.article
                   key={post.id}
@@ -2307,7 +2373,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "post" && currentPostId !== null ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
           {(() => {
             const post =
               t.journal_posts.find((p: any) => p.id === currentPostId) ||
@@ -2412,7 +2478,7 @@ export default function App() {
           title={t.cookies}
         />
       ) : currentPage === "faq" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2450,7 +2516,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "shop" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2569,101 +2635,168 @@ export default function App() {
           {/* Main Content Layout - Product Feature */}
           <div className="w-full h-[5px] bg-[#FAF7F2]"></div>
           <section id="shop" className="w-full bg-[#FAF7F2]">
-            <div className="flex flex-col md:flex-row md:h-[calc(100vh-5px)]">
+            <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-5px)]">
               {/* Images Section (Left Side on Desktop) */}
-              <div
-                className="relative w-full h-[65vh] md:h-full md:w-[61.8%] group/mainslider"
-                onMouseEnter={() => (isHoveredRef.current = true)}
-                onMouseLeave={() => (isHoveredRef.current = false)}
-                onTouchStart={() => (isHoveredRef.current = true)}
-                onTouchEnd={() => {
-                  setTimeout(() => (isHoveredRef.current = false), 3000);
-                }}
-              >
-                <button
-                  onClick={() => {
-                    if (desktopScrollRef.current) {
-                      desktopScrollRef.current.scrollBy({
-                        left: -desktopScrollRef.current.clientWidth,
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/mainslider:opacity-100 transition-opacity z-10 hidden md:block"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={() => {
-                    if (desktopScrollRef.current) {
-                      desktopScrollRef.current.scrollBy({
-                        left: -desktopScrollRef.current.clientWidth,
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 md:hidden shadow-sm"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-
+              <div className="w-full lg:w-[61.8%] lg:h-full flex flex-col shrink-0 bg-[#FAF7F2]">
                 <div
-                  ref={desktopScrollRef}
-                  className="w-full h-full bg-[#FAF7F2] flex overflow-x-auto hide-scrollbar snap-x snap-mandatory scroll-smooth relative"
+                  className="relative w-full h-[65vh] landscape:h-[85vh] lg:h-full group/mainslider"
+                  onMouseEnter={() => (isHoveredRef.current = true)}
+                  onMouseLeave={() => (isHoveredRef.current = false)}
+                  onTouchStart={() => (isHoveredRef.current = true)}
+                  onTouchEnd={() => {
+                    setTimeout(() => (isHoveredRef.current = false), 3000);
+                  }}
                 >
-                  {PRODUCTS[0].images.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="w-full h-full flex-shrink-0 snap-start relative"
-                    >
-                      <img
-                        src={img}
-                        alt={`${PRODUCTS[0].title[lang]} - ${PRODUCTS[0].sizes.find((s) => s.id === selectedSizeId)?.name[lang] || PRODUCTS[0].sizes[0].name[lang]}`}
-                        className={`w-full h-full ${idx === 0 ? "object-contain p-2 md:p-8 object-center" : "object-cover"}`}
-                        loading={idx === 0 ? "eager" : "lazy"}
-                        draggable={false}
-                      />
-                    </div>
-                  ))}
+                  <button
+                    onClick={() => {
+                      if (desktopScrollRef.current) {
+                        const container = desktopScrollRef.current;
+                        container.scrollBy({
+                          left: -container.clientWidth,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/mainslider:opacity-100 transition-opacity z-10 hidden lg:block"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (desktopScrollRef.current) {
+                        const container = desktopScrollRef.current;
+                        container.scrollBy({
+                          left: -container.clientWidth,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 hidden sm:block lg:hidden shadow-sm"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+
+                  <div
+                    ref={desktopScrollRef}
+                    onScroll={(e) => {
+                      const container = e.currentTarget;
+                      if (container.dataset.scrollTimeoutId) {
+                        clearTimeout(Number(container.dataset.scrollTimeoutId));
+                      }
+                      const timeoutId = window.setTimeout(() => {
+                        const itemWidth = container.clientWidth;
+                        if (itemWidth === 0) return;
+                        const N = 3;
+                        const scrollLeft = container.scrollLeft;
+
+                        if (scrollLeft >= (2 * N - 0.5) * itemWidth) {
+                          container.style.scrollBehavior = "auto";
+                          container.scrollLeft = scrollLeft - N * itemWidth;
+                          container.style.scrollBehavior = "smooth";
+                        } else if (scrollLeft <= (N - 0.5) * itemWidth) {
+                          container.style.scrollBehavior = "auto";
+                          container.scrollLeft = scrollLeft + N * itemWidth;
+                          container.style.scrollBehavior = "smooth";
+                        }
+                      }, 150);
+                      container.dataset.scrollTimeoutId = String(timeoutId);
+                    }}
+                    className="w-full h-full bg-[#FAF7F2] flex overflow-x-auto lg:overflow-hidden hide-scrollbar snap-x snap-mandatory scroll-smooth relative"
+                  >
+                    {[
+                      ...PRODUCTS[0].images.slice(0, 3),
+                      ...PRODUCTS[0].images.slice(0, 3),
+                      ...PRODUCTS[0].images.slice(0, 3),
+                    ].map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="w-full h-full flex-shrink-0 snap-start relative"
+                      >
+                        <img
+                          src={img}
+                          alt={`${PRODUCTS[0].title[lang]} - ${PRODUCTS[0].sizes.find((s) => s.id === selectedSizeId)?.name[lang] || PRODUCTS[0].sizes[0].name[lang]}`}
+                          className={`w-full h-full ${idx % 3 === 0 ? "object-contain py-[5px] px-2 md:px-8 object-center" : "object-cover"}`}
+                          loading={idx % 3 === 0 ? "eager" : "lazy"}
+                          draggable={false}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (desktopScrollRef.current) {
+                        const container = desktopScrollRef.current;
+                        container.scrollBy({
+                          left: container.clientWidth,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/mainslider:opacity-100 transition-opacity z-10 hidden lg:block"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (desktopScrollRef.current) {
+                        const container = desktopScrollRef.current;
+                        container.scrollBy({
+                          left: container.clientWidth,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 hidden sm:block lg:hidden shadow-sm"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                  <div className="absolute top-0 right-0 w-[2px] h-full bg-[#FAF7F2] z-20 pointer-events-none hidden lg:block" />
                 </div>
 
-                <button
-                  onClick={() => {
-                    if (desktopScrollRef.current) {
-                      desktopScrollRef.current.scrollBy({
-                        left: desktopScrollRef.current.clientWidth,
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/mainslider:opacity-100 transition-opacity z-10 hidden md:block"
-                >
-                  <ChevronRight size={20} />
-                </button>
-                <button
-                  onClick={() => {
-                    if (desktopScrollRef.current) {
-                      desktopScrollRef.current.scrollBy({
-                        left: desktopScrollRef.current.clientWidth,
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 md:hidden shadow-sm"
-                >
-                  <ChevronRight size={24} />
-                </button>
-                <div className="absolute top-0 right-0 w-[2px] h-full bg-[#FAF7F2] z-20 pointer-events-none hidden md:block" />
+                {/* Mobile portrait-only arrows under the image */}
+                <div className="flex sm:hidden lg:hidden justify-center items-center space-x-12 py-3 bg-[#FAF7F2]">
+                  <button
+                    onClick={() => {
+                      if (desktopScrollRef.current) {
+                        const container = desktopScrollRef.current;
+                        container.scrollBy({
+                          left: -container.clientWidth,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="text-[#2C2119] hover:text-[#8C7C6D] transition-colors focus:outline-none"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={36} strokeWidth={1.5} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (desktopScrollRef.current) {
+                        const container = desktopScrollRef.current;
+                        container.scrollBy({
+                          left: container.clientWidth,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="text-[#2C2119] hover:text-[#8C7C6D] transition-colors focus:outline-none"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={36} strokeWidth={1.5} />
+                  </button>
+                </div>
               </div>
 
               {/* Product Info Section */}
-              <div className="w-full md:w-[38.2%] md:h-full px-6 py-12 md:px-12 md:py-24 flex flex-col justify-center relative md:overflow-y-auto">
+              <div className="w-full lg:w-[38.2%] lg:h-full px-6 py-12 lg:px-12 lg:py-24 flex flex-col justify-center relative lg:overflow-y-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.8 }}
-                  className="max-w-xl mx-auto md:mx-0 w-full"
+                  className="max-w-xl mx-auto lg:mx-0 w-full"
                 >
                   <h2 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-3">
                     {PRODUCTS[0].title[lang]}
@@ -2758,6 +2891,7 @@ export default function App() {
               </div>
             </div>
           </section>
+          <div className="w-full h-[5px] bg-[#FAF7F2]"></div>
 
           {/* About Section - Editorial Redesign V2 */}
           <section
@@ -2782,7 +2916,7 @@ export default function App() {
                       setCurrentPage("shop");
                       window.scrollTo(0, 0);
                     }}
-                    className="bg-[#2C2119] text-[#F3EDE3] py-5 px-8 w-72 md:w-80 text-sm font-sans font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
+                    className="bg-[#2C2119] text-[#F3EDE3] py-5 px-8 w-full md:w-80 text-sm font-sans font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
                   >
                     <span className="relative z-20">
                       {t.discover_collection}
@@ -2806,7 +2940,7 @@ export default function App() {
             className="w-full py-24 md:py-32 px-6 md:px-12 bg-[#FAF7F2]"
           >
             <div className="max-w-[1440px] mx-auto">
-              <div className="flex justify-between items-end mb-16 border-b border-[#E6DCC9] pb-6">
+              <div className="flex justify-between items-baseline mb-16 border-b border-[#E6DCC9] pb-6">
                 <h2 className="text-sm tracking-[0.3em] uppercase text-[#8C7C6D]">
                   {t.journal_section_title}
                 </h2>
@@ -2821,48 +2955,53 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-                {t.journal_posts.map((post, idx) => (
-                  <motion.article
-                    key={post.id}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.8, delay: idx * 0.2 }}
-                    className="group cursor-pointer flex flex-col h-full"
-                    onClick={() => {
-                      setCurrentPostId(post.id);
-                      setCurrentPage("post");
-                      window.scrollTo(0, 0);
-                    }}
-                  >
-                    <div className="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3]">
-                      <img
-                        src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`}
-                        alt={post.title}
-                        className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
-                      />
-                    </div>
-                    <h3 className="text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-base font-serif text-[#5C4E43] leading-relaxed mb-6 flex-grow">
-                      {post.excerpt}
-                    </p>
-                    <div className="mt-auto self-start">
-                      <span className="text-sm font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 group-hover:text-[#8C7C6D] group-hover:border-[#8C7C6D] transition-colors inline-block relative overflow-hidden group-hover:pr-4">
-                        <span className="relative z-10">
-                          {t.journal_read_more}
-                        </span>
-                        <ChevronRight
-                          size={12}
-                          className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
-                          strokeWidth={2}
+              <div className="relative group/journal select-none">
+                <div
+                  ref={journalScrollRef}
+                  className="flex lg:grid lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto hide-scrollbar snap-x snap-mandatory lg:snap-none scroll-smooth pb-4 relative"
+                >
+                  {t.journal_posts.map((post, idx) => (
+                    <motion.article
+                      key={post.id}
+                      initial={{ opacity: 0, y: 40 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.8, delay: idx * 0.2 }}
+                      className="group cursor-pointer flex flex-col h-full flex-shrink-0 w-[76%] sm:w-[41%] lg:w-full snap-start"
+                      onClick={() => {
+                        setCurrentPostId(post.id);
+                        setCurrentPage("post");
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      <div className="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3] rounded-lg">
+                        <img
+                          src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`}
+                          alt={post.title}
+                          className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
                         />
-                      </span>
-                    </div>
-                  </motion.article>
-                ))}
+                      </div>
+                      <h3 className="text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-base font-serif text-[#5C4E43] leading-relaxed mb-6 flex-grow">
+                        {post.excerpt}
+                      </p>
+                      <div className="mt-auto self-start">
+                        <span className="text-sm font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 group-hover:text-[#8C7C6D] group-hover:border-[#8C7C6D] transition-colors inline-block relative overflow-hidden group-hover:pr-4">
+                          <span className="relative z-10">
+                            {t.journal_read_more}
+                          </span>
+                          <ChevronRight
+                            size={12}
+                            className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                            strokeWidth={2}
+                          />
+                        </span>
+                      </div>
+                    </motion.article>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
@@ -3086,14 +3225,6 @@ export default function App() {
               </a>
             </p>
           </div>
-          <div className="flex space-x-6 mt-6 md:mt-0">
-            <button
-              onClick={toggleLang}
-              className="hover:text-white transition-colors"
-            >
-              {t.lang_switch} VERSION
-            </button>
-          </div>
         </div>
       </footer>
 
@@ -3119,94 +3250,128 @@ export default function App() {
                 duration: 0.5,
                 ease: [0.25, 1, 0.5, 1],
               }}
-              className="relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-8 md:p-12 overflow-y-auto"
+              className="relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-8 md:p-12 overflow-y-auto justify-between"
             >
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                className="self-start text-[#8C7C6D] hover:text-[#2C2119] transition-colors mb-20"
-              >
-                <X size={28} strokeWidth={1} />
-              </button>
-
-              <nav className="flex flex-col space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase">
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsMenuOpen(false);
-                    setCurrentPage("shop");
-                    window.scrollTo(0, 0);
-                  }}
-                  className="hover:text-[#8C7C6D] transition-colors"
+              <div className="flex justify-start">
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-[#8C7C6D] hover:text-[#2C2119] transition-colors focus:outline-none"
                 >
-                  {t.shop}
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsMenuOpen(false);
-                    setCurrentPage("about");
-                    window.scrollTo(0, 0);
-                  }}
-                  className="hover:text-[#8C7C6D] transition-colors"
-                >
-                  {t.about}
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsMenuOpen(false);
-                    setCurrentPage("journal");
-                    window.scrollTo(0, 0);
-                  }}
-                  className="hover:text-[#8C7C6D] transition-colors"
-                >
-                  {t.journal}
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsMenuOpen(false);
-                    setCurrentPage("faq");
-                    window.scrollTo(0, 0);
-                  }}
-                  className="hover:text-[#8C7C6D] transition-colors"
-                >
-                  {t.faq}
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsMenuOpen(false);
-                    setCurrentPage("contact");
-                    window.scrollTo(0, 0);
-                  }}
-                  className="hover:text-[#8C7C6D] transition-colors"
-                >
-                  {t.contact}
-                </a>
-              </nav>
-
-              <div className="mt-auto pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4">
-                <a
-                  href="#newsletter"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsMenuOpen(false);
-                    scrollToSection("newsletter");
-                  }}
-                  className="hover:text-[#2C2119] cursor-pointer block"
-                >
-                  {t.newsletter}
-                </a>
-                <p className="hover:text-[#2C2119] cursor-pointer block">
-                  Instagram
-                </p>
+                  <X size={28} strokeWidth={1} />
+                </button>
               </div>
+
+              <div className="flex-1 flex flex-col justify-center my-auto py-8 space-y-12">
+                <nav className="flex flex-col space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase">
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMenuOpen(false);
+                      setCurrentPage("shop");
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-[#8C7C6D] transition-colors"
+                  >
+                    {t.shop}
+                  </a>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMenuOpen(false);
+                      setCurrentPage("about");
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-[#8C7C6D] transition-colors"
+                  >
+                    {t.about}
+                  </a>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMenuOpen(false);
+                      setCurrentPage("journal");
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-[#8C7C6D] transition-colors"
+                  >
+                    {t.journal}
+                  </a>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMenuOpen(false);
+                      setCurrentPage("faq");
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-[#8C7C6D] transition-colors"
+                  >
+                    {t.faq}
+                  </a>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMenuOpen(false);
+                      setCurrentPage("contact");
+                      window.scrollTo(0, 0);
+                    }}
+                    className="hover:text-[#8C7C6D] transition-colors"
+                  >
+                    {t.contact}
+                  </a>
+                </nav>
+
+                <div className="pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4">
+                  <a
+                    href="#newsletter"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMenuOpen(false);
+                      scrollToSection("newsletter");
+                    }}
+                    className="hover:text-[#2C2119] cursor-pointer block"
+                  >
+                    {t.newsletter}
+                  </a>
+                  <p className="hover:text-[#2C2119] cursor-pointer block">
+                    Instagram
+                  </p>
+
+                  {/* Mobile-only Account and Language switcher (just icons side-by-side, below newsletter/instagram) */}
+                  <div className="flex items-center space-x-6 pt-4 sm:hidden">
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        if (isLoggedIn) setCurrentPage("account");
+                        else setCurrentPage("login");
+                        window.scrollTo(0, 0);
+                      }}
+                      className="hover:text-[#2C2119] text-[#8C7C6D] transition-colors focus:outline-none"
+                      aria-label="Account"
+                    >
+                      <User size={20} strokeWidth={1.5} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        toggleLang();
+                      }}
+                      className="flex items-center space-x-2 hover:text-[#2C2119] text-[#8C7C6D] transition-colors focus:outline-none"
+                      aria-label="Toggle language"
+                    >
+                      <Globe size={20} strokeWidth={1.5} />
+                      <span className="text-sm font-normal tracking-widest">{t.lang_switch}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Empty div to visually balance the close button at the top */}
+              <div className="h-8 w-full shrink-0 hidden sm:block" />
             </motion.div>
           </motion.div>
         )}
