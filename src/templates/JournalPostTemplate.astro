@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/utils';
+import type { JournalPost } from '../i18n/translations';
+
+interface Props {
+  post: JournalPost;
+  otherPosts: JournalPost[];
+  lang: string;
+}
+
+const { post, otherPosts, lang } = Astro.props;
+const { t, l } = useTranslations(lang);
+---
+
+<Layout title={`${post.title} - Habit22`} lang={lang}>
+  <main class="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col relative z-10">
+    <article class="w-full flex flex-col animate-fade-in-up">
+      <a
+        href={l('journal')}
+        class="self-start flex items-center space-x-2 text-sm uppercase tracking-widest text-[#8C7C6D] hover:text-[#2C2119] transition-colors mb-12"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>{t.back_to_journal}</span>
+      </a>
+
+      <header class="mb-12 md:mb-16">
+        <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase text-center md:text-left leading-[1.2]">
+          {post.title}
+        </h1>
+      </header>
+
+      <div class="w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden bg-[#EBE2D3] mb-12 md:mb-16">
+        <img
+          src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`}
+          alt={post.title}
+          class="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[10%]"
+        />
+      </div>
+
+      <div class="flex flex-col space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed max-w-3xl mx-auto">
+        <p class="font-medium text-[#2C2119] text-xl md:text-2xl mb-4">
+          {post.excerpt}
+        </p>
+        {post.content.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+
+      {/* Other posts section */}
+      <div class="mt-24 md:mt-32 pt-16 border-t border-[#E6DCC9] w-full">
+        <h2 class="text-xl md:text-2xl font-serif text-[#2C2119] mb-12 text-center uppercase tracking-widest">
+          {lang === "pl" ? "Pozostałe wpisy" : "Other posts"}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+          {otherPosts.map((otherPost, index) => (
+            <article class="flex flex-col group cursor-pointer reveal" style={`transition-delay: ${index * 100}ms;`}>
+              <a href={l(`journal/${otherPost.id}`)} class="flex flex-col h-full">
+                <div class="w-full aspect-[4/3] overflow-hidden bg-[#EBE2D3] mb-6 relative">
+                  <img
+                    src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
+                    alt={otherPost.title}
+                    class="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
+                  />
+                </div>
+                <h3 class="text-lg md:text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">
+                  {otherPost.title}
+                </h3>
+                <p class="text-[#5C4E43] font-serif pr-4 leading-relaxed line-clamp-2 text-sm">
+                  {otherPost.excerpt}
+                </p>
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </article>
+  </main>
+</Layout>

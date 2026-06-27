@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const { t, l } = useTranslations(lang);
+---
+
+<Layout title={`${t.thank_you_title} - Habit22`} lang={lang}>
+  <main class="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center text-center relative z-10">
+    <div class="flex flex-col items-center max-w-lg">
+      <div class="w-16 h-16 border rounded-full flex items-center justify-center mb-8 border-[#2C2119]">
+        <div class="w-12 h-12 rounded-full bg-[#EBE2D3] flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#2C2119] -rotate-45"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-6 animate-fade-in">
+        {t.thank_you_title}
+      </h1>
+      <p class="text-[#5C4E43] font-serif text-lg mb-8 leading-relaxed">
+        {t.thank_you_message}
+      </p>
+      <p class="text-xs uppercase tracking-[0.2em] font-semibold text-[#8C7C6D] mb-12">
+        {t.thank_you_order_number}
+      </p>
+
+      <a
+        href={l('')}
+        class="text-sm uppercase tracking-widest text-[#2C2119] border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] transition-colors"
+      >
+        {t.back_to_home}
+      </a>
+    </div>
+  </main>
+</Layout>

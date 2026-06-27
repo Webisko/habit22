@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AccountDetails from '../components/AccountDetails';
+import { useTranslations } from '../i18n/utils';
+
+const lang = 'pl';
+const { t } = useTranslations(lang);
+---
+
+<Layout title={`${t.account_title} - Habit22`} lang={lang}>
+  <AccountDetails client:load lang={lang} />
+</Layout>

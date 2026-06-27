@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MarkdownView from '../components/MarkdownView';
+import { useTranslations } from '../i18n/utils';
+import fs from 'fs';
+import path from 'path';
+
+interface Props {
+  filename: string;
+  titleKey: 'terms' | 'privacy' | 'cookies';
+  lang: string;
+}
+
+const { filename, titleKey, lang } = Astro.props;
+const { t } = useTranslations(lang);
+
+// Read the markdown file from the public directory at build time
+const filePath = path.join(process.cwd(), 'public', filename);
+const content = fs.readFileSync(filePath, 'utf-8');
+---
+
+<Layout title={`${t[titleKey]} - Habit22`} lang={lang}>
+  <MarkdownView client:load title={t[titleKey]} content={content} />
+</Layout>

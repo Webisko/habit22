@@ -1,0 +1,18 @@
+---
+import JournalPostTemplate from '../../templates/JournalPostTemplate.astro';
+import { TRANSLATIONS } from '../../i18n/translations';
+
+export function getStaticPaths() {
+  const posts = TRANSLATIONS.pl.journal_posts;
+  return posts.map((post) => ({
+    params: { id: String(post.id) },
+  }));
+}
+
+const { id } = Astro.params;
+const posts = TRANSLATIONS.pl.journal_posts;
+const post = posts.find((p) => String(p.id) === id)!;
+const otherPosts = posts.filter((p) => String(p.id) !== id).slice(0, 3);
+---
+
+<JournalPostTemplate post={post} otherPosts={otherPosts} lang="pl" />

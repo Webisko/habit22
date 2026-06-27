@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const { t, l } = useTranslations(lang);
+---
+
+<Layout title={`${t.contact} - Habit22`} lang={lang}>
+  <main class="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 xl:gap-24 items-stretch relative z-10">
+    <div class="hidden md:block w-full md:w-1/2 h-[60vh] md:h-auto overflow-hidden bg-[#EBE2D3] relative animate-fade-in-scale">
+      <img
+        src={`${import.meta.env.BASE_URL}produkt__2-2.webp`}
+        class="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90"
+        alt="Habit22 Contact"
+      />
+    </div>
+    <div class="w-full md:w-1/2 flex flex-col pt-0 animate-fade-in-up" style="animation-delay: 200ms;">
+      <div class="flex-1">
+        <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-12 leading-none -mt-1 md:-mt-2">
+          {t.contact_title}
+        </h1>
+
+        <form
+          class="flex flex-col space-y-6 md:space-y-8 w-full max-w-none md:max-w-md mb-12 md:mb-20"
+          id="contact-form"
+        >
+          <div class="flex flex-col">
+            <label class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+              {t.contact_name}
+            </label>
+            <input
+              type="text"
+              required
+              class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+              {t.contact_email}
+            </label>
+            <input
+              type="email"
+              required
+              class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+            />
+          </div>
+          <div class="flex flex-col pb-6">
+            <label class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+              {t.contact_message}
+            </label>
+            <textarea
+              rows="4"
+              required
+              class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] resize-none transition-colors font-serif"
+            ></textarea>
+          </div>
+          <p class="text-sm text-[#8C7C6D] mb-6 leading-relaxed">
+            {t.contact_consent}
+            <a
+              href={l('privacy')}
+              class="underline hover:text-[#2C2119] transition-colors"
+            >
+              {t.privacy.toLowerCase()}
+            </a>
+            .
+          </p>
+          <button type="submit" class="self-start text-sm font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] transition-colors">
+            {t.contact_send}
+          </button>
+        </form>
+      </div>
+
+      <div class="mt-auto pt-8 border-t border-[#E6DCC9] w-full max-w-none md:max-w-md">
+        <p class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-4">
+          SOCIAL MEDIA
+        </p>
+        <div class="flex space-x-6 text-[#2C2119] leading-none mb-0 pb-0 md:-mb-1">
+          <a
+            href="#"
+            class="hover:text-[#8C7C6D] transition-colors text-base font-serif block"
+          >
+            Instagram
+          </a>
+          <a
+            href="#"
+            class="hover:text-[#8C7C6D] transition-colors text-base font-serif block"
+          >
+            Pinterest
+          </a>
+          <a
+            href="#"
+            class="hover:text-[#8C7C6D] transition-colors text-base font-serif block"
+          >
+            Facebook
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  // Simple client-side form behavior
+  document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Thank you! Message sent.');
+    (e.target as HTMLFormElement).reset();
+  });
+</script>

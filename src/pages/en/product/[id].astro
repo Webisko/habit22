@@ -1,0 +1,15 @@
+---
+import ProductTemplate from '../../../templates/ProductTemplate.astro';
+import { PRODUCTS } from '../../../data/products';
+
+export function getStaticPaths() {
+  return PRODUCTS.map((product) => ({
+    params: { id: product.id },
+  }));
+}
+
+const { id } = Astro.params;
+const product = PRODUCTS.find((p) => p.id === id)!;
+---
+
+<ProductTemplate product={product} lang="en" />
