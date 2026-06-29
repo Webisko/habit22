@@ -64,14 +64,60 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full h-[65vh] landscape:h-[85vh] md:h-[550px] lg:h-[650px] overflow-hidden relative group cursor-pointer bg-[#FAF7F2] rounded-2xl flex items-center justify-center p-4 md:p-8"
+          className="w-full aspect-square md:aspect-auto md:h-[550px] lg:h-[650px] landscape:h-[85vh] overflow-hidden relative group cursor-pointer bg-[#FAF7F2] rounded-2xl flex items-center justify-center p-4 md:p-8"
           onClick={() => setIsLightboxOpen(true)}
         >
+          {/* Desktop Left Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrevImage();
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover:opacity-100 transition-opacity z-10 hidden lg:block"
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          {/* Tablet Left Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrevImage();
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 hidden sm:block lg:hidden shadow-sm"
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={24} />
+          </button>
+
           <img
             src={product.images[productImageIndex]}
             alt={t.product_section_title}
             className="w-full h-full object-contain mix-blend-multiply opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
           />
+
+          {/* Desktop Right Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNextImage();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover:opacity-100 transition-opacity z-10 hidden lg:block"
+            aria-label="Next image"
+          >
+            <ChevronRight size={20} />
+          </button>
+          {/* Tablet Right Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNextImage();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 hidden sm:block lg:hidden shadow-sm"
+            aria-label="Next image"
+          >
+            <ChevronRight size={24} />
+          </button>
         </motion.div>
 
         {/* Mobile carousel controls */}
@@ -103,7 +149,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
                 });
               }
             }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10 hidden lg:block"
             aria-label="Scroll thumbnails left"
           >
             <ChevronLeft size={20} />
@@ -186,7 +232,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
                 });
               }
             }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10 hidden lg:block"
             aria-label="Scroll thumbnails right"
           >
             <ChevronRight size={20} />
