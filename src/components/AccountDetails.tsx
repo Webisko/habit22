@@ -77,9 +77,9 @@ export default function AccountDetails({ lang }: AccountDetailsProps) {
           </button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-16">
           {/* Order History column */}
-          <div className="md:col-span-2 flex flex-col">
+          <div className="xl:col-span-3 flex flex-col">
             <h2 className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-8">
               {viewingOrder ? t.order_details : t.account_orders}
             </h2>
@@ -92,11 +92,11 @@ export default function AccountDetails({ lang }: AccountDetailsProps) {
                   <ChevronLeft size={12} />
                   <span>{t.order_back}</span>
                 </button>
-                <div className="flex justify-between items-start mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                   <h3 className="text-lg font-serif text-[#2C2119]">
                     {t.order_str} #230894
                   </h3>
-                  <span className="text-xs uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9]">
+                  <span className="text-xs uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9] self-start sm:self-auto">
                     {t.status_processing}
                   </span>
                 </div>
@@ -152,7 +152,7 @@ export default function AccountDetails({ lang }: AccountDetailsProps) {
           </div>
 
           {/* Account details column */}
-          <div className="flex flex-col">
+          <div className="xl:col-span-2 flex flex-col">
             <h2 className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-8">
               {t.account_details}
             </h2>

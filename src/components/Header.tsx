@@ -26,6 +26,17 @@ export default function Header({ lang }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if ($isMenuOpen || $isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [$isMenuOpen, $isCartOpen]);
+
   // Handler to toggle language URL prefix
   const toggleLanguage = () => {
     const base = import.meta.env.BASE_URL || '/'; // e.g. "/habit22/"
@@ -46,6 +57,34 @@ export default function Header({ lang }: HeaderProps) {
     }
     
     window.location.href = newPath;
+  };
+
+  const handleNewsletterClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    isMenuOpen.set(false);
+
+    const currentPath = window.location.pathname;
+    const base = import.meta.env.BASE_URL || '/';
+    
+    // Normalize paths to compare
+    const normalize = (p: string) => p.replace(/\/$/, '') || '/';
+    
+    const isPlHome = normalize(currentPath) === normalize(base);
+    const isEnHome = normalize(currentPath) === normalize(`${base}en/`);
+
+    if (isPlHome || isEnHome) {
+      e.preventDefault();
+      
+      const targetHash = '#newsletter';
+      const newUrl = isPlHome ? `${base}${targetHash}` : `${base}en/${targetHash}`;
+      window.history.pushState(null, '', newUrl);
+
+      const el = document.getElementById('newsletter');
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      }
+    }
   };
 
   return (
@@ -137,7 +176,7 @@ export default function Header({ lang }: HeaderProps) {
               </div>
 
               <div className="flex-1 flex flex-col justify-center my-auto py-4 md:py-8 space-y-6 md:space-y-12">
-                <nav className="flex flex-col space-y-4 md:space-y-8 font-serif text-2xl md:text-4xl text-[#2C2119] uppercase">
+                <nav className="flex flex-col items-center md:items-start space-y-5 md:space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase text-center md:text-left">
                   <a
                     href={l('shop')}
                     onClick={() => isMenuOpen.set(false)}
@@ -175,10 +214,10 @@ export default function Header({ lang }: HeaderProps) {
                   </a>
                 </nav>
 
-                <div className="pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4">
+                <div className="pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
                   <a
                     href={l('#newsletter')}
-                    onClick={() => isMenuOpen.set(false)}
+                    onClick={handleNewsletterClick}
                     className="hover:text-[#2C2119] cursor-pointer block"
                   >
                     {t.newsletter}
@@ -188,7 +227,7 @@ export default function Header({ lang }: HeaderProps) {
                   </p>
 
                   {/* Mobile-only Account and Language switcher (just icons side-by-side) */}
-                  <div className="flex items-center space-x-6 pt-4 sm:hidden">
+                  <div className="flex items-center justify-center sm:justify-start space-x-6 pt-4 sm:hidden">
                     <a
                       href={$isLoggedIn ? l('account') : l('login')}
                       onClick={() => isMenuOpen.set(false)}

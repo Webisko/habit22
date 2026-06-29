@@ -61,11 +61,35 @@ const { title = 'Habit22', lang = 'pl' } = Astro.props;
         });
       }
 
+      function scrollToHash() {
+        if (window.location.hash) {
+          const id = window.location.hash.substring(1);
+          const el = document.getElementById(id);
+          if (el) {
+            setTimeout(() => {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+          } else {
+            // Retry after a brief delay for hydration / React mount
+            setTimeout(() => {
+              const elRetry = document.getElementById(id);
+              if (elRetry) {
+                elRetry.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 300);
+          }
+        }
+      }
+
       // Initial execution
       setupIntersectionObserver();
+      scrollToHash();
       
       // Re-run observer setup on View Transitions page swap
-      document.addEventListener('astro:after-swap', setupIntersectionObserver);
+      document.addEventListener('astro:after-swap', () => {
+        setupIntersectionObserver();
+        scrollToHash();
+      });
     </script>
   </body>
 </html>

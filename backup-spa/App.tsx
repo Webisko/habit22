@@ -819,6 +819,17 @@ export default function App() {
   >([]);
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
+  useEffect(() => {
+    if (isMenuOpen || isCartOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen, isCartOpen]);
+
   const addToCart = (productId: string, sizeId: string, qty: number) => {
     const id = `${productId}|${sizeId}`;
     setCartItems((prev) => {
@@ -2088,8 +2099,8 @@ export default function App() {
                 {t.logout}
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-              <div className="md:col-span-2 flex flex-col">
+            <div className="grid grid-cols-1 xl:grid-cols-5 gap-16">
+              <div className="xl:col-span-3 flex flex-col">
                 <h2 className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-8">
                   {viewingOrder ? t.order_details : t.account_orders}
                 </h2>
@@ -2102,11 +2113,11 @@ export default function App() {
                       <ChevronLeft size={12} />
                       <span>{t.order_back}</span>
                     </button>
-                    <div className="flex justify-between items-start mb-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                       <h3 className="text-lg font-serif text-[#2C2119]">
                         {t.order_str} #230894
                       </h3>
-                      <span className="text-sm uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9]">
+                      <span className="text-sm uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9] self-start sm:self-auto">
                         {t.status_processing}
                       </span>
                     </div>
@@ -2159,7 +2170,7 @@ export default function App() {
                   </div>
                 )}
               </div>
-              <div className="flex flex-col">
+              <div className="xl:col-span-2 flex flex-col">
                 <h2 className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-8">
                   {t.account_details}
                 </h2>
@@ -2397,7 +2408,7 @@ export default function App() {
                 </button>
 
                 <header className="mb-12 md:mb-16">
-                  <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase text-center md:text-left leading-[1.2]">
+                  <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase text-left leading-[1.2]">
                     {post.title}
                   </h1>
                 </header>
@@ -2424,38 +2435,40 @@ export default function App() {
                   <h2 className="text-xl md:text-2xl font-serif text-[#2C2119] mb-12 text-center uppercase tracking-widest">
                     {lang === "pl" ? "Pozostałe wpisy" : "Other posts"}
                   </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-                    {t.journal_posts
-                      .filter((p: any) => p.id !== post.id)
-                      .slice(0, 3)
-                      .map((otherPost: any, idx: number) => (
-                        <motion.article
-                          key={otherPost.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: idx * 0.1 }}
-                          className="flex flex-col group cursor-pointer"
-                          onClick={() => {
-                            setCurrentPostId(otherPost.id);
-                            window.scrollTo(0, 0);
-                          }}
-                        >
-                          <div className="w-full aspect-[4/3] overflow-hidden bg-[#EBE2D3] mb-6 relative">
-                            <img
-                              src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
-                              alt={otherPost.title}
-                              className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
-                            />
-                          </div>
-                          <h3 className="text-lg md:text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">
-                            {otherPost.title}
-                          </h3>
-                          <p className="text-[#5C4E43] font-serif pr-4 leading-relaxed line-clamp-2 text-sm">
-                            {otherPost.excerpt}
-                          </p>
-                        </motion.article>
-                      ))}
+                  <div className="relative group/journal select-none">
+                    <div className="flex lg:grid lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto hide-scrollbar snap-x snap-mandatory lg:snap-none scroll-smooth pb-4 relative">
+                      {t.journal_posts
+                        .filter((p: any) => p.id !== post.id)
+                        .slice(0, 3)
+                        .map((otherPost: any, idx: number) => (
+                          <motion.article
+                            key={otherPost.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="group cursor-pointer flex flex-col h-full flex-shrink-0 w-[76%] sm:w-[41%] lg:w-full snap-start"
+                            onClick={() => {
+                              setCurrentPostId(otherPost.id);
+                              window.scrollTo(0, 0);
+                            }}
+                          >
+                            <div className="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3] rounded-lg relative">
+                              <img
+                                src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
+                                alt={otherPost.title}
+                                className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
+                              />
+                            </div>
+                            <h3 className="text-lg md:text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">
+                              {otherPost.title}
+                            </h3>
+                            <p className="text-[#5C4E43] font-serif pr-4 leading-relaxed line-clamp-2 text-sm">
+                              {otherPost.excerpt}
+                            </p>
+                          </motion.article>
+                        ))}
+                    </div>
                   </div>
                 </div>
               </motion.article>
@@ -2639,7 +2652,7 @@ export default function App() {
               {/* Images Section (Left Side on Desktop) */}
               <div className="w-full lg:w-[61.8%] lg:h-full flex flex-col shrink-0 bg-[#FAF7F2]">
                 <div
-                  className="relative w-full h-[65vh] landscape:h-[85vh] lg:h-full group/mainslider"
+                  className="relative w-full h-[65vh] lg:h-full group/mainslider"
                   onMouseEnter={() => (isHoveredRef.current = true)}
                   onMouseLeave={() => (isHoveredRef.current = false)}
                   onTouchStart={() => (isHoveredRef.current = true)}
@@ -3262,7 +3275,7 @@ export default function App() {
               </div>
 
               <div className="flex-1 flex flex-col justify-center my-auto py-4 md:py-8 space-y-6 md:space-y-12">
-                <nav className="flex flex-col space-y-4 md:space-y-8 font-serif text-2xl md:text-4xl text-[#2C2119] uppercase">
+                <nav className="flex flex-col items-center md:items-start space-y-5 md:space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase text-center md:text-left">
                   <a
                     href="#"
                     onClick={(e) => {
@@ -3325,7 +3338,7 @@ export default function App() {
                   </a>
                 </nav>
 
-                <div className="pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4">
+                <div className="pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
                   <a
                     href="#newsletter"
                     onClick={(e) => {
@@ -3342,7 +3355,7 @@ export default function App() {
                   </p>
 
                   {/* Mobile-only Account and Language switcher (just icons side-by-side, below newsletter/instagram) */}
-                  <div className="flex items-center space-x-6 pt-4 sm:hidden">
+                  <div className="flex items-center justify-center sm:justify-start space-x-6 pt-4 sm:hidden">
                     <button
                       onClick={() => {
                         setIsMenuOpen(false);

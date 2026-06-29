@@ -25,7 +25,7 @@ const { t, l } = useTranslations(lang);
       </a>
 
       <header class="mb-12 md:mb-16">
-        <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase text-center md:text-left leading-[1.2]">
+        <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase text-left leading-[1.2]">
           {post.title}
         </h1>
       </header>
@@ -52,26 +52,28 @@ const { t, l } = useTranslations(lang);
         <h2 class="text-xl md:text-2xl font-serif text-[#2C2119] mb-12 text-center uppercase tracking-widest">
           {lang === "pl" ? "Pozostałe wpisy" : "Other posts"}
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-          {otherPosts.map((otherPost, index) => (
-            <article class="flex flex-col group cursor-pointer reveal" style={`transition-delay: ${index * 100}ms;`}>
-              <a href={l(`journal/${otherPost.id}`)} class="flex flex-col h-full">
-                <div class="w-full aspect-[4/3] overflow-hidden bg-[#EBE2D3] mb-6 relative">
-                  <img
-                    src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
-                    alt={otherPost.title}
-                    class="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
-                  />
-                </div>
-                <h3 class="text-lg md:text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">
-                  {otherPost.title}
-                </h3>
-                <p class="text-[#5C4E43] font-serif pr-4 leading-relaxed line-clamp-2 text-sm">
-                  {otherPost.excerpt}
-                </p>
-              </a>
-            </article>
-          ))}
+        <div class="relative group/journal select-none">
+          <div class="flex lg:grid lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto hide-scrollbar snap-x snap-mandatory lg:snap-none scroll-smooth pb-4 relative">
+            {otherPosts.map((otherPost, index) => (
+              <article class="group cursor-pointer flex flex-col h-full flex-shrink-0 w-[76%] sm:w-[41%] lg:w-full snap-start reveal" style={`transition-delay: ${index * 100}ms;`}>
+                <a href={l(`journal/${otherPost.id}`)} class="flex flex-col h-full">
+                  <div class="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3] rounded-lg relative">
+                    <img
+                      src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
+                      alt={otherPost.title}
+                      class="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
+                    />
+                  </div>
+                  <h3 class="text-lg md:text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">
+                    {otherPost.title}
+                  </h3>
+                  <p class="text-[#5C4E43] font-serif pr-4 leading-relaxed line-clamp-2 text-sm">
+                    {otherPost.excerpt}
+                  </p>
+                </a>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </article>

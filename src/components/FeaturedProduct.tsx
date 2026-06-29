@@ -96,7 +96,7 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
         {/* Images Section (Left Side on Desktop) */}
         <div className="w-full lg:w-[61.8%] lg:h-full flex flex-col shrink-0 bg-[#FAF7F2]">
           <div
-            className="relative w-full aspect-square lg:aspect-auto lg:h-full landscape:h-[85vh] group/mainslider"
+            className="relative w-full aspect-square lg:aspect-auto lg:h-full group/mainslider"
             onMouseEnter={() => (isHoveredRef.current = true)}
             onMouseLeave={() => (isHoveredRef.current = false)}
             onTouchStart={() => (isHoveredRef.current = true)}

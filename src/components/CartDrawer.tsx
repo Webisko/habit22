@@ -45,9 +45,9 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
               duration: 0.5,
               ease: [0.25, 1, 0.5, 1],
             }}
-            className="relative w-full max-w-md bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-6 md:p-12 overflow-y-auto"
+            className="relative w-full max-w-md bg-[#FAF7F2] h-[100dvh] shadow-2xl flex flex-col p-6 md:p-12 overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-8 md:mb-16">
+            <div className="flex items-center justify-between mb-8 md:mb-16 shrink-0">
               <h3 className="text-sm font-medium tracking-[0.2em] uppercase">
                 {t.cart}
               </h3>
@@ -59,9 +59,9 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
               </button>
             </div>
 
-            <div className="flex-grow flex flex-col justify-between">
+            <div className="flex-grow flex flex-col min-h-0 justify-between">
               {$cartCount === 0 ? (
-                <div className="space-y-6 flex flex-col items-center justify-center h-full w-full my-auto">
+                <div className="space-y-6 flex flex-col items-center justify-center h-full w-full my-auto shrink-0">
                   <ShoppingBag
                     size={48}
                     strokeWidth={1}
@@ -78,8 +78,8 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col h-full w-full justify-between">
-                  <div className="flex-1 overflow-y-auto mb-6 pr-2 no-scrollbar space-y-6 pt-4 max-h-[calc(100vh-280px)]">
+                <div className="flex flex-col flex-grow min-h-0 justify-between">
+                  <div className="flex-1 overflow-y-auto mb-6 pr-2 custom-scrollbar space-y-6 pt-4 min-h-0">
                     {$cartItems.map((item) => {
                       const [productId, sizeId] = item.id.split("|");
                       const itemProduct = PRODUCTS.find(
@@ -115,8 +115,8 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                                 <X size={16} />
                               </button>
                             </div>
-                            <p className="text-sm text-[#8C7C6D] mb-4">
-                              {itemSize.name[lang === 'pl' ? 'pl' : 'en']}
+                            <p className="text-sm text-[#8C7C6D] mb-4 font-serif">
+                              {lang === 'pl' ? 'Rozmiar' : 'Size'}: {itemSize.name[lang === 'pl' ? 'pl' : 'en']}
                             </p>
                             <div className="flex items-center justify-between">
                               <span className="text-[#5C4E43] font-serif pr-2">
@@ -133,7 +133,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                     })}
                   </div>
 
-                  <div className="mt-auto pt-6 border-t border-[#E6DCC9]">
+                  <div className="mt-auto pt-6 border-t border-[#E6DCC9] shrink-0">
                     <div className="flex justify-between items-center font-serif text-xl mb-8 text-[#2C2119]">
                       <span>{t.order_total}</span>
                       <span>

@@ -392,8 +392,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                   <h4 className="font-serif text-[#2C2119] text-xl mb-2">
                     {t.product_section_title} - {itemProduct.design[lang === 'pl' ? 'pl' : 'en']}
                   </h4>
-                  <p className="text-sm text-[#8C7C6D] mb-4">
-                    {itemSize.name[lang === 'pl' ? 'pl' : 'en']}
+                  <p className="text-sm text-[#8C7C6D] mb-4 font-serif">
+                    {lang === 'pl' ? 'Rozmiar' : 'Size'}: {itemSize.name[lang === 'pl' ? 'pl' : 'en']}
                   </p>
                   <div className="flex justify-between items-center">
                     <p className="text-[#5C4E43] font-serif">
