@@ -44,12 +44,12 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
   };
 
   return (
-    <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-start relative z-10">
+    <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-12 md:gap-24 items-start relative z-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="w-full md:w-3/5 flex flex-col pt-0 md:pt-12"
+        className="w-full flex flex-col pt-0 md:pt-12"
       >
         <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16">
           {t.checkout}
@@ -365,7 +365,7 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full md:w-2/5 flex flex-col bg-[#EBE2D3] p-8 md:p-12 md:sticky md:top-32"
+        className="w-full flex flex-col bg-[#EBE2D3] p-8 md:p-12 md:sticky md:top-32 md:max-h-[calc(100vh-160px)] md:overflow-y-auto no-scrollbar"
       >
         <h3 className="text-sm uppercase tracking-[0.2em] mb-8 font-semibold text-[#8C7C6D]">
           {t.cart}

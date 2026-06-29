@@ -58,9 +58,9 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
   }, [product, selectedSizeId]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-16 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-[1.618fr_1fr] gap-12 md:gap-24 mb-16 w-full">
       {/* Product Images & Gallery */}
-      <div className="w-full md:w-[61.8%] flex flex-col space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -195,7 +195,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
       </div>
 
       {/* Product Customizer & Add-to-Cart Panel */}
-      <div className="w-full md:w-[38.2%] flex flex-col justify-center min-w-0">
+      <div className="w-full flex flex-col justify-center min-w-0">
         <h1 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-4">
           {product.title[lang === 'pl' ? 'pl' : 'en']}
         </h1>
@@ -295,7 +295,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
             <div className="relative w-full h-full max-w-[1440px] mx-auto flex flex-col">
               <button
                 onClick={() => setIsLightboxOpen(false)}
-                className="absolute -top-4 -right-4 md:top-8 md:right-8 text-[#2C2119] hover:opacity-50 transition-opacity z-50 bg-[#EBE2D3] p-4 rounded-full shadow-lg"
+                className="absolute top-4 right-4 md:top-8 md:right-8 text-[#2C2119] hover:opacity-50 transition-opacity z-50 bg-[#EBE2D3] p-4 rounded-full shadow-lg"
               >
                 <X size={24} />
               </button>

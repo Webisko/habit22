@@ -125,7 +125,7 @@ export default function Header({ lang }: HeaderProps) {
                 duration: 0.5,
                 ease: [0.25, 1, 0.5, 1],
               }}
-              className="relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-8 md:p-12 overflow-y-auto justify-between"
+              className="relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-6 md:p-12 overflow-y-auto justify-between"
             >
               <div className="flex justify-start">
                 <button
@@ -136,8 +136,8 @@ export default function Header({ lang }: HeaderProps) {
                 </button>
               </div>
 
-              <div className="flex-1 flex flex-col justify-center my-auto py-8 space-y-12">
-                <nav className="flex flex-col space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase">
+              <div className="flex-1 flex flex-col justify-center my-auto py-4 md:py-8 space-y-6 md:space-y-12">
+                <nav className="flex flex-col space-y-4 md:space-y-8 font-serif text-2xl md:text-4xl text-[#2C2119] uppercase">
                   <a
                     href={l('shop')}
                     onClick={() => isMenuOpen.set(false)}

@@ -696,7 +696,7 @@ const MarkdownPage = ({ url, title }: { url: string; title: string }) => {
       .then(setContent);
   }, [url]);
   return (
-    <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
+    <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -1036,9 +1036,9 @@ export default function App() {
       </header>
 
       {currentPage === "product" ? (
-        <main className="flex-grow pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
-          <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-16">
-            <div className="w-full md:w-[61.8%] flex flex-col space-y-6 min-w-0">
+        <main className="flex-grow pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-[1.618fr_1fr] gap-12 md:gap-24 mb-16">
+            <div className="w-full flex flex-col space-y-6 min-w-0">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1179,7 +1179,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="w-full md:w-[38.2%] flex flex-col items-start pt-0 md:pt-12 min-w-0">
+            <div className="w-full flex flex-col items-start pt-0 md:pt-12 min-w-0">
               <button
                 onClick={() => {
                   setCurrentPage("shop");
@@ -1277,8 +1277,8 @@ export default function App() {
           </div>
 
           <div className="w-full border-t border-[#E6DCC9] pt-16">
-            <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-16">
-              <div className="w-full md:w-[61.8%] min-w-0">
+            <div className="grid grid-cols-1 md:grid-cols-[1.618fr_1fr] gap-12 md:gap-24 mb-16">
+              <div className="w-full min-w-0">
                 <h2 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-8">
                   {lang === "pl" ? "Opis produktu" : "Product Description"}
                 </h2>
@@ -1286,7 +1286,7 @@ export default function App() {
                   {t.product_long_desc(currentProduct.design[lang])}
                 </p>
               </div>
-              <div className="w-full md:w-[38.2%] flex flex-col pt-0 md:pt-[68px] min-w-0">
+              <div className="w-full flex flex-col pt-0 md:pt-[68px] min-w-0">
                 <div className="text-[#5C4E43] font-serif leading-relaxed text-lg space-y-8">
                   <div>
                     <strong className="block text-xl font-bold mb-2 text-[#2C2119]">
@@ -1392,7 +1392,7 @@ export default function App() {
           </AnimatePresence>
         </main>
       ) : currentPage === "about" ? (
-        <main className="flex-grow pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
+        <main className="flex-grow pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1403,13 +1403,13 @@ export default function App() {
               {t.aboutme_title}
             </h1>
 
-            <div className="flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 xl:gap-24 items-start w-full">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 lg:gap-12 xl:gap-24 items-start w-full">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="w-full md:w-5/12 aspect-[4/5] md:sticky md:top-32 overflow-hidden bg-[#EBE2D3]"
+                className="w-full md:col-span-5 aspect-[4/5] md:sticky md:top-32 overflow-hidden bg-[#EBE2D3]"
               >
                 <img
                   src={`${import.meta.env.BASE_URL}Adriana.webp`}
@@ -1418,7 +1418,7 @@ export default function App() {
                 />
               </motion.div>
 
-              <div className="flex flex-col w-full md:w-7/12 space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed text-left pt-0">
+              <div className="flex flex-col w-full md:col-span-7 space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed text-left pt-0">
                 {t.aboutme_paragraphs.map((p, idx) => (
                   <motion.p
                     key={idx}
@@ -1479,12 +1479,12 @@ export default function App() {
           </div>
         </main>
       ) : currentPage === "contact" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-8 lg:gap-12 xl:gap-24 items-stretch">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 lg:gap-12 xl:gap-24 items-stretch">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
-            className="hidden md:block w-full md:w-1/2 h-[60vh] md:h-auto overflow-hidden bg-[#EBE2D3] relative"
+            className="hidden md:block w-full h-[60vh] md:h-auto overflow-hidden bg-[#EBE2D3] relative"
           >
             <img
               src={`${import.meta.env.BASE_URL}produkt__2-2.webp`}
@@ -1496,7 +1496,7 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-full md:w-1/2 flex flex-col pt-0"
+            className="w-full flex flex-col pt-0"
           >
             <div className="flex-1">
               <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-12 leading-none -mt-1 md:-mt-2">
@@ -1582,12 +1582,12 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "checkout" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-12 md:gap-24 items-start">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-12 md:gap-24 items-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="w-full md:w-3/5 flex flex-col pt-0 md:pt-12"
+            className="w-full flex flex-col pt-0 md:pt-12"
           >
             <h1 className="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16">
               {t.checkout}
@@ -1890,7 +1890,7 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-full md:w-2/5 flex flex-col bg-[#EBE2D3] p-8 md:p-12 md:sticky md:top-32"
+            className="w-full flex flex-col bg-[#EBE2D3] p-8 md:p-12 md:sticky md:top-32 md:max-h-[calc(100vh-160px)] md:overflow-y-auto no-scrollbar"
           >
             <h3 className="text-sm uppercase tracking-[0.2em] mb-8 font-semibold text-[#8C7C6D]">
               {t.cart}
@@ -1980,7 +1980,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "login" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2067,7 +2067,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "account" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2294,7 +2294,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "thankyou" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center text-center">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col items-center justify-center text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -2328,7 +2328,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "journal" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2373,7 +2373,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "post" && currentPostId !== null ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
           {(() => {
             const post =
               t.journal_posts.find((p: any) => p.id === currentPostId) ||
@@ -2478,7 +2478,7 @@ export default function App() {
           title={t.cookies}
         />
       ) : currentPage === "faq" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -2516,7 +2516,7 @@ export default function App() {
           </motion.div>
         </main>
       ) : currentPage === "shop" ? (
-        <main className="flex-grow w-full min-h-screen pt-32 md:pt-48 lg:pt-28 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
+        <main className="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -3250,7 +3250,7 @@ export default function App() {
                 duration: 0.5,
                 ease: [0.25, 1, 0.5, 1],
               }}
-              className="relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-8 md:p-12 overflow-y-auto justify-between"
+              className="relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-6 md:p-12 overflow-y-auto justify-between"
             >
               <div className="flex justify-start">
                 <button
@@ -3261,8 +3261,8 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="flex-1 flex flex-col justify-center my-auto py-8 space-y-12">
-                <nav className="flex flex-col space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase">
+              <div className="flex-1 flex flex-col justify-center my-auto py-4 md:py-8 space-y-6 md:space-y-12">
+                <nav className="flex flex-col space-y-4 md:space-y-8 font-serif text-2xl md:text-4xl text-[#2C2119] uppercase">
                   <a
                     href="#"
                     onClick={(e) => {
@@ -3399,7 +3399,7 @@ export default function App() {
                 duration: 0.5,
                 ease: [0.25, 1, 0.5, 1],
               }}
-              className="relative w-full max-w-md bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-8 md:p-12 overflow-y-auto"
+              className="relative w-full max-w-md bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-6 md:p-12 overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-16">
                 <h3 className="text-sm font-medium tracking-[0.2em] uppercase">

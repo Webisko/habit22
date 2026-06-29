@@ -186,7 +186,7 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
         </div>
 
         {/* Product Info Section */}
-        <div className="w-full lg:w-[38.2%] lg:h-full px-6 py-12 lg:px-12 lg:py-24 flex flex-col justify-center relative lg:overflow-y-auto">
+        <div className="w-full lg:w-[38.2%] lg:h-full px-6 py-12 lg:px-12 lg:py-16 xl:py-24 flex flex-col justify-center relative lg:overflow-y-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -236,7 +236,7 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col space-y-4 mb-16">
+            <div className="flex flex-col space-y-4 mb-8 lg:mb-16">
               <motion.button
                 onClick={() => {
                   addToCart(product.id, currentSize.id, 1);

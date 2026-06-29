@@ -45,9 +45,9 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
               duration: 0.5,
               ease: [0.25, 1, 0.5, 1],
             }}
-            className="relative w-full max-w-md bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-8 md:p-12 overflow-y-auto"
+            className="relative w-full max-w-md bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-6 md:p-12 overflow-y-auto"
           >
-            <div className="flex items-center justify-between mb-16">
+            <div className="flex items-center justify-between mb-8 md:mb-16">
               <h3 className="text-sm font-medium tracking-[0.2em] uppercase">
                 {t.cart}
               </h3>
