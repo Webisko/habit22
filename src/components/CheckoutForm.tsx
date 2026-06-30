@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { navigate } from 'astro:transitions/client';
 import { cartItems, cartCount, clearCart } from '../stores/cart';
 import { isLoggedIn, logIn } from '../stores/auth';
+import { formatPrice } from '../stores/currency';
 import { PRODUCTS } from '../data/products';
 import { useTranslations } from '../i18n/utils';
 
@@ -90,9 +91,33 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
     const randomNum = Math.floor(100000 + Math.random() * 900000);
     const orderNumber = `#H22-${randomNum}`;
 
+    const orderDate = new Date().toLocaleDateString(lang === 'pl' ? 'pl-PL' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    const itemsDetails = $cartItems.map((item) => {
+      const [productId, sizeId] = item.id.split('|');
+      const product = PRODUCTS.find((p) => p.id === productId);
+      const size = product?.sizes.find((s) => s.id === sizeId);
+      return {
+        id: item.id,
+        productId,
+        sizeId,
+        title: product ? product.title[lang === 'pl' ? 'pl' : 'en'] : '',
+        design: product ? product.design[lang === 'pl' ? 'pl' : 'en'] : '',
+        image: product ? product.images[0] : '',
+        sizeName: size ? size.name[lang === 'pl' ? 'pl' : 'en'] : '',
+        quantity: item.quantity,
+        price: product ? product.price : 0
+      };
+    });
+
     // Store details for thank you page
     const orderDetails = {
       orderNumber,
+      date: orderDate,
       delivery: checkoutDelivery,
       name: isCompany ? companyName : `${firstName} ${lastName}`,
       nip: isCompany ? nip : '',
@@ -103,6 +128,7 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
       email: checkoutEmail,
       payment: checkoutPayment,
       total: total,
+      items: itemsDetails,
       shipToDifferent,
       shippingName: `${shippingFirstName} ${shippingLastName}`,
       shippingStreet,
@@ -112,6 +138,14 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
     };
     sessionStorage.setItem('last_order_details', JSON.stringify(orderDetails));
 
+    // Save to localStorage list of orders
+    try {
+      const existing = JSON.parse(localStorage.getItem('habit22_orders') || '[]');
+      localStorage.setItem('habit22_orders', JSON.stringify([orderDetails, ...existing]));
+    } catch (e) {
+      console.error('Failed to save order to localStorage', e);
+    }
+
     // Clear cart on successful order submission
     clearCart();
     // Redirect to the localized thank you page
@@ -119,12 +153,21 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
   };
 
   const getDeliveryCost = () => {
-    if (checkoutDelivery === 'locker') return lang === 'pl' ? 15 : 3.50;
-    if (checkoutDelivery === 'courier') return lang === 'pl' ? 20 : 5.00;
+    if (checkoutDelivery === 'locker') return 15;
+    if (checkoutDelivery === 'courier') return 20;
     return 0;
   };
 
-  const subtotal = lang === 'pl' ? 350 * $cartCount : 80 * $cartCount;
+  const calculateSubtotal = () => {
+    return $cartItems.reduce((acc, item) => {
+      const [productId] = item.id.split('|');
+      const product = PRODUCTS.find((p) => p.id === productId);
+      if (!product) return acc;
+      return acc + product.price * item.quantity;
+    }, 0);
+  };
+
+  const subtotal = calculateSubtotal();
   const delivery = getDeliveryCost();
   const total = subtotal + delivery;
 
@@ -643,25 +686,19 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
               {lang === "pl" ? "Suma" : "Subtotal"}
             </span>
             <span>
-              {lang === "pl"
-                ? `${subtotal},00 zł`
-                : `€ ${subtotal.toFixed(2)}`}
+              {formatPrice(subtotal)}
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span>{t.checkout_delivery}</span>
             <span>
-              {lang === "pl"
-                ? (checkoutDelivery ? `${delivery},00 zł` : "—")
-                : (checkoutDelivery ? `€ ${delivery.toFixed(2)}` : "—")}
+              {checkoutDelivery ? formatPrice(delivery) : "—"}
             </span>
           </div>
           <div className="flex justify-between items-center border-t border-[#E6DCC9] pt-6 mt-2 font-bold">
             <span>{t.order_total}</span>
             <span>
-              {lang === "pl"
-                ? `${total},00 zł`
-                : `€ ${total.toFixed(2)}`}
+              {formatPrice(total)}
             </span>
           </div>
         </div>

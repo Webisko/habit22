@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslations } from '../i18n/utils';
+import { formatPrice as formatCurrency } from '../stores/currency';
 
 interface OrderDetails {
   orderNumber: string;
@@ -60,7 +61,7 @@ export default function OrderSummary({ lang }: OrderSummaryProps) {
   };
 
   const formatPrice = (amount: number) => {
-    return lang === 'pl' ? `${amount},00 zł` : `€ ${amount.toFixed(2)}`;
+    return formatCurrency(amount);
   };
 
   return (

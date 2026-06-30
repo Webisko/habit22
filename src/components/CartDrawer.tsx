@@ -4,6 +4,7 @@ import { ShoppingBag, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { navigate } from 'astro:transitions/client';
 import { isCartOpen, cartItems, cartCount, removeFromCart } from '../stores/cart';
+import { formatPrice } from '../stores/currency';
 import { PRODUCTS } from '../data/products';
 import { useTranslations } from '../i18n/utils';
 
@@ -16,6 +17,17 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
   const $cartItems = useStore(cartItems);
   const $cartCount = useStore(cartCount);
   const { t, l } = useTranslations(lang);
+
+  const calculateTotal = () => {
+    return $cartItems.reduce((acc, item) => {
+      const [productId] = item.id.split('|');
+      const product = PRODUCTS.find((p) => p.id === productId);
+      if (!product) return acc;
+      return acc + product.price * item.quantity;
+    }, 0);
+  };
+
+  const totalAmount = calculateTotal();
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [showTopShadow, setShowTopShadow] = React.useState(false);
@@ -54,6 +66,52 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
     navigate(l('checkout'));
   };
 
+  const drawerPanelRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!$isCartOpen) return;
+
+    const container = drawerPanelRef.current;
+    if (!container) return;
+
+    const focusableElementsString = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusableElements = container.querySelectorAll(focusableElementsString);
+    const firstFocusableElement = focusableElements[0] as HTMLElement;
+    const lastFocusableElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    if (firstFocusableElement) {
+      setTimeout(() => {
+        firstFocusableElement.focus();
+      }, 50);
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        isCartOpen.set(false);
+        return;
+      }
+
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) { // Shift + Tab
+        if (document.activeElement === firstFocusableElement) {
+          lastFocusableElement.focus();
+          e.preventDefault();
+        }
+      } else { // Tab
+        if (document.activeElement === lastFocusableElement) {
+          firstFocusableElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [$isCartOpen]);
+
   return (
     <AnimatePresence>
       {$isCartOpen && (
@@ -68,6 +126,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
             onClick={() => isCartOpen.set(false)}
           />
           <motion.div
+            ref={drawerPanelRef}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -175,7 +234,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                                     {lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}
                                   </span>
                                   <span className="text-[#5C4E43] font-serif font-semibold">
-                                    {t.product_price}
+                                    {formatPrice(itemProduct.price)}
                                   </span>
                                 </div>
                               </div>
@@ -202,9 +261,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                     <div className="flex justify-between items-center font-serif text-xl mb-8 text-[#2C2119]">
                       <span>{t.order_total}</span>
                       <span>
-                        {lang === "pl"
-                          ? `${350 * $cartCount},00 zł`
-                          : `€ ${(80 * $cartCount).toFixed(2)}`}
+                        {formatPrice(totalAmount)}
                       </span>
                     </div>
                     <button

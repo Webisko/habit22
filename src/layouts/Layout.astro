@@ -4,6 +4,8 @@ import Header from '../components/Header';
 import CartDrawer from '../components/CartDrawer';
 import Footer from '../components/Footer.astro';
 import BackToTop from '../components/BackToTop.astro';
+import ToastContainer from '../components/ToastContainer';
+import CookieBanner from '../components/CookieBanner';
 import { getAlternatePath } from '../i18n/utils';
 import '../index.css';
 
@@ -11,9 +13,26 @@ interface Props {
   title?: string;
   lang?: string;
   alternateUrl?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
 }
 
-const { title = 'Habit22', lang = 'pl', alternateUrl } = Astro.props;
+const {
+  title = 'Habit22',
+  lang = 'pl',
+  alternateUrl,
+  description,
+  ogImage,
+  ogType = 'website'
+} = Astro.props;
+
+const defaultDesc = lang === 'pl'
+  ? 'Habit22 — wyjątkowe torby i akcesoria projektowe dla dziewiarek i pasjonatów rękodzieła. Odkryj naszą kolekcję premium stworzoną z naturalnego lnu.'
+  : 'Habit22 — unique project bags and accessories for knitters and craft enthusiasts. Discover our premium collection crafted from natural linen.';
+
+const metaDesc = description || defaultDesc;
+const metaImage = ogImage || new URL(`${import.meta.env.BASE_URL || '/habit22/'}produkt__1-1.webp`, Astro.url.origin).href;
 
 // Calculate alternate URL automatically if not explicitly provided
 let calculatedAlternateUrl = alternateUrl;
@@ -21,6 +40,8 @@ if (!calculatedAlternateUrl) {
   const alternatePath = getAlternatePath(Astro.url.pathname, lang);
   calculatedAlternateUrl = new URL(alternatePath, Astro.url.origin).href;
 }
+
+const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' || Astro.url.pathname === '/en/';
 ---
 
 <!doctype html>
@@ -30,9 +51,59 @@ if (!calculatedAlternateUrl) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.8em' font-size='60' fill='%232C2119' font-family='serif' font-weight='500'>H22</text></svg>">
     <title>{title}</title>
+    
+    <meta name="description" content={metaDesc} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDesc} />
+    <meta property="og:image" content={metaImage} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url.href} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={metaDesc} />
+    <meta property="twitter:image" content={metaImage} />
+    
     <link rel="alternate" hreflang={lang === 'pl' ? 'en' : 'pl'} href={calculatedAlternateUrl} />
     <link rel="alternate" hreflang={lang} href={Astro.url.href} />
     <ClientRouter />
+
+    {isHomePage && (
+      <>
+        <script type="application/ld+json" is:inline define:vars={{
+          name: "Habit22",
+          url: Astro.url.origin,
+          logo: metaImage,
+          description: defaultDesc
+        }}>
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": name,
+            "url": url,
+            "logo": logo,
+            "description": description
+          })}
+        </script>
+        <script type="application/ld+json" is:inline define:vars={{
+          name: "Habit22",
+          url: Astro.url.origin,
+          description: defaultDesc
+        }}>
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": name,
+            "url": url,
+            "description": description
+          })}
+        </script>
+      </>
+    )}
   </head>
   <body class="min-h-screen bg-[#FAF7F2] text-[#2C2119] selection:bg-[#E6DCC9] font-sans relative flex flex-col">
     {/* Background Grain Noise */}
@@ -56,6 +127,12 @@ if (!calculatedAlternateUrl) {
 
     {/* Back to Top Button */}
     <BackToTop lang={lang} />
+
+    {/* Toast Notifications */}
+    <ToastContainer client:load transition:persist lang={lang} />
+
+    {/* Cookie Consent Banner */}
+    <CookieBanner client:load lang={lang} />
 
     <script>
       function setupIntersectionObserver() {

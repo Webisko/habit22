@@ -167,6 +167,14 @@ export interface TranslationSchema {
   footer_p1: string;
   lang_switch: string;
   developed_by: string;
+  page_not_found: string;
+  page_not_found_desc: string;
+  cookie_consent_text: string;
+  cookie_accept: string;
+  cookie_decline: string;
+  contact_success_toast: string;
+  added_to_cart_toast: string;
+  simulation_link: string;
   faq_items: FAQItem[];
   journal_section_title: string;
   journal_read_more: string;
@@ -446,6 +454,14 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
       "Rzemieślnicze torby, które organizują Twoją pasję i wspierają twórczy proces.",
     lang_switch: "EN",
     developed_by: "Realizacja:",
+    page_not_found: "Strona nie znaleziona",
+    page_not_found_desc: "Przepraszamy, ale strona, której szukasz, nie istnieje lub została przeniesiona.",
+    cookie_consent_text: "Ta strona używa ciasteczek w celu świadczenia usług na najwyższym poziomie. Dalsze korzystanie ze strony oznacza, że zgadzasz się na ich użycie.",
+    cookie_accept: "Akceptuję",
+    cookie_decline: "Odrzucam",
+    contact_success_toast: "Dziękujemy! Wiadomość została wysłana pomyślnie.",
+    added_to_cart_toast: "Dodano produkt do koszyka.",
+    simulation_link: "Symuluj kliknięcie w link z e-maila",
     faq_items: [
       {
         q: "Z jakich materiałów są uszyte torby?",
@@ -780,6 +796,14 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
       "Artisanal bags that organize your passion and support the creative process.",
     lang_switch: "PL",
     developed_by: "Developed by:",
+    page_not_found: "Page Not Found",
+    page_not_found_desc: "We are sorry, but the page you are looking for does not exist or has been moved.",
+    cookie_consent_text: "This website uses cookies to ensure you get the best experience on our website. By continuing to browse, you agree to their use.",
+    cookie_accept: "Accept",
+    cookie_decline: "Decline",
+    contact_success_toast: "Thank you! Your message has been sent successfully.",
+    added_to_cart_toast: "Added product to cart.",
+    simulation_link: "Simulate clicking the email link",
     faq_items: [
       {
         q: "What materials do you use?",

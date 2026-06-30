@@ -28,6 +28,7 @@ const { t, l } = useTranslations(lang);
         <form
           class="flex flex-col space-y-6 md:space-y-8 w-full max-w-none md:max-w-md mb-12 md:mb-20"
           id="contact-form"
+          data-lang={lang}
         >
           <div class="flex flex-col">
             <label class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
@@ -105,10 +106,15 @@ const { t, l } = useTranslations(lang);
 </Layout>
 
 <script>
-  // Simple client-side form behavior
-  document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+  import { showToast } from '../stores/toast';
+  import { TRANSLATIONS } from '../i18n/translations';
+
+  const form = document.getElementById('contact-form');
+  form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    alert('Thank you! Message sent.');
+    const lang = (form.getAttribute('data-lang') || 'pl') as 'pl' | 'en';
+    const message = TRANSLATIONS[lang].contact_success_toast;
+    showToast(message, 'success');
     (e.target as HTMLFormElement).reset();
   });
 </script>

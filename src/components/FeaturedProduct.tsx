@@ -4,6 +4,9 @@ import { motion } from 'motion/react';
 import { useTranslations } from '../i18n/utils';
 import { PRODUCTS } from '../data/products';
 import { addToCart, isCartOpen } from '../stores/cart';
+import { useStore } from '@nanostores/react';
+import { formatPrice } from '../stores/currency';
+import { showToast } from '../stores/toast';
 
 interface FeaturedProductProps {
   lang: string;
@@ -201,8 +204,8 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
               {product.design[lang === 'pl' ? 'pl' : 'en']}
             </p>
 
-            <div className="text-lg font-serif text-[#5C4E43] mb-6">
-              {t.product_price}
+            <div className="text-lg font-serif text-[#2C2119] mb-6 font-semibold">
+              {formatPrice(product.price)}
             </div>
 
             <div className="flex items-center gap-4 mb-6 text-xs tracking-[0.2em] uppercase text-[#8C7C6D] font-[400] border-b border-[#E6DCC9] pb-6 w-full">
@@ -237,7 +240,7 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
               <motion.button
                 onClick={() => {
                   addToCart(product.id, currentSize.id, 1);
-                  isCartOpen.set(true);
+                  showToast(t.added_to_cart_toast, 'success');
                 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-[#2C2119] text-white py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"

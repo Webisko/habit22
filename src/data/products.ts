@@ -22,6 +22,7 @@ export interface Product {
   };
   images: string[];
   sizes: ProductSize[];
+  price: number;
 }
 
 export const PRODUCTS: Product[] = [
@@ -46,6 +47,7 @@ export const PRODUCTS: Product[] = [
       { id: "size_33", name: { pl: "33", en: "33" } },
       { id: "size_44", name: { pl: "44", en: "44" } },
     ],
+    price: 350
   },
   {
     id: "len",
@@ -68,6 +70,7 @@ export const PRODUCTS: Product[] = [
       { id: "size_33", name: { pl: "33", en: "33" } },
       { id: "size_44", name: { pl: "44", en: "44" } },
     ],
+    price: 350
   },
   {
     id: "oliwa",
@@ -87,5 +90,6 @@ export const PRODUCTS: Product[] = [
       { id: "size_33", name: { pl: "33", en: "33" } },
       { id: "size_44", name: { pl: "44", en: "44" } },
     ],
+    price: 350
   },
-];
+];;;

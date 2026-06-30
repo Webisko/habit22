@@ -96,6 +96,14 @@ export default function LoginForm({ lang }: LoginFormProps) {
               <p className="text-[#5C4E43] font-serif text-lg leading-relaxed">
                 {t.reset_password_success_msg}
               </p>
+              
+              <a
+                href={`${l('reset-password')}?token=mock-reset-token`}
+                className="text-sm font-semibold uppercase tracking-widest border-b border-[#2C2119] pb-1 text-[#2C2119] hover:text-[#8C7C6D] transition-colors mt-4 inline-block"
+              >
+                {t.simulation_link} &rarr;
+              </a>
+
               <button
                 onClick={() => {
                   setIsResetSuccess(false);

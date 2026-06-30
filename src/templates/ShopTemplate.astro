@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { PRODUCTS } from '../data/products';
+import ProductPrice from '../components/ProductPrice';
 import { useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -45,8 +46,8 @@ const { t, l } = useTranslations(lang);
               {prod.design[lang === 'pl' ? 'pl' : 'en']}
             </p>
             <div class="flex items-center justify-between mt-auto pt-4 border-t border-[#E6DCC9] mb-6">
-              <span class="text-[#2C2119] font-serif text-lg">
-                {t.product_price}
+              <span class="text-[#2C2119] font-serif text-lg font-semibold">
+                <ProductPrice client:load prices={prod.prices} />
               </span>
             </div>
             <div

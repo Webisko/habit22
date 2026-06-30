@@ -3,6 +3,8 @@ import { useStore } from '@nanostores/react';
 import { ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { addToCart } from '../stores/cart';
+import { formatPrice } from '../stores/currency';
+import { showToast } from '../stores/toast';
 import { useTranslations } from '../i18n/utils';
 import type { Product } from '../data/products';
 
@@ -251,8 +253,8 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
           {product.design[lang === 'pl' ? 'pl' : 'en']}
         </p>
 
-        <div className="text-lg font-serif text-[#5C4E43] mb-6 tracking-wider">
-          {t.product_price}
+        <div className="text-lg font-serif text-[#2C2119] mb-6 tracking-wider font-semibold">
+          {formatPrice(product.price)}
         </div>
 
         <div className="flex items-center gap-4 mb-8 text-xs tracking-[0.2em] uppercase text-[#8C7C6D] font-[400] border-b border-[#E6DCC9] pb-8 w-full">
@@ -314,6 +316,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
         <motion.button
           onClick={() => {
             addToCart(product.id, currentSize.id, quantity);
+            showToast(t.added_to_cart_toast, 'success');
           }}
           whileTap={{ scale: 0.98 }}
           className="w-full bg-[#2C2119] text-white py-5 text-sm font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-0 flex items-center justify-center space-x-3 group relative overflow-hidden"

@@ -14,9 +14,45 @@ const { t, l } = useTranslations(lang);
 
 const altLang = lang === 'pl' ? 'en' : 'pl';
 const alternateUrl = getLocalizedPath(`product/${product.slugs[altLang]}`, altLang);
+
+const productImage = new URL(product.images[0], Astro.url.origin).href;
+const productDesc = `${product.title[lang === 'pl' ? 'pl' : 'en']} - ${product.design[lang === 'pl' ? 'pl' : 'en']}. ${lang === 'pl' ? 'Poznaj naszą unikalną torbę projektową premium.' : 'Discover our unique premium project bag.'}`;
 ---
 
-<Layout title={`${product.title[lang === 'pl' ? 'pl' : 'en']} - Habit22`} lang={lang} alternateUrl={alternateUrl}>
+<Layout 
+  title={`${product.title[lang === 'pl' ? 'pl' : 'en']} - Habit22`} 
+  lang={lang} 
+  alternateUrl={alternateUrl}
+  description={productDesc}
+  ogImage={productImage}
+  ogType="product"
+>
+  <!-- JSON-LD Product Structured Data -->
+  <script type="application/ld+json" is:inline define:vars={{
+    name: product.title[lang === 'pl' ? 'pl' : 'en'],
+    image: productImage,
+    description: productDesc,
+    sku: product.id,
+    price: product.price,
+    priceCurrency: "PLN",
+    url: Astro.url.href
+  }}>
+    {JSON.stringify({
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": name,
+      "image": image,
+      "description": description,
+      "sku": sku,
+      "offers": {
+        "@type": "Offer",
+        "url": url,
+        "priceCurrency": priceCurrency,
+        "price": price,
+        "availability": "https://schema.org/InStock"
+      }
+    })}
+  </script>
   <main class="flex-grow pt-24 md:pt-32 lg:pt-36 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto relative z-10">
     
     {/* Breadcrumbs / Back button */}

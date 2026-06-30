@@ -1,11 +1,14 @@
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 import path from 'path';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react()],
+  site: 'https://habit22.com',
+  base: '/habit22/',
+  integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
     resolve: {
@@ -14,7 +17,6 @@ export default defineConfig({
       },
     },
   },
-  base: '/habit22/',
   i18n: {
     defaultLocale: 'pl',
     locales: ['pl', 'en'],

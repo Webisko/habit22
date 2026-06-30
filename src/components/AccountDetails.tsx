@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
 import { motion } from 'motion/react';
 import { navigate } from 'astro:transitions/client';
 import { isLoggedIn, userProfile, logOut, updateProfile } from '../stores/auth';
+import { formatPrice } from '../stores/currency';
 import { useTranslations } from '../i18n/utils';
 
 interface AccountDetailsProps {
@@ -15,7 +16,42 @@ export default function AccountDetails({ lang }: AccountDetailsProps) {
   const $userProfile = useStore(userProfile);
   const { t, l } = useTranslations(lang);
 
-  const [viewingOrder, setViewingOrder] = useState(false);
+  interface OrderItem {
+    id: string;
+    productId: string;
+    sizeId: string;
+    title: string;
+    design: string;
+    image: string;
+    sizeName: string;
+    quantity: number;
+    price: number;
+  }
+
+  interface LocalOrder {
+    orderNumber: string;
+    date: string;
+    delivery: string;
+    name: string;
+    nip?: string;
+    street: string;
+    city: string;
+    zip: string;
+    phone: string;
+    email: string;
+    payment: string;
+    total: number;
+    items: OrderItem[];
+    shipToDifferent?: boolean;
+    shippingName?: string;
+    shippingStreet?: string;
+    shippingCity?: string;
+    shippingZip?: string;
+    shippingPhone?: string;
+  }
+
+  const [orders, setOrders] = useState<LocalOrder[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<LocalOrder | null>(null);
   const [isEditingAccount, setIsEditingAccount] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
 
@@ -35,6 +71,17 @@ export default function AccountDetails({ lang }: AccountDetailsProps) {
       navigate(l('login'));
     }
   }, [$isLoggedIn]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('habit22_orders');
+      if (stored) {
+        setOrders(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Failed to load orders from localStorage', e);
+    }
+  }, []);
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,12 +128,12 @@ export default function AccountDetails({ lang }: AccountDetailsProps) {
           {/* Order History column */}
           <div className="xl:col-span-3 flex flex-col">
             <h2 className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-8">
-              {viewingOrder ? t.order_details : t.account_orders}
+              {selectedOrder ? t.order_details : t.account_orders}
             </h2>
-            {viewingOrder ? (
+            {selectedOrder ? (
               <div className="flex flex-col border border-[#E6DCC9] p-8 bg-[#FAF7F2]">
                 <button
-                  onClick={() => setViewingOrder(false)}
+                  onClick={() => setSelectedOrder(null)}
                   className="self-start text-sm uppercase tracking-widest text-[#8C7C6D] border-b border-transparent hover:text-[#2C2119] hover:border-[#2C2119] pb-1 transition-all mb-8 flex items-center space-x-2"
                 >
                   <ChevronLeft size={12} />
@@ -94,59 +141,88 @@ export default function AccountDetails({ lang }: AccountDetailsProps) {
                 </button>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                   <h3 className="text-lg font-serif text-[#2C2119]">
-                    {t.order_str} #230894
+                    {t.order_str} {selectedOrder.orderNumber}
                   </h3>
                   <span className="text-xs uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9] self-start sm:self-auto">
                     {t.status_processing}
                   </span>
                 </div>
                 <p className="text-sm font-serif text-[#5C4E43] mb-8">
-                  {t.order_date_str}
+                  {selectedOrder.date}
                 </p>
                 <div className="flex flex-col space-y-4 border-t border-[#E6DCC9] pt-6">
-                  <div className="flex justify-between items-center text-base font-serif text-[#2C2119]">
-                    <div className="flex items-center space-x-4">
-                      <img
-                        src={`${import.meta.env.BASE_URL || '/habit22/'}produkt__1-2.webp`}
-                        className="w-12 h-16 object-cover bg-[#EBE2D3]"
-                        alt=""
-                      />
-                      <span>Torba Projektowa - Kratka Vichy x 1</span>
+                  {selectedOrder.items && selectedOrder.items.map((item) => (
+                    <div key={item.id} className="flex justify-between items-center text-base font-serif text-[#2C2119]">
+                      <div className="flex items-center space-x-4">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            className="w-12 h-16 object-cover bg-[#EBE2D3]"
+                            alt=""
+                          />
+                        )}
+                        <span>{item.title} - {item.sizeName} x {item.quantity}</span>
+                      </div>
+                      <span>{formatPrice(item.price * item.quantity)}</span>
                     </div>
-                    <span>{lang === 'pl' ? '350,00 zł' : '€ 80.00'}</span>
-                  </div>
+                  ))}
                   <div className="flex justify-between items-center text-base font-serif text-[#2C2119] font-bold border-t border-[#E6DCC9] pt-4">
                     <span className="text-xs tracking-widest uppercase font-semibold">
                       {t.order_total}
                     </span>
-                    <span>{lang === 'pl' ? '350,00 zł' : '€ 80.00'}</span>
+                    <span>{formatPrice(selectedOrder.total)}</span>
                   </div>
                 </div>
               </div>
+            ) : orders.length === 0 ? (
+              <div className="flex flex-col items-center justify-center border border-[#E6DCC9] p-12 bg-[#FAF7F2] text-center space-y-6">
+                <div className="w-16 h-16 border rounded-full flex items-center justify-center border-[#E6DCC9] text-[#8C7C6D]">
+                  <ShoppingBag size={24} className="stroke-1" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[#2C2119] font-serif text-lg font-medium">
+                    {t.no_orders}
+                  </p>
+                  <p className="text-[#8C7C6D] text-sm leading-relaxed max-w-xs mx-auto">
+                    {lang === 'pl' 
+                      ? 'Złóż swoje pierwsze zamówienie, aby zobaczyć historię zakupów.' 
+                      : 'Place your first order to see your purchase history.'}
+                  </p>
+                </div>
+                <a
+                  href={l('shop')}
+                  className="border border-[#2C2119] py-3 px-6 text-sm uppercase tracking-widest text-[#2C2119] hover:bg-[#2C2119] hover:text-white transition-colors"
+                >
+                  {lang === 'pl' ? 'Przejdź do sklepu' : 'Go to Shop'}
+                </a>
+              </div>
             ) : (
               <div className="flex flex-col space-y-4">
-                <div
-                  onClick={() => setViewingOrder(true)}
-                  className="flex justify-between items-center border border-[#E6DCC9] p-6 bg-[#FAF7F2] hover:bg-[#F3EDE3] transition-colors cursor-pointer group"
-                >
-                  <div className="flex flex-col">
-                    <span className="text-base font-serif text-[#2C2119] font-medium mb-1">
-                      {t.order_str} #230894
-                    </span>
-                    <span className="text-sm font-serif text-[#5C4E43]">
-                      {t.order_date_short} • {lang === 'pl' ? '350,00 zł' : '€ 80.00'}
-                    </span>
+                {orders.map((order) => (
+                  <div
+                    key={order.orderNumber}
+                    onClick={() => setSelectedOrder(order)}
+                    className="flex justify-between items-center border border-[#E6DCC9] p-6 bg-[#FAF7F2] hover:bg-[#F3EDE3] transition-colors cursor-pointer group"
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-base font-serif text-[#2C2119] font-medium mb-1">
+                        {t.order_str} {order.orderNumber}
+                      </span>
+                      <span className="text-sm font-serif text-[#5C4E43]">
+                        {order.date} • {formatPrice(order.total)}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <span className="text-xs uppercase tracking-widest bg-[#EBE2D3] px-3 py-1 text-[#2C2119] border border-[#E6DCC9]">
+                        {t.status_processing}
+                      </span>
+                      <ChevronRight
+                        size={16}
+                        className="text-[#8C7C6D] group-hover:text-[#2C2119] transition-colors"
+                      />
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <span className="text-xs uppercase tracking-widest text-[#8C7C6D] hidden md:inline-block">
-                      {t.status_processing}
-                    </span>
-                    <ChevronRight
-                      size={16}
-                      className="text-[#8C7C6D] group-hover:text-[#2C2119] transition-colors"
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             )}
           </div>
