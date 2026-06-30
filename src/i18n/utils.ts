@@ -7,6 +7,7 @@ const ROUTE_MAP: Record<string, { pl: string; en: string }> = {
   'privacy': { pl: 'polityka-prywatnosci', en: 'privacy' },
   'cookies': { pl: 'polityka-cookies', en: 'cookies' },
   'checkout': { pl: 'zamowienie', en: 'checkout' },
+  'thankyou': { pl: 'podziekowanie', en: 'thankyou' },
 };
 
 export function getLocalizedPath(path: string, lang: string): string {

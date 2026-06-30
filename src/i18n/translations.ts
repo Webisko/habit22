@@ -77,6 +77,8 @@ export interface TranslationSchema {
   back_to_shop: string;
   checkout: string;
   checkout_details: string;
+  checkout_shipping_address: string;
+  checkout_ship_to_different: string;
   checkout_delivery: string;
   checkout_payment: string;
   checkout_first_name: string;
@@ -86,6 +88,8 @@ export interface TranslationSchema {
   newsletter_placeholder: string;
   newsletter_submit: string;
   newsletter_consent: string;
+  newsletter_success_title: string;
+  newsletter_success_desc: string;
   contact_consent: string;
   checkout_street: string;
   checkout_city: string;
@@ -134,6 +138,20 @@ export interface TranslationSchema {
   thank_you_title: string;
   thank_you_message: string;
   thank_you_order_number: string;
+  summary_title: string;
+  summary_delivery: string;
+  summary_address: string;
+  summary_billing_address: string;
+  summary_shipping_address: string;
+  summary_time: string;
+  summary_time_value: string;
+  summary_payment: string;
+  summary_total: string;
+  delivery_locker: string;
+  delivery_courier: string;
+  payment_blik: string;
+  payment_card: string;
+  payment_transfer: string;
   no_orders: string;
   footer_p1: string;
   lang_switch: string;
@@ -320,6 +338,8 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     back_to_shop: "Wróć do kolekcji",
     checkout: "Zamówienie",
     checkout_details: "Dane klienta",
+    checkout_shipping_address: "Adres wysyłki",
+    checkout_ship_to_different: "Wysyłka na inny adres",
     checkout_delivery: "Dostawa",
     checkout_payment: "Płatność",
     checkout_first_name: "Imię",
@@ -331,6 +351,8 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     newsletter_submit: "Zapisz się",
     newsletter_consent:
       "Zgadzam się na przetwarzanie moich danych osobowych w celu przesyłania newslettera. Szczegóły w ",
+    newsletter_success_title: "Dziękujemy za zapis!",
+    newsletter_success_desc: "Wysłaliśmy e-mail z linkiem potwierdzającym. Kliknij go, aby potwierdzić zapis i odebrać prezent powitalny.",
     contact_consent:
       "Administratorem Twoich danych jest Habit22. Dane będą przetwarzane w celu obsługi zapytania. Więcej informacji w ",
     checkout_street: "Ulica i numer domu/mieszkania",
@@ -359,7 +381,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     logout: "Wyloguj",
     checkout_login_prompt: "Masz już konto?",
     checkout_login_link: "Zaloguj się przed zakupem",
-    checkout_create_account: "Chcę założyć konto (opcjonalnie)",
+    checkout_create_account: "Chcę założyć konto",
     checkout_buy_as_company: "Kupuję na firmę",
     checkout_company_nip: "NIP",
     checkout_company_name: "Nazwa firmy",
@@ -381,8 +403,22 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     all_rights_reserved: "Wszelkie prawa zastrzeżone",
     thank_you_title: "Dziękujemy za zamówienie",
     thank_you_message:
-      "Twoje zamówienie zostało przyjęte do realizacji. Potwierdzenie zostało wysłane na adres e-mail.",
+      "Twoje zamówienie zostało przyjęte do realizacji.\nPotwierdzenie zostało wysłane na adres e-mail.",
     thank_you_order_number: "Numer zamówienia: #230894",
+    summary_title: "Podsumowanie zamówienia",
+    summary_delivery: "Sposób dostawy",
+    summary_address: "Adres dostawy",
+    summary_billing_address: "Dane rozliczeniowe",
+    summary_shipping_address: "Adres dostawy",
+    summary_time: "Przewidywany czas realizacji",
+    summary_time_value: "2–3 dni robocze",
+    summary_payment: "Metoda płatności",
+    summary_total: "Łączna kwota",
+    delivery_locker: "Paczkomat InPost",
+    delivery_courier: "Kurier",
+    payment_blik: "BLIK",
+    payment_card: "Karta płatnicza",
+    payment_transfer: "Przelew tradycyjny",
     no_orders: "Brak historii zamówień.",
     footer_p1:
       "Rzemieślnicze torby, które organizują Twoją pasję i wspierają twórczy proces.",
@@ -625,6 +661,8 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     back_to_shop: "Back to collection",
     checkout: "Checkout",
     checkout_details: "Customer details",
+    checkout_shipping_address: "Shipping address",
+    checkout_ship_to_different: "Ship to a different address",
     checkout_delivery: "Delivery",
     checkout_payment: "Payment",
     checkout_first_name: "First name",
@@ -636,6 +674,8 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     newsletter_submit: "Subscribe",
     newsletter_consent:
       "I agree to the processing of my personal data for the purpose of sending the newsletter. Details in ",
+    newsletter_success_title: "Thank you for subscribing!",
+    newsletter_success_desc: "We've sent a confirmation email. Please click the link inside to confirm your subscription and claim your welcome gift.",
     contact_consent:
       "The data administrator is Habit22. Data will be processed to handle your inquiry. More information in ",
     checkout_street: "Street address",
@@ -664,7 +704,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     logout: "Log out",
     checkout_login_prompt: "Already have an account?",
     checkout_login_link: "Log in",
-    checkout_create_account: "I want to create an account (optional)",
+    checkout_create_account: "I want to create an account",
     checkout_buy_as_company: "I'm buying as a company",
     checkout_company_nip: "NIP / VAT ID",
     checkout_company_name: "Company name",
@@ -686,8 +726,22 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     all_rights_reserved: "All rights reserved",
     thank_you_title: "Thank you for your order",
     thank_you_message:
-      "Your order has been received and is being processed. A confirmation has been sent to your email address.",
+      "Your order has been received and is being processed.\nA confirmation has been sent to your email address.",
     thank_you_order_number: "Order number: #230894",
+    summary_title: "Order summary",
+    summary_delivery: "Delivery method",
+    summary_address: "Shipping address",
+    summary_billing_address: "Billing details",
+    summary_shipping_address: "Shipping address",
+    summary_time: "Estimated processing time",
+    summary_time_value: "2–3 business days",
+    summary_payment: "Payment method",
+    summary_total: "Total amount",
+    delivery_locker: "InPost Locker",
+    delivery_courier: "Courier",
+    payment_blik: "BLIK",
+    payment_card: "Credit card",
+    payment_transfer: "Bank transfer",
     no_orders: "No order history.",
     footer_p1:
       "Artisanal bags that organize your passion and support the creative process.",

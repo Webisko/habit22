@@ -242,10 +242,10 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-[#2C2119] text-white py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
               >
-                <span className="relative z-20">{t.add_to_cart}</span>
+                <span className="relative z-20 transition-transform duration-300 translate-x-[14px] group-hover:translate-x-0">{t.add_to_cart}</span>
                 <Plus
                   size={16}
-                  className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
+                  className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[14px] group-hover:translate-x-0 relative z-20"
                 />
                 {/* Button shine effect */}
                 <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
@@ -255,7 +255,7 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
                 href={l(`product/${product.slugs[lang as 'pl' | 'en']}`)}
                 className="w-full border border-[#2C2119] text-[#2C2119] py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#2C2119] hover:text-white transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden text-center"
               >
-                <span className="relative z-20">{t.product_details}</span>
+                <span className="relative z-20 transition-transform duration-300 translate-x-[14px] group-hover:translate-x-0">{t.product_details}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={16}
@@ -266,7 +266,7 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
                   strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
+                  className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[14px] group-hover:translate-x-0 relative z-20"
                 >
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />

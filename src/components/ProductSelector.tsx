@@ -318,10 +318,10 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
           whileTap={{ scale: 0.98 }}
           className="w-full bg-[#2C2119] text-white py-5 text-sm font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-0 flex items-center justify-center space-x-3 group relative overflow-hidden"
         >
-          <span className="relative z-20">{t.add_to_cart}</span>
+          <span className="relative z-20 transition-transform duration-300 translate-x-[14px] group-hover:translate-x-0">{t.add_to_cart}</span>
           <Plus
             size={16}
-            className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
+            className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[14px] group-hover:translate-x-0 relative z-20"
           />
           {/* Shine effect */}
           <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />

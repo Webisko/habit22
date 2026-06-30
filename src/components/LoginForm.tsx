@@ -91,12 +91,12 @@ export default function LoginForm({ lang }: LoginFormProps) {
               />
             </div>
             <button className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-4 flex items-center justify-center space-x-3 group relative overflow-hidden">
-              <span className="relative z-20">
+              <span className="relative z-20 transition-transform duration-300 translate-x-[14px] group-hover:translate-x-0">
                 {isRegistering ? t.register_btn : t.login_btn}
               </span>
               <User
                 size={16}
-                className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
+                className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[14px] group-hover:translate-x-0 relative z-20"
               />
               <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
             </button>

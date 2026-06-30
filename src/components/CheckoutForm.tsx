@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { User, X } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { navigate } from 'astro:transitions/client';
 import { cartItems, cartCount, clearCart } from '../stores/cart';
 import { isLoggedIn, logIn } from '../stores/auth';
@@ -57,6 +57,26 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Customer address details inputs
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [nip, setNip] = useState('');
+  const [checkoutEmail, setCheckoutEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
+  const [zip, setZip] = useState('');
+
+  // Shipping address details inputs
+  const [shipToDifferent, setShipToDifferent] = useState(false);
+  const [shippingFirstName, setShippingFirstName] = useState('');
+  const [shippingLastName, setShippingLastName] = useState('');
+  const [shippingStreet, setShippingStreet] = useState('');
+  const [shippingCity, setShippingCity] = useState('');
+  const [shippingZip, setShippingZip] = useState('');
+  const [shippingPhone, setShippingPhone] = useState('');
+
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
@@ -66,6 +86,32 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
   };
 
   const handlePlaceOrder = () => {
+    // Generate a random order number
+    const randomNum = Math.floor(100000 + Math.random() * 900000);
+    const orderNumber = `#H22-${randomNum}`;
+
+    // Store details for thank you page
+    const orderDetails = {
+      orderNumber,
+      delivery: checkoutDelivery,
+      name: isCompany ? companyName : `${firstName} ${lastName}`,
+      nip: isCompany ? nip : '',
+      street,
+      city,
+      zip,
+      phone,
+      email: checkoutEmail,
+      payment: checkoutPayment,
+      total: total,
+      shipToDifferent,
+      shippingName: `${shippingFirstName} ${shippingLastName}`,
+      shippingStreet,
+      shippingCity,
+      shippingZip,
+      shippingPhone,
+    };
+    sessionStorage.setItem('last_order_details', JSON.stringify(orderDetails));
+
     // Clear cart on successful order submission
     clearCart();
     // Redirect to the localized thank you page
@@ -99,72 +145,109 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
           onSubmit={(e) => e.preventDefault()}
         >
           {!$isLoggedIn && (
-            <div className="w-full flex flex-col border border-[#E6DCC9] p-6 md:p-8 bg-[#FAF7F2]">
-              {!isCheckoutLoginOpen ? (
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                  <p className="text-base font-serif text-[#5C4E43]">
-                    {t.checkout_login_prompt}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setIsCheckoutLoginOpen(true)}
-                    className="text-sm font-semibold uppercase tracking-widest border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] transition-colors"
+            <div className="flex flex-col w-full">
+              <AnimatePresence>
+                {!createAccountChecked && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0, marginBottom: 0 }}
+                    animate={{ height: 'auto', opacity: 1, marginBottom: 64 }}
+                    exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="w-full overflow-hidden"
                   >
-                    {t.checkout_login_link}
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col w-full">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-sm font-semibold uppercase tracking-widest text-[#2C2119]">
-                      {t.login_btn}
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={() => setIsCheckoutLoginOpen(false)}
-                      className="text-[#8C7C6D] hover:text-[#2C2119]"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex flex-col">
-                      <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
-                        {t.login_email}
-                      </label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] font-serif"
-                      />
+                    <div className="w-full flex flex-col border border-[#E6DCC9] p-6 md:p-8 bg-[#FAF7F2]">
+                      {!isCheckoutLoginOpen ? (
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                          <p className="text-base font-serif text-[#5C4E43]">
+                            {t.checkout_login_prompt}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => setIsCheckoutLoginOpen(true)}
+                            className="text-sm font-semibold uppercase tracking-widest border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] transition-colors"
+                          >
+                            {t.checkout_login_link}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col w-full">
+                          <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-sm font-semibold uppercase tracking-widest text-[#2C2119]">
+                              {t.login_btn}
+                            </h3>
+                            <button
+                              type="button"
+                              onClick={() => setIsCheckoutLoginOpen(false)}
+                              className="text-[#8C7C6D] hover:text-[#2C2119]"
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="flex flex-col">
+                              <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                                {t.login_email}
+                              </label>
+                              <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] font-serif"
+                              />
+                            </div>
+                            <div className="flex flex-col">
+                              <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                                {t.login_password}
+                              </label>
+                              <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] font-serif"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={handleLoginSubmit}
+                              className="w-full py-4 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-6 flex items-center justify-center space-x-3 group relative overflow-hidden"
+                            >
+                              <span className="relative z-20 transition-transform duration-300 translate-x-[14px] group-hover:translate-x-0">{t.login_btn}</span>
+                              <User
+                                size={16}
+                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[14px] group-hover:translate-x-0 relative z-20"
+                              />
+                              <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex flex-col">
-                      <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
-                        {t.login_password}
-                      </label>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] font-serif"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleLoginSubmit}
-                      className="w-full py-4 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-6 flex items-center justify-center space-x-3 group relative overflow-hidden"
-                    >
-                      <span className="relative z-20">{t.login_btn}</span>
-                      <User
-                        size={16}
-                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
-                      />
-                      <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
-                    </button>
-                  </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="flex flex-col space-y-3">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="create-account"
+                    className="w-5 h-5 accent-[#2C2119] bg-transparent border-[#E6DCC9]"
+                    checked={createAccountChecked}
+                    onChange={(e) => setCreateAccountChecked(e.target.checked)}
+                  />
+                  <label
+                    htmlFor="create-account"
+                    className="text-base font-serif font-medium text-[#5C4E43] cursor-pointer selection:bg-transparent"
+                  >
+                    {t.checkout_create_account}
+                  </label>
                 </div>
-              )}
+                {createAccountChecked && (
+                  <p className="text-sm text-[#8C7C6D] leading-relaxed pl-7">
+                    {t.checkout_register_info}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -199,6 +282,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                     </label>
                     <input
                       type="text"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
                       className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                     />
                   </div>
@@ -208,6 +293,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                     </label>
                     <input
                       type="text"
+                      value={nip}
+                      onChange={(e) => setNip(e.target.value)}
                       className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                     />
                   </div>
@@ -220,6 +307,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                     </label>
                     <input
                       type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                       className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                     />
                   </div>
@@ -229,6 +318,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                     </label>
                     <input
                       type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
                       className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                     />
                   </div>
@@ -240,6 +331,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                 </label>
                 <input
                   type="email"
+                  value={checkoutEmail}
+                  onChange={(e) => setCheckoutEmail(e.target.value)}
                   className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                 />
               </div>
@@ -249,6 +342,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                 </label>
                 <input
                   type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                 />
               </div>
@@ -258,6 +353,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                 </label>
                 <input
                   type="text"
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
                   className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                 />
               </div>
@@ -267,6 +364,8 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                 </label>
                 <input
                   type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
                   className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                 />
               </div>
@@ -276,33 +375,109 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
                 </label>
                 <input
                   type="text"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
                   className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
                 />
               </div>
             </div>
-            {!$isLoggedIn && (
-              <div className="flex flex-col space-y-3 pt-4">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="create-account"
-                    className="w-5 h-5 accent-[#2C2119] bg-transparent border-[#E6DCC9]"
-                    checked={createAccountChecked}
-                    onChange={(e) => setCreateAccountChecked(e.target.checked)}
-                  />
-                  <label
-                    htmlFor="create-account"
-                    className="text-base font-serif font-medium text-[#5C4E43] cursor-pointer selection:bg-transparent"
-                  >
-                    {t.checkout_create_account}
-                  </label>
-                </div>
-                {createAccountChecked && (
-                  <p className="text-sm text-[#8C7C6D] leading-relaxed pl-7">
-                    {t.checkout_register_info}
-                  </p>
-                )}
+            <div className="flex flex-col space-y-3 pt-6">
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="ship-to-different"
+                  className="w-5 h-5 accent-[#2C2119] bg-transparent border-[#E6DCC9]"
+                  checked={shipToDifferent}
+                  onChange={(e) => setShipToDifferent(e.target.checked)}
+                />
+                <label
+                  htmlFor="ship-to-different"
+                  className="text-base font-serif font-medium text-[#5C4E43] cursor-pointer selection:bg-transparent"
+                >
+                  {t.checkout_ship_to_different}
+                </label>
               </div>
+            </div>
+
+            {shipToDifferent && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="w-full flex flex-col space-y-6 pt-6 border-t border-[#E6DCC9]"
+              >
+                <h3 className="text-base font-semibold tracking-widest uppercase text-[#2C2119]">
+                  {t.checkout_shipping_address}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-12 md:gap-y-8">
+                  <div className="flex flex-col">
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                      {t.checkout_first_name}
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingFirstName}
+                      onChange={(e) => setShippingFirstName(e.target.value)}
+                      className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                      {t.checkout_last_name}
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingLastName}
+                      onChange={(e) => setShippingLastName(e.target.value)}
+                      className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+                    />
+                  </div>
+                  <div className="flex flex-col md:col-span-2">
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                      {t.checkout_street}
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingStreet}
+                      onChange={(e) => setShippingStreet(e.target.value)}
+                      className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                      {t.checkout_city}
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingCity}
+                      onChange={(e) => setShippingCity(e.target.value)}
+                      className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                      {t.checkout_zip}
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingZip}
+                      onChange={(e) => setShippingZip(e.target.value)}
+                      className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+                      {t.checkout_phone}
+                    </label>
+                    <input
+                      type="tel"
+                      value={shippingPhone}
+                      onChange={(e) => setShippingPhone(e.target.value)}
+                      className="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
+                    />
+                  </div>
+                </div>
+              </motion.div>
             )}
           </div>
 
@@ -495,7 +670,7 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
           disabled={$cartCount === 0 || !checkoutDelivery || !checkoutPayment}
           className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-auto flex items-center justify-center space-x-3 group relative overflow-hidden disabled:opacity-50 disabled:pointer-events-none"
         >
-          <span className="relative z-20">{t.checkout_submit}</span>
+          <span className="relative z-20 transition-transform duration-300 translate-x-[14px] group-hover:translate-x-0">{t.checkout_submit}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={16}
@@ -506,7 +681,7 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
+            className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[14px] group-hover:translate-x-0 relative z-20"
           >
             <line x1="5" y1="12" x2="19" y2="12" />
             <polyline points="12 5 19 12 12 19" />

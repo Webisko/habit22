@@ -130,30 +130,36 @@ input[type="checkbox"]:checked::after {
 /* Always show icons in buttons/links on tablets and mobile screens (no hover action) */
 @media (max-width: 1024px) {
   /* Primary buttons & CartDrawer buttons with hover icons */
-  svg.group-hover\:opacity-100.group-hover\:ml-0 {
+  svg.translate-x-\[14px\] {
     opacity: 1 !important;
     position: relative !important;
     right: auto !important;
     top: auto !important;
     transform: none !important;
+    translate: none !important;
     margin-left: 0 !important;
   }
   /* Offset text to the right to balance the icon's width (16px) + gap (12px) = 28px */
-  .group > span:first-child {
+  span.translate-x-\[14px\] {
+    transform: none !important;
+    translate: none !important;
     margin-left: 28px !important;
   }
 
   /* Shop page grid product card details buttons */
-  svg.group-hover\/cartbtn\:opacity-100.group-hover\/cartbtn\:ml-0 {
+  svg.translate-x-\[11px\] {
     opacity: 1 !important;
     position: relative !important;
     right: auto !important;
     top: auto !important;
     transform: none !important;
+    translate: none !important;
     margin-left: 0 !important;
   }
   /* Offset text to the right to balance the icon's width (14px) + gap (8px) = 22px */
-  .group\/cartbtn > span:first-child {
+  span.translate-x-\[11px\] {
+    transform: none !important;
+    translate: none !important;
     margin-left: 22px !important;
   }
 
@@ -163,7 +169,7 @@ input[type="checkbox"]:checked::after {
   }
   
   /* Read more link icons */
-  svg.group-hover\:translate-x-0 {
+  .group-hover\:pr-4 > svg {
     opacity: 1 !important;
     --tw-translate-x: 0px !important;
     translate: 0px -50% !important;

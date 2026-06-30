@@ -211,7 +211,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                       onClick={handleCheckoutClick}
                       className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden"
                     >
-                      <span className="relative z-20">
+                      <span className="relative z-20 transition-transform duration-300 translate-x-[14px] group-hover:translate-x-0">
                         {t.go_to_checkout}
                       </span>
                       <svg
@@ -224,7 +224,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                         strokeWidth={2}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
+                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[14px] group-hover:translate-x-0 relative z-20"
                       >
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <polyline points="12 5 19 12 12 19" />
