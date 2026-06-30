@@ -4,12 +4,12 @@ import { PRODUCTS } from '../../../data/products';
 
 export function getStaticPaths() {
   return PRODUCTS.map((product) => ({
-    params: { id: product.id },
+    params: { slug: product.slugs.en },
   }));
 }
 
-const { id } = Astro.params;
-const product = PRODUCTS.find((p) => p.id === id)!;
+const { slug } = Astro.params;
+const product = PRODUCTS.find((p) => p.slugs.en === slug)!;
 ---
 
 <ProductTemplate product={product} lang="en" />

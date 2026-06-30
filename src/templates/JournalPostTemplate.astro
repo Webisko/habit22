@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import { TRANSLATIONS } from '../i18n/translations';
 import type { JournalPost } from '../i18n/translations';
 
 interface Props {
@@ -11,9 +12,14 @@ interface Props {
 
 const { post, otherPosts, lang } = Astro.props;
 const { t, l } = useTranslations(lang);
+
+const altLang = lang === 'pl' ? 'en' : 'pl';
+const altPosts = TRANSLATIONS[altLang].journal_posts;
+const altPost = altPosts.find((p) => p.id === post.id)!;
+const alternateUrl = getLocalizedPath(`journal/${altPost.slug}`, altLang);
 ---
 
-<Layout title={`${post.title} - Habit22`} lang={lang}>
+<Layout title={`${post.title} - Habit22`} lang={lang} alternateUrl={alternateUrl}>
   <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col relative z-10">
     <article class="w-full flex flex-col animate-fade-in-up">
       <a
@@ -25,7 +31,7 @@ const { t, l } = useTranslations(lang);
       </a>
 
       <header class="mb-12 md:mb-16">
-        <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase text-left leading-[1.2]">
+        <h1 class="text-2xl md:text-4xl font-serif text-[#2C2119] tracking-wider uppercase text-left leading-[1.2]">
           {post.title}
         </h1>
       </header>
@@ -53,11 +59,11 @@ const { t, l } = useTranslations(lang);
           {lang === "pl" ? "Pozostałe wpisy" : "Other posts"}
         </h2>
         <div class="relative group/journal select-none">
-          <div class="flex lg:grid lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto hide-scrollbar snap-x snap-mandatory lg:snap-none scroll-smooth pb-4 relative">
+          <div class="drag-to-scroll flex lg:grid lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto hide-scrollbar snap-x snap-mandatory lg:snap-none scroll-smooth pb-4 relative">
             {otherPosts.map((otherPost, index) => (
               <article class="group cursor-pointer flex flex-col h-full flex-shrink-0 w-[76%] sm:w-[41%] lg:w-full snap-start reveal" style={`transition-delay: ${index * 100}ms;`}>
-                <a href={l(`journal/${otherPost.id}`)} class="flex flex-col h-full">
-                  <div class="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3] rounded-lg relative">
+                <a href={l(`journal/${otherPost.slug}`)} class="flex flex-col h-full">
+                  <div class="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3] relative">
                     <img
                       src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
                       alt={otherPost.title}

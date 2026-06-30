@@ -17,8 +17,277 @@ const { t } = useTranslations(lang);
 // Read the markdown file from the public directory at build time
 const filePath = path.join(process.cwd(), 'public', filename);
 const content = fs.readFileSync(filePath, 'utf-8');
+
+// Parse ## headings for Table of Contents
+const headingRegex = /^##\s+(.+)$/gm;
+const headings = [];
+let match;
+while ((match = headingRegex.exec(content)) !== null) {
+  const title = match[1].trim();
+  
+  // Generate exact slug matching the slugify helper in MarkdownView.tsx
+  const cleanTitle = title
+    .split('')
+    .map((char: string) => {
+      const polishChars: Record<string, string> = {
+        'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o', 'ś': 's', 'ź': 'z', 'ż': 'z',
+        'Ą': 'a', 'Ć': 'c', 'Ę': 'e', 'Ł': 'l', 'Ń': 'n', 'Ó': 'o', 'Ś': 's', 'Ź': 'z', 'Ż': 'z'
+      };
+      return polishChars[char] || char;
+    })
+    .join('');
+  
+  const id = cleanTitle
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+
+  headings.push({ title, id });
+}
 ---
 
 <Layout title={`${t[titleKey]} - Habit22`} lang={lang}>
-  <MarkdownView client:load title={t[titleKey]} content={content} />
+  <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12 xl:gap-16 items-start relative z-10">
+    <article class="w-full max-w-[800px] mx-auto lg:mx-0">
+      <MarkdownView title={t[titleKey]} content={content} />
+    </article>
+    
+    <aside class="hidden lg:block sticky top-48 w-full">
+      <h2 class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-6 font-semibold">
+        {lang === 'pl' ? 'Spis treści' : 'Table of Contents'}
+      </h2>
+      <nav class="toc-nav">
+        <ul class="border-l border-[#E6DCC9] space-y-3 text-[15px] text-[#8C7C6D]">
+          {headings.map(h => (
+            <li>
+              <a
+                href={`#${h.id}`}
+                class="toc-link block hover:text-[#2C2119] transition-colors leading-relaxed border-l-2 border-transparent pl-3 -ml-[1.5px] hover:border-[#8C7C6D]"
+                data-id={h.id}
+              >
+                {h.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  </main>
+
+  <!-- Floating Mobile TOC Button -->
+  <button
+    id="toc-mobile-btn"
+    class="lg:hidden fixed bottom-6 right-6 md:bottom-8 md:right-8 z-40 bg-[#2C2119] text-[#FAF7F2] w-11 h-11 md:w-12 md:h-12 rounded-full border border-[#FAF7F2]/20 shadow-[0_0_10px_rgba(250,247,242,0.35)] hover:bg-[#43352A] transition-all duration-500 ease-out active:scale-95 flex items-center justify-center"
+    aria-label="Spis treści"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="3" y1="6" y2="6"/><line x1="21" x2="9" y1="12" y2="12"/><line x1="21" x2="7" y1="18" y2="18"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+  </button>
+
+  <!-- Mobile Drawer Backdrop -->
+  <div
+    id="toc-mobile-backdrop"
+    class="lg:hidden fixed inset-0 bg-[#2C2119]/40 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 z-50"
+  ></div>
+
+  <!-- Mobile Drawer Container -->
+  <div
+    id="toc-mobile-drawer"
+    class="lg:hidden fixed right-0 top-0 bottom-0 w-[300px] max-w-[85vw] bg-[#FAF7F2] border-l border-[#E6DCC9] translate-x-full transition-transform duration-300 ease-in-out z-50 p-6 flex flex-col shadow-2xl"
+  >
+    <div class="flex justify-between items-center mb-8 pb-4 border-b border-[#E6DCC9]">
+      <h2 class="text-sm uppercase tracking-widest text-[#8C7C6D] font-semibold">
+        {lang === 'pl' ? 'Spis treści' : 'Table of Contents'}
+      </h2>
+      <button
+        id="toc-mobile-close"
+        class="text-[#8C7C6D] hover:text-[#2C2119] p-1 transition-colors"
+        aria-label="Zamknij"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+      </button>
+    </div>
+    <nav class="flex-grow overflow-y-auto hide-scrollbar">
+      <ul class="border-l border-[#E6DCC9] space-y-4 text-[15px] text-[#8C7C6D]">
+        {headings.map(h => (
+          <li>
+            <a
+              href={`#${h.id}`}
+              class="toc-mobile-link block hover:text-[#2C2119] transition-colors leading-relaxed border-l-2 border-transparent pl-3 -ml-[1.5px] hover:border-[#8C7C6D]"
+              data-id={h.id}
+            >
+              {h.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    function setupScrollSpyAndDrawer() {
+      const links = document.querySelectorAll('.toc-link');
+      const mobileLinks = document.querySelectorAll('.toc-mobile-link');
+      const headings = Array.from(document.querySelectorAll('article h2[id]'));
+      
+      let isScrollingTo = null;
+      let scrollTimeout = null;
+
+      function highlightLink(currentId) {
+        links.forEach((link) => {
+          const dataId = link.getAttribute('data-id');
+          if (dataId === currentId) {
+            link.classList.add('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.remove('text-[#8C7C6D]', 'border-transparent');
+          } else {
+            link.classList.remove('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.add('text-[#8C7C6D]', 'border-transparent');
+          }
+        });
+
+        mobileLinks.forEach((link) => {
+          const dataId = link.getAttribute('data-id');
+          if (dataId === currentId) {
+            link.classList.add('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.remove('text-[#8C7C6D]', 'border-transparent');
+          } else {
+            link.classList.remove('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.add('text-[#8C7C6D]', 'border-transparent');
+          }
+        });
+      }
+
+      // 1. Scrollspy logic
+      if (headings.length > 0) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (isScrollingTo) return;
+
+            const offset = window.innerWidth >= 1536 ? 160 : 90;
+            const scrollPosition = window.scrollY + offset;
+            const isAtBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 50);
+            
+            let current = headings[0];
+            
+            if (isAtBottom && headings.length > 0) {
+              current = headings[headings.length - 1];
+            } else {
+              for (const heading of headings) {
+                if (heading instanceof HTMLElement) {
+                  const top = heading.offsetTop;
+                  if (scrollPosition >= top) {
+                    current = heading;
+                  } else {
+                    break;
+                  }
+                }
+              }
+            }
+            
+            const currentId = current ? current.getAttribute('id') : '';
+            if (currentId) {
+              highlightLink(currentId);
+            }
+          },
+          {
+            rootMargin: '-100px 0px -60% 0px',
+            threshold: 0
+          }
+        );
+
+        headings.forEach((heading) => observer.observe(heading));
+      }
+
+      // 2. Mobile Drawer logic
+      const mobileBtn = document.getElementById('toc-mobile-btn');
+      const backdrop = document.getElementById('toc-mobile-backdrop');
+      const drawer = document.getElementById('toc-mobile-drawer');
+      const closeBtn = document.getElementById('toc-mobile-close');
+
+      // Teleport mobile button, backdrop and drawer to document.body to escape the parent container's z-index stacking context
+      if (mobileBtn && mobileBtn.parentElement !== document.body) {
+        document.body.appendChild(mobileBtn);
+      }
+      if (backdrop && drawer && backdrop.parentElement !== document.body) {
+        document.body.appendChild(backdrop);
+        document.body.appendChild(drawer);
+      }
+
+      function openDrawer() {
+        drawer?.classList.remove('translate-x-full');
+        backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+        backdrop?.classList.add('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDrawer() {
+        drawer?.classList.add('translate-x-full');
+        backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
+        backdrop?.classList.add('opacity-0', 'pointer-events-none');
+        document.body.style.overflow = '';
+      }
+
+      mobileBtn?.addEventListener('click', openDrawer);
+      backdrop?.addEventListener('click', closeDrawer);
+      closeBtn?.addEventListener('click', closeDrawer);
+
+      // 3. Smooth scroll on link click (bypassing Astro router issues with hash links)
+      links.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href')?.substring(1);
+          if (targetId) {
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+              isScrollingTo = targetId;
+              highlightLink(targetId);
+              
+              if (scrollTimeout) clearTimeout(scrollTimeout);
+              
+              history.pushState(null, '', `#${targetId}`);
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              
+              scrollTimeout = setTimeout(() => {
+                isScrollingTo = null;
+                scrollTimeout = null;
+              }, 800);
+            }
+          }
+        });
+      });
+
+      mobileLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href')?.substring(1);
+          if (targetId) {
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+              isScrollingTo = targetId;
+              highlightLink(targetId);
+              
+              if (scrollTimeout) clearTimeout(scrollTimeout);
+              
+              closeDrawer();
+              // Small timeout to allow the drawer close animation to start before scrolling
+              setTimeout(() => {
+                history.pushState(null, '', `#${targetId}`);
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                scrollTimeout = setTimeout(() => {
+                  isScrollingTo = null;
+                  scrollTimeout = null;
+                }, 800);
+              }, 150);
+            }
+          }
+        });
+      });
+    }
+
+    // Initialize logic
+    setupScrollSpyAndDrawer();
+    document.addEventListener('astro:after-swap', setupScrollSpyAndDrawer);
+  </script>
 </Layout>

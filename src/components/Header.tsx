@@ -39,6 +39,14 @@ export default function Header({ lang }: HeaderProps) {
 
   // Handler to toggle language URL prefix
   const toggleLanguage = () => {
+    const targetLang = lang === 'pl' ? 'en' : 'pl';
+    const altLink = document.querySelector(`link[rel="alternate"][hreflang="${targetLang}"]`) as HTMLLinkElement;
+    
+    if (altLink && altLink.href) {
+      window.location.href = altLink.href;
+      return;
+    }
+    
     const base = import.meta.env.BASE_URL || '/'; // e.g. "/habit22/"
     const currentPath = window.location.pathname; // e.g. "/habit22/en/about"
     

@@ -1,0 +1,83 @@
+---
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'pl' } = Astro.props;
+const label = lang === 'pl' ? 'Wróć na górę' : 'Back to top';
+---
+
+<button
+  id="back-to-top"
+  class="group fixed bottom-6 right-6 md:bottom-8 md:right-8 z-35 flex items-center justify-center w-11 h-11 md:w-12 md:h-12 rounded-full border border-[#2C2119]/25 bg-[#FAF7F2]/95 backdrop-blur-xs text-[#2C2119] opacity-0 translate-y-4 pointer-events-none transition-all duration-500 ease-out hover:border-[#2C2119] hover:bg-[#2C2119] hover:text-[#FAF7F2] hover:-translate-y-1 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8C7C6D] cursor-pointer"
+  aria-label={label}
+  title={label}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="transition-transform duration-300 ease-out"
+  >
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<script>
+  function setupBackToTop() {
+    const button = document.getElementById('back-to-top');
+    if (!button) return;
+
+    const handleScroll = () => {
+      const tocButton = document.getElementById('toc-mobile-btn');
+
+      if (window.scrollY > 300) {
+        button.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        button.classList.add('opacity-100', 'translate-y-0');
+
+        if (tocButton) {
+          tocButton.classList.remove('bottom-6', 'md:bottom-8');
+          tocButton.classList.add('bottom-20', 'md:bottom-24');
+        }
+      } else {
+        button.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        button.classList.remove('opacity-100', 'translate-y-0');
+
+        if (tocButton) {
+          tocButton.classList.add('bottom-6', 'md:bottom-8');
+          tocButton.classList.remove('bottom-20', 'md:bottom-24');
+        }
+      }
+    };
+
+    const handleClick = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    };
+
+    // Remove existing event listeners if any (to avoid duplicates on page swap)
+    window.removeEventListener('scroll', handleScroll);
+    button.removeEventListener('click', handleClick);
+
+    // Add event listeners
+    window.addEventListener('scroll', handleScroll);
+    button.addEventListener('click', handleClick);
+
+    // Initial check in case page starts scrolled down
+    handleScroll();
+  }
+
+  // Initial execution on full page load
+  setupBackToTop();
+
+  // Re-initialize when Astro View Transitions swap content
+  document.addEventListener('astro:after-swap', setupBackToTop);
+</script>

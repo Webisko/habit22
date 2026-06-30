@@ -80,11 +80,11 @@ const { t, l } = useTranslations(lang);
         </div>
 
         <div class="relative group/journal select-none">
-          <div class="flex lg:grid lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto hide-scrollbar snap-x snap-mandatory lg:snap-none scroll-smooth pb-4 relative">
+          <div class="drag-to-scroll flex lg:grid lg:grid-cols-3 gap-6 md:gap-8 overflow-x-auto hide-scrollbar snap-x snap-mandatory lg:snap-none scroll-smooth pb-4 relative">
             {t.journal_posts.map((post) => (
               <article class="group cursor-pointer flex flex-col h-full flex-shrink-0 w-[76%] sm:w-[41%] lg:w-full snap-start">
-                <a href={l(`journal/${post.id}`)} class="flex flex-col h-full">
-                  <div class="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3] rounded-lg">
+                <a href={l(`journal/${post.slug}`)} class="flex flex-col h-full">
+                  <div class="aspect-[4/3] w-full overflow-hidden mb-6 bg-[#EBE2D3]">
                     <img
                       src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`}
                       alt={post.title}
@@ -141,7 +141,7 @@ const { t, l } = useTranslations(lang);
             <input
               type="checkbox"
               required
-              class="w-4 h-4 accent-[#2C2119] bg-transparent border-[#2C2119] mt-0.5"
+              class="w-5 h-5 shrink-0 accent-[#2C2119] bg-transparent border-[#2C2119] mt-0.5"
             />
             <span class="text-sm text-[#5C4E43] leading-relaxed select-none">
               {t.newsletter_consent}

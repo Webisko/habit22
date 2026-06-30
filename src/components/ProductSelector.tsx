@@ -57,43 +57,56 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
     return () => clearTimeout(timer);
   }, [product, selectedSizeId]);
 
+  // Synchronize thumbnail slider scroll position when active image changes
+  useEffect(() => {
+    const syncScroll = () => {
+      if (scrollContainerRef.current) {
+        const container = scrollContainerRef.current;
+        const firstChild = container.firstElementChild?.firstElementChild as HTMLElement;
+        if (firstChild) {
+          const itemWidth = firstChild.getBoundingClientRect().width + 16;
+          const containerWidth = container.getBoundingClientRect().width;
+          if (itemWidth > 0 && containerWidth > 0) {
+            const targetIndex = 3 + (productImageIndex % 3);
+            const targetScrollLeft = targetIndex * itemWidth - (containerWidth / 2) + (itemWidth / 2) - 8;
+            container.scrollTo({
+              left: targetScrollLeft,
+              top: 0,
+              behavior: "smooth",
+            });
+          }
+        }
+      }
+    };
+    const timer = setTimeout(syncScroll, 50);
+    return () => clearTimeout(timer);
+  }, [productImageIndex]);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1.618fr_1fr] gap-12 md:gap-24 mb-16 w-full">
+    <div className="grid grid-cols-1 lg:grid-cols-[1.618fr_1fr] gap-8 lg:gap-16 2xl:gap-24 mb-16 w-full">
       {/* Product Images & Gallery */}
-      <div className="w-full flex flex-col space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-4 min-w-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full aspect-square md:aspect-auto md:h-[550px] lg:h-[650px] landscape:h-[85vh] overflow-hidden relative group cursor-pointer bg-[#FAF7F2] rounded-2xl flex items-center justify-center p-4 md:p-8"
+          className="w-full overflow-hidden relative group cursor-pointer"
           onClick={() => setIsLightboxOpen(true)}
         >
-          {/* Desktop Left Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               handlePrevImage();
             }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover:opacity-100 transition-opacity z-10 hidden lg:block"
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover:opacity-100 transition-opacity z-10 hidden xl:block"
             aria-label="Previous image"
           >
             <ChevronLeft size={20} />
-          </button>
-          {/* Tablet Left Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePrevImage();
-            }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 hidden sm:block lg:hidden shadow-sm"
-            aria-label="Previous image"
-          >
-            <ChevronLeft size={24} />
           </button>
 
           <img
             src={product.images[productImageIndex]}
             alt={t.product_section_title}
-            className="w-full h-full object-contain mix-blend-multiply opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+            className="w-full h-auto block mix-blend-multiply opacity-90"
           />
 
           {/* Desktop Right Button */}
@@ -102,26 +115,15 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
               e.stopPropagation();
               handleNextImage();
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover:opacity-100 transition-opacity z-10 hidden lg:block"
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover:opacity-100 transition-opacity z-10 hidden xl:block"
             aria-label="Next image"
           >
             <ChevronRight size={20} />
           </button>
-          {/* Tablet Right Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNextImage();
-            }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FAF7F2]/80 p-3 rounded-full text-[#2C2119] opacity-100 transition-opacity z-10 hidden sm:block lg:hidden shadow-sm"
-            aria-label="Next image"
-          >
-            <ChevronRight size={24} />
-          </button>
         </motion.div>
 
-        {/* Mobile carousel controls */}
-        <div className="flex sm:hidden justify-center items-center space-x-12 py-2">
+        {/* Mobile & Tablet carousel controls */}
+        <div className="flex xl:hidden justify-center items-center space-x-12 py-2">
           <button
             onClick={handlePrevImage}
             className="text-[#2C2119] hover:text-[#8C7C6D] transition-colors focus:outline-none"
@@ -149,7 +151,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
                 });
               }
             }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10 hidden lg:block"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10 hidden xl:block"
             aria-label="Scroll thumbnails left"
           >
             <ChevronLeft size={20} />
@@ -208,7 +210,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
                   key={idx}
                   onClick={() => setProductImageIndex(idx % 3)}
                   className={`relative snap-start flex-shrink-0 w-24 h-24 md:w-32 md:h-32 overflow-hidden bg-[#EBE2D3] transition-all ${
-                    productImageIndex === idx % 3 ? "opacity-100" : "opacity-50 hover:opacity-100"
+                    (productImageIndex % 3) === (idx % 3) ? "opacity-100" : "opacity-50 hover:opacity-100"
                   }`}
                   draggable={false}
                 >
@@ -232,7 +234,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
                 });
               }
             }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10 hidden lg:block"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-[#FAF7F2] p-2 rounded-full shadow-md text-[#2C2119] opacity-0 group-hover/slider:opacity-100 transition-opacity z-10 hidden xl:block"
             aria-label="Scroll thumbnails right"
           >
             <ChevronRight size={20} />
@@ -241,7 +243,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
       </div>
 
       {/* Product Customizer & Add-to-Cart Panel */}
-      <div className="w-full flex flex-col justify-center min-w-0">
+      <div className="w-full flex flex-col justify-start pt-2 lg:pt-4 min-w-0">
         <h1 className="text-2xl md:text-3xl font-serif text-[#2C2119] mb-4">
           {product.title[lang === 'pl' ? 'pl' : 'en']}
         </h1>
@@ -262,13 +264,10 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
         </p>
 
         {/* Size Selection */}
-        <div className="space-y-4 mb-8 w-full">
-          <h3 className="text-xs font-[400] text-[#2C2119]">
-            <span className="uppercase tracking-widest">
-              {lang === "pl" ? "Rozmiar" : "Size"}
-            </span>
-            : {currentSize.name[lang === 'pl' ? 'pl' : 'en']}
-          </h3>
+        <div className="flex items-center space-x-4 xl:space-x-6 mb-8 w-full">
+          <span className="text-sm font-[400] uppercase tracking-widest text-[#2C2119] w-20 xl:w-28 shrink-0">
+            {lang === "pl" ? "Rozmiar" : "Size"}
+          </span>
           <div className="flex space-x-3">
             {product.sizes.map((size) => (
               <motion.button
@@ -277,7 +276,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className={`w-12 h-10 border text-sm font-serif flex items-center justify-center transition-colors duration-150 ${
+                className={`w-12 h-12 border text-sm font-normal flex items-center justify-center transition-colors duration-150 ${
                   currentSize.id === size.id ? "border-[#2C2119] bg-[#2C2119] text-white" : "border-[#E6DCC9] text-[#2C2119] hover:border-[#8C7C6D]"
                 }`}
               >
@@ -288,8 +287,8 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
         </div>
 
         {/* Quantity Controls */}
-        <div className="flex items-center space-x-6 mb-8">
-          <span className="text-sm font-[400] uppercase tracking-widest text-[#2C2119]">
+        <div className="flex items-center space-x-4 xl:space-x-6 mb-8 w-full">
+          <span className="text-sm font-[400] uppercase tracking-widest text-[#2C2119] w-20 xl:w-28 shrink-0">
             {lang === "pl" ? "Ilość" : "Quantity"}
           </span>
           <div className="flex items-center border border-[#E6DCC9] py-2 px-2 space-x-4">
@@ -317,7 +316,7 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
             addToCart(product.id, currentSize.id, quantity);
           }}
           whileTap={{ scale: 0.98 }}
-          className="w-full bg-[#2C2119] text-white py-5 text-sm font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-16 flex items-center justify-center space-x-3 group relative overflow-hidden"
+          className="w-full bg-[#2C2119] text-white py-5 text-sm font-medium uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mb-0 flex items-center justify-center space-x-3 group relative overflow-hidden"
         >
           <span className="relative z-20">{t.add_to_cart}</span>
           <Plus
@@ -336,12 +335,12 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-[#FAF7F2] flex items-center justify-center pt-24 pb-12 px-6"
+            className="fixed inset-0 z-50 bg-[#FAF7F2] flex items-center justify-center pt-24 pb-12 px-6 md:px-12"
           >
             <div className="relative w-full h-full max-w-[1440px] mx-auto flex flex-col">
               <button
                 onClick={() => setIsLightboxOpen(false)}
-                className="absolute top-4 right-4 md:top-8 md:right-8 text-[#2C2119] hover:opacity-50 transition-opacity z-50 bg-[#EBE2D3] p-4 rounded-full shadow-lg"
+                className="absolute top-0 right-0 text-[#2C2119] hover:opacity-50 transition-opacity z-50 bg-[#EBE2D3] p-4 rounded-full shadow-lg"
               >
                 <X size={24} />
               </button>
@@ -361,15 +360,33 @@ export default function ProductSelector({ product, lang }: ProductSelectorProps)
 
                 <button
                   onClick={handlePrevImage}
-                  className="absolute left-0 md:left-12 top-1/2 -translate-y-1/2 p-4 text-[#2C2119] bg-[#EBE2D3]/80 hover:bg-[#EBE2D3] rounded-full transition-colors backdrop-blur-sm"
+                  className="hidden xl:block absolute left-12 top-1/2 -translate-y-1/2 p-4 text-[#2C2119] bg-[#EBE2D3]/80 hover:bg-[#EBE2D3] rounded-full transition-colors backdrop-blur-sm z-30"
                 >
                   <ChevronLeft size={32} strokeWidth={1.5} />
                 </button>
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-0 md:right-12 top-1/2 -translate-y-1/2 p-4 text-[#2C2119] bg-[#EBE2D3]/80 hover:bg-[#EBE2D3] rounded-full transition-colors backdrop-blur-sm"
+                  className="hidden xl:block absolute right-12 top-1/2 -translate-y-1/2 p-4 text-[#2C2119] bg-[#EBE2D3]/80 hover:bg-[#EBE2D3] rounded-full transition-colors backdrop-blur-sm z-30"
                 >
                   <ChevronRight size={32} strokeWidth={1.5} />
+                </button>
+              </div>
+
+              {/* Lightbox Navigation below the image on mobile/tablet (< xl) */}
+              <div className="flex xl:hidden justify-center items-center space-x-12 py-4 z-30">
+                <button
+                  onClick={handlePrevImage}
+                  className="text-[#2C2119] hover:text-[#8C7C6D] transition-colors focus:outline-none bg-[#EBE2D3] p-4 rounded-full shadow-md"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={28} strokeWidth={1.5} />
+                </button>
+                <button
+                  onClick={handleNextImage}
+                  className="text-[#2C2119] hover:text-[#8C7C6D] transition-colors focus:outline-none bg-[#EBE2D3] p-4 rounded-full shadow-md"
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={28} strokeWidth={1.5} />
                 </button>
               </div>
             </div>

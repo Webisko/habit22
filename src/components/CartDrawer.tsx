@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '@nanostores/react';
-import { ShoppingBag, X, MoveRight } from 'lucide-react';
+import { ShoppingBag, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { navigate } from 'astro:transitions/client';
 import { isCartOpen, cartItems, cartCount, removeFromCart } from '../stores/cart';
@@ -16,6 +16,37 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
   const $cartItems = useStore(cartItems);
   const $cartCount = useStore(cartCount);
   const { t, l } = useTranslations(lang);
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [showTopShadow, setShowTopShadow] = React.useState(false);
+  const [showBottomShadow, setShowBottomShadow] = React.useState(false);
+
+  const checkScroll = React.useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const hasScroll = el.scrollHeight > el.clientHeight;
+    setShowTopShadow(hasScroll && el.scrollTop > 5);
+    setShowBottomShadow(hasScroll && el.scrollTop + el.clientHeight < el.scrollHeight - 5);
+  }, []);
+
+  React.useEffect(() => {
+    if (!$isCartOpen) return;
+
+    checkScroll();
+
+    const resizeObserver = new ResizeObserver(() => {
+      checkScroll();
+    });
+
+    const el = containerRef.current;
+    if (el) {
+      resizeObserver.observe(el);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [$isCartOpen, $cartItems, checkScroll]);
 
   const handleCheckoutClick = () => {
     isCartOpen.set(false);
@@ -79,58 +110,92 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                 </div>
               ) : (
                 <div className="flex flex-col flex-grow min-h-0 justify-between">
-                  <div className="flex-1 overflow-y-auto mb-6 pr-2 custom-scrollbar space-y-6 pt-4 min-h-0">
-                    {$cartItems.map((item) => {
-                      const [productId, sizeId] = item.id.split("|");
-                      const itemProduct = PRODUCTS.find(
-                        (p) => p.id === productId,
-                      );
-                      const itemSize = itemProduct?.sizes.find(
-                        (s) => s.id === sizeId,
-                      );
-                      if (!itemProduct || !itemSize) return null;
+                  <div className="flex-1 relative min-h-0 mb-6">
+                    <div
+                      ref={containerRef}
+                      onScroll={checkScroll}
+                      className="h-full overflow-y-auto -mr-6 pr-4 md:-mr-12 md:pr-10 custom-scrollbar space-y-6 pt-4 min-h-0"
+                    >
+                      {$cartItems.map((item, index) => {
+                        const [productId, sizeId] = item.id.split("|");
+                        const itemProduct = PRODUCTS.find(
+                          (p) => p.id === productId,
+                        );
+                        const itemSize = itemProduct?.sizes.find(
+                          (s) => s.id === sizeId,
+                        );
+                        if (!itemProduct || !itemSize) return null;
 
-                      return (
-                        <div
-                          key={item.id}
-                          className="flex items-center gap-6 border-b border-[#E6DCC9] pb-6 text-left"
-                        >
-                          <div className="w-24 h-32 bg-[#FAF7F2] overflow-hidden flex-shrink-0">
-                            <img
-                              src={itemProduct.images[0]}
-                              alt="Habit22 Bag"
-                              className="w-full h-full object-contain p-1 mix-blend-multiply opacity-90 grayscale-[10%]"
-                            />
-                          </div>
-                          <div className="flex flex-col flex-1">
-                            <div className="flex justify-between items-start mb-2">
-                              <h4 className="font-serif text-[#2C2119] text-lg">
-                                {t.product_section_title} -{" "}
-                                {itemProduct.design[lang === 'pl' ? 'pl' : 'en']}
-                              </h4>
-                              <button
-                                onClick={() => removeFromCart(item.id)}
-                                className="text-[#8C7C6D] hover:text-[#2C2119] ml-2"
-                              >
-                                <X size={16} />
-                              </button>
+                        const productPath = l('product/' + itemProduct.slugs[lang === 'pl' ? 'pl' : 'en']);
+                        const isLast = index === $cartItems.length - 1;
+
+                        return (
+                          <div
+                            key={item.id}
+                            className={`flex items-start gap-6 pb-6 text-left ${
+                              isLast ? "" : "border-b border-[#E6DCC9]"
+                            }`}
+                          >
+                            <a
+                              href={productPath}
+                              onClick={() => isCartOpen.set(false)}
+                              className="w-24 h-24 overflow-hidden flex-shrink-0 aspect-square hover:opacity-80 transition-opacity"
+                            >
+                              <img
+                                src={itemProduct.images[0]}
+                                alt="Habit22 Bag"
+                                className="w-full h-full object-cover opacity-90 grayscale-[10%]"
+                              />
+                            </a>
+                            <div className="flex flex-col flex-1 min-h-[96px] justify-between">
+                              <div className="flex justify-between items-start gap-2">
+                                <a
+                                  href={productPath}
+                                  onClick={() => isCartOpen.set(false)}
+                                  className="hover:text-[#8C7C6D] transition-colors flex-grow"
+                                >
+                                  <h4 className="font-serif text-[#2C2119] text-base leading-tight">
+                                    {t.product_section_title} -{" "}
+                                    {itemProduct.design[lang === 'pl' ? 'pl' : 'en']}
+                                  </h4>
+                                </a>
+                                <button
+                                  onClick={() => removeFromCart(item.id)}
+                                  className="text-[#8C7C6D] hover:text-[#2C2119] shrink-0"
+                                >
+                                  <X size={16} />
+                                </button>
+                              </div>
+                              <div className="flex flex-col gap-1 mt-3 text-base text-[#8C7C6D] font-serif">
+                                <div>
+                                  {lang === 'pl' ? 'Rozmiar' : 'Size'}: {itemSize.name[lang === 'pl' ? 'pl' : 'en']}
+                                </div>
+                                <div className="flex items-center justify-between w-full">
+                                  <span>
+                                    {lang === 'pl' ? 'Ilość' : 'Qty'}: {item.quantity}
+                                  </span>
+                                  <span className="text-[#5C4E43] font-serif font-semibold">
+                                    {t.product_price}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                            <p className="text-sm text-[#8C7C6D] mb-4 font-serif">
-                              {lang === 'pl' ? 'Rozmiar' : 'Size'}: {itemSize.name[lang === 'pl' ? 'pl' : 'en']}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[#5C4E43] font-serif pr-2">
-                                {t.product_price}
-                              </span>
-                              <span className="text-sm text-[#8C7C6D] uppercase font-semibold">
-                                {lang === "pl" ? "Ilość" : "Qty"}:{" "}
-                                {item.quantity}
-                              </span>
-                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
+                    {/* Top Shadow Gradient */}
+                    <div
+                      className={`absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-[#FAF7F2] to-transparent pointer-events-none transition-opacity duration-300 ${
+                        showTopShadow ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                    {/* Bottom Shadow Gradient */}
+                    <div
+                      className={`absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-[#FAF7F2] to-transparent pointer-events-none transition-opacity duration-300 ${
+                        showBottomShadow ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
                   </div>
 
                   <div className="mt-auto pt-6 border-t border-[#E6DCC9] shrink-0">
@@ -149,10 +214,21 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                       <span className="relative z-20">
                         {t.go_to_checkout}
                       </span>
-                      <MoveRight
-                        size={16}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={16}
+                        height={16}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
-                      />
+                      >
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
 
                       {/* Button shine effect */}
                       <span className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />

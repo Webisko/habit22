@@ -9,15 +9,18 @@ const { lang } = Astro.props;
 const { t, l } = useTranslations(lang);
 ---
 
-<footer class="w-full py-16 md:py-24 px-6 md:px-12 bg-[#2C2119] font-sans text-[#E6DCC9] text-sm uppercase tracking-widest relative z-10">
-  <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-    <div class="col-span-1 md:col-span-2">
+<footer class="w-full pt-16 pb-12 md:pt-24 md:pb-16 px-6 md:px-12 bg-[#2C2119] font-sans text-[#E6DCC9] text-sm uppercase tracking-widest relative z-0">
+  <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[2fr_1fr_auto] gap-12">
+    <div class="col-span-1">
       <h3 class="text-xl font-serif text-[#F3EDE3] mb-6 uppercase">
         Habit22
       </h3>
-      <p class="max-w-xs leading-loose mb-8 normal-case font-serif tracking-normal text-base text-[#CBBFA8]">
+      <p class="max-w-xs leading-loose mb-6 normal-case font-serif tracking-normal text-base text-[#CBBFA8]">
         {t.footer_p1}
       </p>
+      <a href="mailto:habitworld22@gmail.com" class="hover:text-white transition-colors normal-case tracking-normal text-[#CBBFA8] text-base font-serif block">
+        habitworld22@gmail.com
+      </a>
     </div>
 
     <div>
@@ -64,36 +67,24 @@ const { t, l } = useTranslations(lang);
             {t.privacy}
           </a>
         </li>
-        <li>
-          <a href={l('cookies')} class="hover:text-white transition-colors">
-            {t.cookies}
-          </a>
-        </li>
-        <li>
-          <a href="mailto:habitworld22@gmail.com" class="hover:text-white transition-colors normal-case tracking-normal mt-2 inline-block">
-            habitworld22@gmail.com
-          </a>
-        </li>
       </ul>
     </div>
   </div>
 
-  <div class="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-[#3A2D23] flex flex-col md:flex-row justify-between items-center text-sm text-[#CBBFA8]">
-    <div class="flex flex-col md:flex-row items-center gap-2 md:gap-8 text-center md:text-left">
-      <p>
-        &copy; {new Date().getFullYear()} Habit22 . {t.all_rights_reserved}
-      </p>
-      <p class="normal-case">
-        {t.developed_by}{" "}
-        <a
-          href="https://webisko.pl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="underline hover:text-white transition-colors"
-        >
-          Webisko.pl
-        </a>
-      </p>
-    </div>
+  <div class="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-[#3A2D23] flex flex-col items-center gap-4 text-sm text-[#CBBFA8]">
+    <p class="text-center">
+      &copy; {new Date().getFullYear()} Habit22 | {t.all_rights_reserved}
+    </p>
+    <p class="normal-case text-center">
+      {t.developed_by}{" "}
+      <a
+        href="https://webisko.pl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="underline hover:text-white transition-colors"
+      >
+        Webisko.pl
+      </a>
+    </p>
   </div>
 </footer>

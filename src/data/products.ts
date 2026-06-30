@@ -8,6 +8,10 @@ export interface ProductSize {
 
 export interface Product {
   id: string;
+  slugs: {
+    pl: string;
+    en: string;
+  };
   title: {
     pl: string;
     en: string;
@@ -23,6 +27,7 @@ export interface Product {
 export const PRODUCTS: Product[] = [
   {
     id: "floral",
+    slugs: { pl: "kratka-vichy", en: "vichy-check" },
     title: { pl: "Kratka Vichy", en: "Vichy Check" },
     design: {
       pl: "Kolekcja Gingham / Vichy",
@@ -44,6 +49,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "len",
+    slugs: { pl: "szalwiowa-zielen", en: "sage-green" },
     title: { pl: "Szałwiowa zieleń", en: "Sage Green" },
     design: {
       pl: "Kolekcja Eucalyptus / Linen",
@@ -65,6 +71,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "oliwa",
+    slugs: { pl: "gleboki-granat", en: "deep-navy" },
     title: { pl: "Głęboki granat", en: "Deep Navy" },
     design: { pl: "Kolekcja Ginkgo / Navy", en: "Ginkgo / Navy Collection" },
     images: [

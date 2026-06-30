@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, MoveRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useTranslations } from '../i18n/utils';
 import { PRODUCTS } from '../data/products';
@@ -211,12 +211,9 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
 
             {/* Size Selector */}
             <div className="space-y-4 mb-8 w-full">
-              <h3 className="text-xs font-[400] text-[#2C2119]">
-                <span className="uppercase tracking-widest">
-                  {lang === "pl" ? "Rozmiar" : "Size"}
-                </span>
-                : {currentSize.name[lang === 'pl' ? 'pl' : 'en']}
-              </h3>
+              <span className="block text-sm font-[400] uppercase tracking-widest text-[#2C2119]">
+                {lang === "pl" ? "Rozmiar" : "Size"}
+              </span>
               <div className="flex space-x-3">
                 {product.sizes.map((size) => (
                   <motion.button
@@ -225,7 +222,7 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.15 }}
-                    className={`w-12 h-10 border text-sm font-serif flex items-center justify-center transition-colors duration-150 ${
+                    className={`w-12 h-12 border text-sm font-normal flex items-center justify-center transition-colors duration-150 ${
                       currentSize.id === size.id ? "border-[#2C2119] bg-[#2C2119] text-white" : "border-[#E6DCC9] text-[#2C2119] hover:border-[#8C7C6D]"
                     }`}
                   >
@@ -255,14 +252,25 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
               </motion.button>
 
               <a
-                href={l(`product/${product.id}`)}
+                href={l(`product/${product.slugs[lang as 'pl' | 'en']}`)}
                 className="w-full border border-[#2C2119] text-[#2C2119] py-5 text-sm font-normal uppercase tracking-[0.2em] hover:bg-[#2C2119] hover:text-white transition-colors flex items-center justify-center space-x-3 group relative overflow-hidden text-center"
               >
                 <span className="relative z-20">{t.product_details}</span>
-                <MoveRight
-                  size={16}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={16}
+                  height={16}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-8 group-hover:ml-0 relative z-20"
-                />
+                >
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
               </a>
             </div>
           </motion.div>

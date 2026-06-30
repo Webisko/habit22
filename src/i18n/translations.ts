@@ -17,6 +17,7 @@ export interface ContentSection {
 
 export interface JournalPost {
   id: number;
+  slug: string;
   date: string;
   title: string;
   excerpt: string;
@@ -140,6 +141,7 @@ export interface TranslationSchema {
   faq_items: FAQItem[];
   journal_section_title: string;
   journal_read_more: string;
+  show_more: string;
   journal_posts: JournalPost[];
   back_to_journal: string;
   all_posts: string;
@@ -155,7 +157,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     contact: "Kontakt",
     shortcuts: "Na skróty",
     terms: "Regulamin sklepu",
-    privacy: "Polityka prywatności",
+    privacy: "Polityka prywatności i cookies",
     cookies: "Polityka cookies",
     faq: "FAQ",
     faq_title: "Często zadawane pytania",
@@ -369,14 +371,14 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     order_details: "Szczegóły zamówienia",
     order_status: "Status",
     order_product: "Produkt",
-    order_total: "Suma",
+    order_total: "Łącznie",
     order_back: "Wróć do listy zamówień",
     order_str: "Zamówienie",
     order_date_str: "Data złożenia: 24 Maj 2026",
     order_date_short: "24 Maj 2026",
     status_processing: "W realizacji",
     explore: "Odkrywaj",
-    all_rights_reserved: "Wszelkie prawa zastrzeżone.",
+    all_rights_reserved: "Wszelkie prawa zastrzeżone",
     thank_you_title: "Dziękujemy za zamówienie",
     thank_you_message:
       "Twoje zamówienie zostało przyjęte do realizacji. Potwierdzenie zostało wysłane na adres e-mail.",
@@ -406,9 +408,11 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     ],
     journal_section_title: "Dziennik",
     journal_read_more: "Czytaj dalej",
+    show_more: "Pokaż więcej",
     journal_posts: [
       {
         id: 1,
+        slug: "pielegnacja-naturalnego-lnu",
         date: "24 Maj 2026",
         title: "Pielęgnacja naturalnego lnu",
         excerpt:
@@ -421,6 +425,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
       },
       {
         id: 2,
+        slug: "rytualy-codziennosci",
         date: "10 Kwi 2026",
         title: "Rytuały codzienności",
         excerpt:
@@ -433,6 +438,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
       },
       {
         id: 3,
+        slug: "wybor-ma-znaczenie",
         date: "22 Mar 2026",
         title: "Wybór ma znaczenie",
         excerpt:
@@ -456,7 +462,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     contact: "Contact",
     shortcuts: "Shortcuts",
     terms: "Terms of Service",
-    privacy: "Privacy Policy",
+    privacy: "Privacy & Cookies Policy",
     cookies: "Cookie Policy",
     faq: "FAQ",
     faq_title: "Frequently Asked Questions",
@@ -677,7 +683,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     order_date_short: "May 24, 2026",
     status_processing: "In progress",
     explore: "Explore",
-    all_rights_reserved: "All rights reserved.",
+    all_rights_reserved: "All rights reserved",
     thank_you_title: "Thank you for your order",
     thank_you_message:
       "Your order has been received and is being processed. A confirmation has been sent to your email address.",
@@ -707,9 +713,11 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     ],
     journal_section_title: "Journal",
     journal_read_more: "Read more",
+    show_more: "Show more",
     journal_posts: [
       {
         id: 1,
+        slug: "caring-for-natural-linen",
         date: "May 24, 2026",
         title: "Caring for natural linen",
         excerpt:
@@ -722,6 +730,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
       },
       {
         id: 2,
+        slug: "everyday-rituals",
         date: "Apr 10, 2026",
         title: "Everyday rituals",
         excerpt:
@@ -734,6 +743,7 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
       },
       {
         id: 3,
+        slug: "choices-matter",
         date: "Mar 22, 2026",
         title: "Choices matter",
         excerpt:

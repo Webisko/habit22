@@ -5,14 +5,14 @@ import { TRANSLATIONS } from '../../i18n/translations';
 export function getStaticPaths() {
   const posts = TRANSLATIONS.pl.journal_posts;
   return posts.map((post) => ({
-    params: { id: String(post.id) },
+    params: { slug: post.slug },
   }));
 }
 
-const { id } = Astro.params;
+const { slug } = Astro.params;
 const posts = TRANSLATIONS.pl.journal_posts;
-const post = posts.find((p) => String(p.id) === id)!;
-const otherPosts = posts.filter((p) => String(p.id) !== id).slice(0, 3);
+const post = posts.find((p) => p.slug === slug)!;
+const otherPosts = posts.filter((p) => p.slug !== slug).slice(0, 3);
 ---
 
 <JournalPostTemplate post={post} otherPosts={otherPosts} lang="pl" />

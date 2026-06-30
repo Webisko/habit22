@@ -8,36 +8,323 @@ interface Props {
 
 const { lang } = Astro.props;
 const { t } = useTranslations(lang);
+
+function slugify(text: string): string {
+  const polishChars: Record<string, string> = {
+    'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o', 'ś': 's', 'ź': 'z', 'ż': 'z',
+    'Ą': 'a', 'Ć': 'c', 'Ę': 'e', 'Ł': 'l', 'Ń': 'n', 'Ó': 'o', 'Ś': 's', 'Ź': 'z', 'Ż': 'z'
+  };
+  return text
+    .split('')
+    .map(char => polishChars[char] || char)
+    .join('')
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+// Flat list of all questions across categories for Table of Contents
+const questions = t.faq_page_content.flatMap(section => 
+  section.items.map(item => ({
+    q: item.q,
+    id: slugify(item.q)
+  }))
+);
 ---
 
 <Layout title={`${t.faq} - Habit22`} lang={lang}>
-  <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col relative z-10 animate-fade-in-up">
-    <div class="flex flex-col mb-16">
-      <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16">
+  <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12 xl:gap-16 items-start relative z-10">
+    <article class="w-full max-w-[800px] mx-auto lg:mx-0 animate-fade-in-up">
+      <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16 text-left">
         {t.faq_title}
       </h1>
 
       <div class="flex flex-col space-y-16">
         {t.faq_page_content.map((section) => (
           <div class="flex flex-col">
-            <h2 class="text-3xl font-serif font-bold text-[#2C2119] mb-8 uppercase tracking-wider">
+            <h2 class="text-2xl font-serif font-semibold text-[#2C2119] mb-8 uppercase tracking-widest">
               {section.title}
             </h2>
             <div class="flex flex-col space-y-8">
-              {section.items.map((item) => (
-                <div class="flex flex-col border-b border-[#E6DCC9] pb-6 last:border-b-0 last:pb-0">
-                  <h3 class="text-xl font-serif text-[#2C2119] mb-4">
-                    {item.q}
-                  </h3>
-                  <p class="text-[#5C4E43] leading-relaxed font-serif">
-                    {item.a}
-                  </p>
-                </div>
-              ))}
+              {section.items.map((item) => {
+                const id = slugify(item.q);
+                return (
+                  <div class="flex flex-col border-b border-[#E6DCC9] pb-6 last:border-b-0 last:pb-0 scroll-mt-20 2xl:scroll-mt-36" id={id}>
+                    <h3 class="text-xl font-serif text-[#2C2119] mb-4">
+                      {item.q}
+                    </h3>
+                    <p class="text-[#5C4E43] leading-relaxed font-serif">
+                      {item.a}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </article>
+    
+    <aside class="hidden lg:block sticky top-48 w-full">
+      <h2 class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-6 font-semibold">
+        {lang === 'pl' ? 'Często zadawane pytania' : 'Frequently Asked Questions'}
+      </h2>
+      <nav class="toc-nav max-h-[60vh] overflow-y-auto hide-scrollbar">
+        <div class="space-y-6">
+          {t.faq_page_content.map((section) => (
+            <div class="space-y-2">
+              <h3 class="text-xs font-semibold uppercase tracking-widest text-[#2C2119]/80">
+                {section.title}
+              </h3>
+              <ul class="border-l border-[#E6DCC9] space-y-3 pl-0">
+                {section.items.map((item) => {
+                  const id = slugify(item.q);
+                  return (
+                    <li>
+                      <a
+                        href={`#${id}`}
+                        class="toc-link block hover:text-[#2C2119] transition-colors leading-relaxed border-l-2 border-transparent pl-3 -ml-[1.5px] hover:border-[#8C7C6D] text-[15px] normal-case tracking-normal text-[#8C7C6D]"
+                        data-id={id}
+                      >
+                        {item.q}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </nav>
+    </aside>
   </main>
+
+  <!-- Floating Mobile TOC Button -->
+  <button
+    id="toc-mobile-btn"
+    class="lg:hidden fixed bottom-6 right-6 md:bottom-8 md:right-8 z-40 bg-[#2C2119] text-[#FAF7F2] w-11 h-11 md:w-12 md:h-12 rounded-full border border-[#FAF7F2]/20 shadow-[0_0_10px_rgba(250,247,242,0.35)] hover:bg-[#43352A] transition-all duration-500 ease-out active:scale-95 flex items-center justify-center"
+    aria-label="Często zadawane pytania"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="3" y1="6" y2="6"/><line x1="21" x2="9" y1="12" y2="12"/><line x1="21" x2="7" y1="18" y2="18"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+  </button>
+
+  <!-- Mobile Drawer Backdrop -->
+  <div
+    id="toc-mobile-backdrop"
+    class="lg:hidden fixed inset-0 bg-[#2C2119]/40 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 z-50"
+  ></div>
+
+  <!-- Mobile Drawer Container -->
+  <div
+    id="toc-mobile-drawer"
+    class="lg:hidden fixed right-0 top-0 bottom-0 w-[320px] max-w-[90vw] bg-[#FAF7F2] border-l border-[#E6DCC9] translate-x-full transition-transform duration-300 ease-in-out z-50 p-6 flex flex-col shadow-2xl"
+  >
+    <div class="flex justify-between items-center mb-8 pb-4 border-b border-[#E6DCC9]">
+      <h2 class="text-sm uppercase tracking-widest text-[#8C7C6D] font-semibold">
+        {lang === 'pl' ? 'Często zadawane pytania' : 'Frequently Asked Questions'}
+      </h2>
+      <button
+        id="toc-mobile-close"
+        class="text-[#8C7C6D] hover:text-[#2C2119] p-1 transition-colors"
+        aria-label="Zamknij"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+      </button>
+    </div>
+    <nav class="flex-grow overflow-y-auto hide-scrollbar">
+      <div class="space-y-6">
+        {t.faq_page_content.map((section) => (
+          <div class="space-y-2">
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-[#2C2119]/80">
+              {section.title}
+            </h3>
+            <ul class="border-l border-[#E6DCC9] space-y-3 pl-0">
+              {section.items.map((item) => {
+                const id = slugify(item.q);
+                return (
+                  <li>
+                    <a
+                      href={`#${id}`}
+                      class="toc-mobile-link block hover:text-[#2C2119] transition-colors leading-relaxed border-l-2 border-transparent pl-3 -ml-[1.5px] hover:border-[#8C7C6D] text-[15px] normal-case tracking-normal text-[#8C7C6D]"
+                      data-id={id}
+                    >
+                      {item.q}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    function setupFAQScrollSpyAndDrawer() {
+      const links = document.querySelectorAll('.toc-link');
+      const mobileLinks = document.querySelectorAll('.toc-mobile-link');
+      const headings = Array.from(document.querySelectorAll('article div[id]'));
+      
+      let isScrollingTo = null;
+      let scrollTimeout = null;
+
+      function highlightLink(currentId) {
+        links.forEach((link) => {
+          const dataId = link.getAttribute('data-id');
+          if (dataId === currentId) {
+            link.classList.add('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.remove('text-[#8C7C6D]', 'border-transparent');
+          } else {
+            link.classList.remove('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.add('text-[#8C7C6D]', 'border-transparent');
+          }
+        });
+
+        mobileLinks.forEach((link) => {
+          const dataId = link.getAttribute('data-id');
+          if (dataId === currentId) {
+            link.classList.add('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.remove('text-[#8C7C6D]', 'border-transparent');
+          } else {
+            link.classList.remove('text-[#2C2119]', 'border-[#2C2119]', 'font-semibold');
+            link.classList.add('text-[#8C7C6D]', 'border-transparent');
+          }
+        });
+      }
+
+      // 1. Scrollspy logic
+      if (headings.length > 0) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (isScrollingTo) return;
+
+            const offset = window.innerWidth >= 1536 ? 160 : 90;
+            const scrollPosition = window.scrollY + offset;
+            const isAtBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 50);
+            
+            let current = headings[0];
+            
+            if (isAtBottom && headings.length > 0) {
+              current = headings[headings.length - 1];
+            } else {
+              for (const heading of headings) {
+                if (heading instanceof HTMLElement) {
+                  const top = heading.offsetTop;
+                  if (scrollPosition >= top) {
+                    current = heading;
+                  } else {
+                    break;
+                  }
+                }
+              }
+            }
+            
+            const currentId = current ? current.getAttribute('id') : '';
+            if (currentId) {
+              highlightLink(currentId);
+            }
+          },
+          {
+            rootMargin: '-100px 0px -60% 0px',
+            threshold: 0
+          }
+        );
+
+        headings.forEach((heading) => observer.observe(heading));
+      }
+
+      // 2. Mobile Drawer logic
+      const mobileBtn = document.getElementById('toc-mobile-btn');
+      const backdrop = document.getElementById('toc-mobile-backdrop');
+      const drawer = document.getElementById('toc-mobile-drawer');
+      const closeBtn = document.getElementById('toc-mobile-close');
+
+      // Teleport mobile button, backdrop and drawer to document.body to escape parent container's z-index stacking context
+      if (mobileBtn && mobileBtn.parentElement !== document.body) {
+        document.body.appendChild(mobileBtn);
+      }
+      if (backdrop && drawer && backdrop.parentElement !== document.body) {
+        document.body.appendChild(backdrop);
+        document.body.appendChild(drawer);
+      }
+
+      function openDrawer() {
+        drawer?.classList.remove('translate-x-full');
+        backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+        backdrop?.classList.add('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDrawer() {
+        drawer?.classList.add('translate-x-full');
+        backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
+        backdrop?.classList.add('opacity-0', 'pointer-events-none');
+        document.body.style.overflow = '';
+      }
+
+      mobileBtn?.addEventListener('click', openDrawer);
+      backdrop?.addEventListener('click', closeDrawer);
+      closeBtn?.addEventListener('click', closeDrawer);
+
+      // 3. Smooth scroll on link click (bypassing Astro router issues with hash links)
+      links.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href')?.substring(1);
+          if (targetId) {
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+              isScrollingTo = targetId;
+              highlightLink(targetId);
+              
+              if (scrollTimeout) clearTimeout(scrollTimeout);
+              
+              history.pushState(null, '', `#${targetId}`);
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              
+              scrollTimeout = setTimeout(() => {
+                isScrollingTo = null;
+                scrollTimeout = null;
+              }, 800);
+            }
+          }
+        });
+      });
+
+      mobileLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href')?.substring(1);
+          if (targetId) {
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+              isScrollingTo = targetId;
+              highlightLink(targetId);
+              
+              if (scrollTimeout) clearTimeout(scrollTimeout);
+              
+              closeDrawer();
+              // Small timeout to allow the drawer close animation to start before scrolling
+              setTimeout(() => {
+                history.pushState(null, '', `#${targetId}`);
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                scrollTimeout = setTimeout(() => {
+                  isScrollingTo = null;
+                  scrollTimeout = null;
+                }, 800);
+              }, 150);
+            }
+          }
+        });
+      });
+    }
+
+    // Initialize logic
+    setupFAQScrollSpyAndDrawer();
+    document.addEventListener('astro:after-swap', setupFAQScrollSpyAndDrawer);
+  </script>
 </Layout>

@@ -3,14 +3,43 @@ import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header';
 import CartDrawer from '../components/CartDrawer';
 import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
 import '../index.css';
 
 interface Props {
   title?: string;
   lang?: string;
+  alternateUrl?: string;
 }
 
-const { title = 'Habit22', lang = 'pl' } = Astro.props;
+const { title = 'Habit22', lang = 'pl', alternateUrl } = Astro.props;
+
+// Calculate alternate URL automatically if not explicitly provided
+let calculatedAlternateUrl = alternateUrl;
+if (!calculatedAlternateUrl) {
+  const url = Astro.url;
+  const base = import.meta.env.BASE_URL || '/';
+  const pathname = url.pathname;
+  
+  if (lang === 'pl') {
+    // Toggle to EN
+    if (pathname.startsWith(base)) {
+      const relativePath = pathname.slice(base.length);
+      calculatedAlternateUrl = new URL(base + 'en/' + relativePath, url.origin).href;
+    } else {
+      calculatedAlternateUrl = new URL(base + 'en/', url.origin).href;
+    }
+  } else {
+    // Toggle to PL (remove /en/)
+    const enPrefix = base + 'en/';
+    if (pathname.startsWith(enPrefix)) {
+      const relativePath = pathname.slice(enPrefix.length);
+      calculatedAlternateUrl = new URL(base + relativePath, url.origin).href;
+    } else {
+      calculatedAlternateUrl = new URL(base, url.origin).href;
+    }
+  }
+}
 ---
 
 <!doctype html>
@@ -20,6 +49,8 @@ const { title = 'Habit22', lang = 'pl' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.8em' font-size='60' fill='%232C2119' font-family='serif' font-weight='500'>H22</text></svg>">
     <title>{title}</title>
+    <link rel="alternate" hreflang={lang === 'pl' ? 'en' : 'pl'} href={calculatedAlternateUrl} />
+    <link rel="alternate" hreflang={lang} href={Astro.url.href} />
     <ClientRouter />
   </head>
   <body class="min-h-screen bg-[#FAF7F2] text-[#2C2119] selection:bg-[#E6DCC9] font-sans relative flex flex-col">
@@ -41,6 +72,9 @@ const { title = 'Habit22', lang = 'pl' } = Astro.props;
 
     {/* Footer */}
     <Footer lang={lang} />
+
+    {/* Back to Top Button */}
+    <BackToTop lang={lang} />
 
     <script>
       function setupIntersectionObserver() {
@@ -81,14 +115,86 @@ const { title = 'Habit22', lang = 'pl' } = Astro.props;
         }
       }
 
+      function setupDragToScroll() {
+        const sliders = document.querySelectorAll('.drag-to-scroll');
+        sliders.forEach((slider) => {
+          if (slider instanceof HTMLElement) {
+            if (slider.dataset.dragInitialized) return;
+            slider.dataset.dragInitialized = 'true';
+
+            let isDown = false;
+            let startX = 0;
+            let scrollLeft = 0;
+
+            slider.addEventListener('dragstart', (e) => {
+              e.preventDefault();
+            });
+
+            slider.addEventListener('mousedown', (e) => {
+              if (!(e instanceof MouseEvent)) return;
+              isDown = true;
+              slider.style.cursor = 'grabbing';
+              startX = e.pageX - slider.offsetLeft;
+              scrollLeft = slider.scrollLeft;
+              slider.dataset.startXVal = String(e.pageX);
+              slider.style.scrollBehavior = 'auto';
+              slider.style.scrollSnapType = 'none';
+            });
+
+            slider.addEventListener('mouseleave', () => {
+              if (!isDown) return;
+              isDown = false;
+              slider.style.cursor = '';
+              slider.style.scrollBehavior = '';
+              slider.style.scrollSnapType = '';
+              slider.removeAttribute('data-is-dragging');
+            });
+
+            slider.addEventListener('mouseup', () => {
+              if (!isDown) return;
+              isDown = false;
+              slider.style.cursor = '';
+              slider.style.scrollBehavior = '';
+              slider.style.scrollSnapType = '';
+              setTimeout(() => {
+                slider.removeAttribute('data-is-dragging');
+              }, 50);
+            });
+
+            slider.addEventListener('mousemove', (e) => {
+              if (!isDown || !(e instanceof MouseEvent)) return;
+              e.preventDefault();
+              const x = e.pageX - slider.offsetLeft;
+              const walk = (x - startX) * 1.5;
+              slider.scrollLeft = scrollLeft - walk;
+              
+              const startXVal = parseFloat(slider.dataset.startXVal || '0');
+              const dist = Math.abs(e.pageX - startXVal);
+              if (dist > 5) {
+                slider.setAttribute('data-is-dragging', 'true');
+              }
+            });
+
+            slider.addEventListener('click', (e) => {
+              if (slider.getAttribute('data-is-dragging') === 'true') {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }, true);
+          }
+        });
+      }
+
       // Initial execution
       setupIntersectionObserver();
       scrollToHash();
+      setupDragToScroll();
       
       // Re-run observer setup on View Transitions page swap
       document.addEventListener('astro:after-swap', () => {
         setupIntersectionObserver();
         scrollToHash();
+        setupDragToScroll();
       });
     </script>
   </body>
