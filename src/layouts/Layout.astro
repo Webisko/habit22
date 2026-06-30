@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import CartDrawer from '../components/CartDrawer';
 import Footer from '../components/Footer.astro';
 import BackToTop from '../components/BackToTop.astro';
+import { getAlternatePath } from '../i18n/utils';
 import '../index.css';
 
 interface Props {
@@ -17,28 +18,8 @@ const { title = 'Habit22', lang = 'pl', alternateUrl } = Astro.props;
 // Calculate alternate URL automatically if not explicitly provided
 let calculatedAlternateUrl = alternateUrl;
 if (!calculatedAlternateUrl) {
-  const url = Astro.url;
-  const base = import.meta.env.BASE_URL || '/';
-  const pathname = url.pathname;
-  
-  if (lang === 'pl') {
-    // Toggle to EN
-    if (pathname.startsWith(base)) {
-      const relativePath = pathname.slice(base.length);
-      calculatedAlternateUrl = new URL(base + 'en/' + relativePath, url.origin).href;
-    } else {
-      calculatedAlternateUrl = new URL(base + 'en/', url.origin).href;
-    }
-  } else {
-    // Toggle to PL (remove /en/)
-    const enPrefix = base + 'en/';
-    if (pathname.startsWith(enPrefix)) {
-      const relativePath = pathname.slice(enPrefix.length);
-      calculatedAlternateUrl = new URL(base + relativePath, url.origin).href;
-    } else {
-      calculatedAlternateUrl = new URL(base, url.origin).href;
-    }
-  }
+  const alternatePath = getAlternatePath(Astro.url.pathname, lang);
+  calculatedAlternateUrl = new URL(alternatePath, Astro.url.origin).href;
 }
 ---
 

@@ -115,6 +115,17 @@ export interface TranslationSchema {
   logout: string;
   checkout_login_prompt: string;
   checkout_login_link: string;
+  forgot_password_link: string;
+  remember_me: string;
+  reset_password_title: string;
+  reset_password_btn: string;
+  reset_password_success_msg: string;
+  no_account_prompt: string;
+  have_account_prompt: string;
+  set_new_password_title: string;
+  confirm_new_password: string;
+  set_new_password_success_msg: string;
+  passwords_dont_match: string;
   checkout_create_account: string;
   checkout_buy_as_company: string;
   checkout_company_nip: string;
@@ -381,6 +392,17 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     logout: "Wyloguj",
     checkout_login_prompt: "Masz już konto?",
     checkout_login_link: "Zaloguj się przed zakupem",
+    forgot_password_link: "Nie pamiętam hasła",
+    remember_me: "Zapamiętaj mnie",
+    reset_password_title: "Resetowanie hasła",
+    reset_password_btn: "Wyślij link do resetu",
+    reset_password_success_msg: "Link do resetowania hasła został wysłany na podany adres e-mail.",
+    no_account_prompt: "Nie masz jeszcze konta?",
+    have_account_prompt: "Masz już konto?",
+    set_new_password_title: "Ustaw nowe hasło",
+    confirm_new_password: "Potwierdź nowe hasło",
+    set_new_password_success_msg: "Twoje hasło zostało zmienione pomyślnie. Możesz się teraz zalogować.",
+    passwords_dont_match: "Hasła nie są identyczne.",
     checkout_create_account: "Chcę założyć konto",
     checkout_buy_as_company: "Kupuję na firmę",
     checkout_company_nip: "NIP",
@@ -704,6 +726,17 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     logout: "Log out",
     checkout_login_prompt: "Already have an account?",
     checkout_login_link: "Log in",
+    forgot_password_link: "Forgot password",
+    remember_me: "Remember me",
+    reset_password_title: "Reset Password",
+    reset_password_btn: "Send reset link",
+    reset_password_success_msg: "A password reset link has been sent to your email address.",
+    no_account_prompt: "Don't have an account?",
+    have_account_prompt: "Already have an account?",
+    set_new_password_title: "Set new password",
+    confirm_new_password: "Confirm new password",
+    set_new_password_success_msg: "Your password has been successfully changed. You can now log in.",
+    passwords_dont_match: "Passwords do not match.",
     checkout_create_account: "I want to create an account",
     checkout_buy_as_company: "I'm buying as a company",
     checkout_company_nip: "NIP / VAT ID",
