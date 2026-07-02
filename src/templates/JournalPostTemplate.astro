@@ -19,7 +19,7 @@ const altPost = altPosts.find((p) => p.id === post.id)!;
 const alternateUrl = getLocalizedPath(`journal/${altPost.slug}`, altLang);
 ---
 
-<Layout title={`${post.title} - Habit22`} lang={lang} alternateUrl={alternateUrl}>
+<Layout title={`${post.title} - Habit22`} lang={lang} alternateUrl={alternateUrl} description={post.excerpt}>
   <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[800px] mx-auto flex flex-col relative z-10">
     <article class="w-full flex flex-col animate-fade-in-up">
       <a
@@ -41,6 +41,9 @@ const alternateUrl = getLocalizedPath(`journal/${altPost.slug}`, altLang);
           src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`}
           alt={post.title}
           class="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[10%]"
+          width="800"
+          height="450"
+          fetchpriority="high"
         />
       </div>
 
@@ -68,6 +71,9 @@ const alternateUrl = getLocalizedPath(`journal/${altPost.slug}`, altLang);
                       src={`${import.meta.env.BASE_URL}wpis-${otherPost.id}.webp`}
                       alt={otherPost.title}
                       class="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
+                      width="400"
+                      height="300"
+                      loading="lazy"
                     />
                   </div>
                   <h3 class="text-lg md:text-xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">

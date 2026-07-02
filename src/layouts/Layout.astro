@@ -51,6 +51,7 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' ||
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.8em' font-size='60' fill='%232C2119' font-family='serif' font-weight='500'>H22</text></svg>">
     <title>{title}</title>
+    <link rel="canonical" href={Astro.url.href} />
     
     <meta name="description" content={metaDesc} />
     

@@ -46,9 +46,13 @@ while ((match = headingRegex.exec(content)) !== null) {
 
   headings.push({ title, id });
 }
+const metaTitleKey = `meta_title_${titleKey}` as keyof typeof t;
+const metaDescKey = `meta_desc_${titleKey}` as keyof typeof t;
+const metaTitle = t[metaTitleKey] as string;
+const metaDesc = t[metaDescKey] as string;
 ---
 
-<Layout title={`${t[titleKey]} - Habit22`} lang={lang}>
+<Layout title={metaTitle} lang={lang} description={metaDesc}>
   <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12 xl:gap-16 items-start relative z-10">
     <article class="w-full max-w-[800px] mx-auto lg:mx-0">
       <MarkdownView title={t[titleKey]} content={content} />

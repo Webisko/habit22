@@ -10,7 +10,7 @@ const { lang } = Astro.props;
 const { t, l } = useTranslations(lang);
 ---
 
-<Layout title={`${t.about} - Habit22`} lang={lang}>
+<Layout title={t.meta_title_about} lang={lang} description={t.meta_desc_about}>
   <main class="flex-grow pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 w-full max-w-[1440px] mx-auto relative z-10">
     <div class="flex flex-col items-center animate-fade-in-up">
       <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16 md:mb-24">
@@ -23,6 +23,9 @@ const { t, l } = useTranslations(lang);
             src={`${import.meta.env.BASE_URL}Adriana.webp`}
             class="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[10%]"
             alt="Habit22 About"
+            width="480"
+            height="600"
+            loading="lazy"
           />
         </div>
         <div class="flex flex-col w-full md:col-span-7 space-y-8 text-lg md:text-xl text-[#5C4E43] font-serif leading-relaxed text-left pt-0">
@@ -53,6 +56,9 @@ const { t, l } = useTranslations(lang);
           src={`${import.meta.env.BASE_URL}produkt__1-2.webp`}
           class="w-full h-full object-cover mix-blend-multiply opacity-90"
           alt="Habit22 Studio"
+          width="1344"
+          height="576"
+          loading="lazy"
         />
       </div>
     </div>

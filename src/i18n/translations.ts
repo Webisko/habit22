@@ -182,6 +182,24 @@ export interface TranslationSchema {
   journal_posts: JournalPost[];
   back_to_journal: string;
   all_posts: string;
+  meta_title_home: string;
+  meta_desc_home: string;
+  meta_title_about: string;
+  meta_desc_about: string;
+  meta_title_shop: string;
+  meta_desc_shop: string;
+  meta_title_faq: string;
+  meta_desc_faq: string;
+  meta_title_contact: string;
+  meta_desc_contact: string;
+  meta_title_terms: string;
+  meta_desc_terms: string;
+  meta_title_privacy: string;
+  meta_desc_privacy: string;
+  meta_title_cookies: string;
+  meta_desc_cookies: string;
+  meta_title_journal: string;
+  meta_desc_journal: string;
 }
 
 export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
@@ -526,6 +544,24 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     ],
     back_to_journal: "Wróć do dziennika",
     all_posts: "Wszystkie wpisy",
+    meta_title_home: "Habit22 - Ręcznie Szyte Torby Projektowe z Lnu i Bawełny",
+    meta_desc_home: "Habit22 to wyjątkowe, rzemieślnicze torby projektowe i akcesoria dla miłośniczek robótek ręcznych i dziewiarstwa. Uszyte w 100% ręcznie z naturalnych tkanin w Polsce.",
+    meta_title_about: "O marce | Habit22 - Nasza Filozofia i Rzemiosło",
+    meta_desc_about: "Poznaj markę Habit22. Odkryj naszą pasję do naturalnych tkanin, powolnego tworzenia i estetyki codziennych rytuałów. Zobacz, jak powstają nasze torby.",
+    meta_title_shop: "Kolekcja Toreb Dziewiarskich | Habit22 - Sklep Online",
+    meta_desc_shop: "Kup online ręcznie szyte torby projektowe Habit22. Wybierz funkcjonalność i ponadczasowy styl dla swoich projektów dziewiarskich. Naturalne materiały.",
+    meta_title_faq: "FAQ | Często Zadawane Pytania o Torby Habit22",
+    meta_desc_faq: "Masz pytania dotyczące materiałów, wymiarów, wysyłki lub zwrotów toreb Habit22? Sprawdź nasze FAQ, aby dowiedzieć się więcej o zakupach.",
+    meta_title_contact: "Kontakt | Skontaktuj się z Habit22",
+    meta_desc_contact: "Chcesz zadać pytanie lub złożyć zamówienie indywidualne? Napisz do nas przez formularz kontaktowy lub wyślij e-mail na habitworld22@gmail.com.",
+    meta_title_terms: "Regulamin Sklepu Internetowego | Habit22",
+    meta_desc_terms: "Zapoznaj się z regulaminem sklepu Habit22. Poznaj warunki dokonywania zakupów, metody płatności, dostawy oraz zasady zwrotów i reklamacji.",
+    meta_title_privacy: "Polityka Prywatności i Cookies | Habit22",
+    meta_desc_privacy: "Dowiedz się, jak dbamy o Twoje dane osobowe. Szczegóły dotyczące przetwarzania danych, cookies oraz plików cookies w sklepie internetowym Habit22.",
+    meta_title_cookies: "Polityka Cookies | Habit22",
+    meta_desc_cookies: "Sprawdź politykę plików cookies w sklepie Habit22. Dowiedz się, w jaki sposób i w jakich celach wykorzystujemy pliki cookies w naszym serwisie.",
+    meta_title_journal: "Dziennik Habit22 - O Dzierganiu, Lnie i Rzemiośle",
+    meta_desc_journal: "Przeczytaj nasz dziennik. Dzielimy się wskazówkami o pielęgnacji naturalnego lnu, rzemiośle, robótkach ręcznych i uważnych rytuałach codzienności.",
   },
   en: {
     menu: "Menu",
@@ -868,6 +904,24 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     ],
     back_to_journal: "Back to journal",
     all_posts: "All posts",
+    meta_title_home: "Habit22 - Handcrafted Project Bags from Linen and Cotton",
+    meta_desc_home: "Habit22 offers unique, artisanal project bags and accessories for knitting and craft enthusiasts. 100% handmade from natural fabrics in Poland.",
+    meta_title_about: "About Us | Habit22 - Our Philosophy and Craft",
+    meta_desc_about: "Learn about Habit22. Discover our passion for natural fabrics, slow creation, and the aesthetics of everyday rituals. See how our bags are made.",
+    meta_title_shop: "Knitting Bags Collection | Habit22 - Online Shop",
+    meta_desc_shop: "Buy online handcrafted project bags by Habit22. Choose functionality and timeless style for your knitting projects. Made of natural materials.",
+    meta_title_faq: "FAQ | Frequently Asked Questions about Habit22 Bags",
+    meta_desc_faq: "Have questions about the materials, dimensions, shipping, or returns of Habit22 bags? Read our FAQ to learn more about shopping with us.",
+    meta_title_contact: "Contact | Get in Touch with Habit22",
+    meta_desc_contact: "Have a question or want to make a custom order? Write to us via the contact form or send an email to habitworld22@gmail.com.",
+    meta_title_terms: "Terms of Service | Habit22 Online Shop",
+    meta_desc_terms: "Read the terms of service of the Habit22 store. Find information about purchases, payment methods, delivery, returns, and complaints.",
+    meta_title_privacy: "Privacy & Cookies Policy | Habit22",
+    meta_desc_privacy: "Learn how we protect your personal data. Details about data processing, cookies, and privacy standards in the Habit22 online store.",
+    meta_title_cookies: "Cookie Policy | Habit22",
+    meta_desc_cookies: "Check the cookie policy of the Habit22 store. Learn how and for what purposes we use cookies on our website.",
+    meta_title_journal: "Habit22 Journal - About Knitting, Linen and Craft",
+    meta_desc_journal: "Read our journal. We share tips on caring for natural linen, craftsmanship, handcrafts, and mindful everyday rituals.",
   },
 };
 

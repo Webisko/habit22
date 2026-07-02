@@ -10,7 +10,7 @@ const { lang } = Astro.props;
 const { t, l } = useTranslations(lang);
 ---
 
-<Layout title={`${t.journal} - Habit22`} lang={lang}>
+<Layout title={t.meta_title_journal} lang={lang} description={t.meta_desc_journal}>
   <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto flex flex-col relative z-10 animate-fade-in-up">
     <div class="w-full flex flex-col">
       <h1 class="text-3xl md:text-5xl font-serif text-[#2C2119] tracking-wider uppercase mb-16 md:mb-24 text-center">
@@ -37,6 +37,9 @@ const { t, l } = useTranslations(lang);
                     src={`${import.meta.env.BASE_URL}wpis-${post.id}.webp`}
                     alt={post.title}
                     class="w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-700 ease-out grayscale-[10%] group-hover:scale-105 group-hover:opacity-100"
+                    width="400"
+                    height="300"
+                    loading="lazy"
                   />
                 </div>
                 <h3 class="text-xl md:text-2xl font-serif text-[#2C2119] mb-4 group-hover:text-[#8C7C6D] transition-colors">

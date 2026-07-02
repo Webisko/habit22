@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://habit22.com/habit22/sitemap-index.xml

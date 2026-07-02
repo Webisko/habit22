@@ -136,12 +136,14 @@ export default function Header({ lang }: HeaderProps) {
             <a
               href={$isLoggedIn ? l('account') : l('login')}
               className="group hidden sm:flex items-center space-x-2 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
+              aria-label={t.account_title}
             >
               <User size={18} strokeWidth={1.5} />
             </a>
             <button
               onClick={() => isCartOpen.set(true)}
               className="group flex items-center space-x-1.5 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
+              aria-label={t.cart}
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
               <span>({$cartCount})</span>
@@ -230,9 +232,14 @@ export default function Header({ lang }: HeaderProps) {
                   >
                     {t.newsletter}
                   </a>
-                  <p className="hover:text-[#2C2119] cursor-pointer block">
+                  <a
+                    href="https://instagram.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#2C2119] cursor-pointer block"
+                  >
                     Instagram
-                  </p>
+                  </a>
 
                   {/* Mobile-only Account and Language switcher (just icons side-by-side) */}
                   <div className="flex items-center justify-center sm:justify-start space-x-6 pt-4 sm:hidden">

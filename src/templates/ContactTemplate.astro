@@ -10,13 +10,16 @@ const { lang } = Astro.props;
 const { t, l } = useTranslations(lang);
 ---
 
-<Layout title={`${t.contact} - Habit22`} lang={lang}>
+<Layout title={t.meta_title_contact} lang={lang} description={t.meta_desc_contact}>
   <main class="flex-grow w-full min-h-screen pt-32 md:pt-40 lg:pt-44 pb-24 px-6 md:px-12 xl:px-16 max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 lg:gap-12 xl:gap-16 items-stretch relative z-10">
     <div class="hidden md:block w-full h-[60vh] md:h-auto overflow-hidden bg-[#EBE2D3] relative animate-fade-in-scale">
       <img
         src={`${import.meta.env.BASE_URL}produkt__2-2.webp`}
         class="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90"
         alt="Habit22 Contact"
+        width="640"
+        height="850"
+        loading="lazy"
       />
     </div>
     <div class="w-full flex flex-col pt-0 animate-fade-in-up" style="animation-delay: 200ms;">
@@ -31,30 +34,33 @@ const { t, l } = useTranslations(lang);
           data-lang={lang}
         >
           <div class="flex flex-col">
-            <label class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+            <label for="contact-name" class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
               {t.contact_name}
             </label>
             <input
               type="text"
+              id="contact-name"
               required
               class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
             />
           </div>
           <div class="flex flex-col">
-            <label class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+            <label for="contact-email" class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
               {t.contact_email}
             </label>
             <input
               type="email"
+              id="contact-email"
               required
               class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
             />
           </div>
           <div class="flex flex-col pb-6">
-            <label class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
+            <label for="contact-message" class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
               {t.contact_message}
             </label>
             <textarea
+              id="contact-message"
               rows="4"
               required
               class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] resize-none transition-colors font-serif"
@@ -82,19 +88,25 @@ const { t, l } = useTranslations(lang);
         </p>
         <div class="flex space-x-6 text-[#2C2119] leading-none mb-0 pb-0 md:-mb-1">
           <a
-            href="#"
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
             class="hover:text-[#8C7C6D] transition-colors text-base font-serif block"
           >
             Instagram
           </a>
           <a
-            href="#"
+            href="https://pinterest.com"
+            target="_blank"
+            rel="noopener noreferrer"
             class="hover:text-[#8C7C6D] transition-colors text-base font-serif block"
           >
             Pinterest
           </a>
           <a
-            href="#"
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
             class="hover:text-[#8C7C6D] transition-colors text-base font-serif block"
           >
             Facebook
