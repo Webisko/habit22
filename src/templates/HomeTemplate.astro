@@ -41,7 +41,7 @@ const { t, l } = useTranslations(lang);
 
     {/* Featured Product Section */}
     <div class="w-full h-[5px] bg-[#FAF7F2]"></div>
-    <FeaturedProduct client:load lang={lang} />
+    <FeaturedProduct client:visible lang={lang} />
     <div class="w-full h-[5px] bg-[#FAF7F2]"></div>
 
     {/* About Section */}

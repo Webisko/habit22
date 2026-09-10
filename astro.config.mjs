@@ -8,9 +8,6 @@ import path from 'path';
 export default defineConfig({
   site: 'https://habit22.eu',
   base: '/',
-  build: {
-    inlineStylesheets: 'always',
-  },
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],

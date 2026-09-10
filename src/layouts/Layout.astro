@@ -128,7 +128,7 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' ||
     <Header client:load transition:persist lang={lang} />
 
     {/* Cart Drawer Island */}
-    <CartDrawer client:load transition:persist lang={lang} />
+    <CartDrawer client:idle transition:persist lang={lang} />
     {/* Main Page Content */}
     <div class="flex-grow flex flex-col relative z-10">
       <slot />
@@ -141,10 +141,10 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' ||
     <BackToTop lang={lang} />
 
     {/* Toast Notifications */}
-    <ToastContainer client:load transition:persist lang={lang} />
+    <ToastContainer client:idle transition:persist lang={lang} />
 
     {/* Cookie Consent Banner */}
-    <CookieBanner client:load lang={lang} />
+    <CookieBanner client:idle lang={lang} />
 
     <script>
       function setupIntersectionObserver() {

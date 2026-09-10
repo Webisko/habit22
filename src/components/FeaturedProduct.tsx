@@ -36,8 +36,9 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
   }, []);
 
   useEffect(() => {
-    // Initialize scroll position for infinite scroll simulation
-    const initScroll = () => {
+    // Initialize scroll position for infinite scroll simulation asynchronously
+    let frameId: number;
+    frameId = requestAnimationFrame(() => {
       if (desktopScrollRef.current) {
         const container = desktopScrollRef.current;
         const itemWidth = container.clientWidth || window.innerWidth * 0.618;
@@ -45,10 +46,8 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
           container.scrollTo({ left: itemWidth * 3, top: 0, behavior: "auto" });
         }
       }
-    };
-    initScroll();
-    const timer = setTimeout(initScroll, 150);
-    return () => clearTimeout(timer);
+    });
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
