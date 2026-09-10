@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://habit22.com/habit22/sitemap-index.xml
+Sitemap: https://habit22.eu/sitemap-index.xml

@@ -6,8 +6,8 @@ import path from 'path';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://habit22.com',
-  base: '/habit22/',
+  site: 'https://habit22.eu',
+  base: '/',
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
