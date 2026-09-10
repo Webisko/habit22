@@ -5,7 +5,7 @@ import CartDrawer from '../components/CartDrawer';
 import Footer from '../components/Footer.astro';
 import BackToTop from '../components/BackToTop.astro';
 import ToastContainer from '../components/ToastContainer';
-import CookieBanner from '../components/CookieBanner';
+import CookieBanner from '../components/CookieBanner.astro';
 import { getAlternatePath } from '../i18n/utils';
 import '../index.css';
 
@@ -144,7 +144,7 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' ||
     <ToastContainer client:idle transition:persist lang={lang} />
 
     {/* Cookie Consent Banner */}
-    <CookieBanner client:idle lang={lang} />
+    <CookieBanner lang={lang} />
 
     <script>
       function setupIntersectionObserver() {

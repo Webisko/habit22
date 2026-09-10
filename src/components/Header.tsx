@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { Menu, ShoppingBag, Globe, User, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { isMenuOpen, isCartOpen, cartCount } from '../stores/cart';
 import { isLoggedIn } from '../stores/auth';
 import { useTranslations } from '../i18n/utils';
@@ -143,7 +142,7 @@ export default function Header({ lang }: HeaderProps) {
             <button
               onClick={() => isCartOpen.set(true)}
               className="group flex items-center space-x-1.5 text-sm font-normal tracking-[0.2em] uppercase hover:text-[#8C7C6D] transition-colors"
-              aria-label={t.cart}
+              aria-label={`${t.cart} (${$cartCount})`}
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
               <span>({$cartCount})</span>
@@ -152,126 +151,118 @@ export default function Header({ lang }: HeaderProps) {
         </div>
       </header>
 
-      {/* Slide-out mobile menu overlay with exact motion transitions */}
-      <AnimatePresence>
-        {$isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex"
-          >
-            <div
-              className="absolute inset-0 bg-[#2C2119]/40 backdrop-blur-sm cursor-pointer"
+      {/* Slide-out mobile menu overlay with exact CSS transitions */}
+      <div
+        aria-hidden={!$isMenuOpen}
+        inert={!$isMenuOpen ? true : undefined}
+        className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${
+          $isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div
+          className="absolute inset-0 bg-[#2C2119]/40 backdrop-blur-sm cursor-pointer"
+          onClick={() => isMenuOpen.set(false)}
+        />
+        <div
+          className={`relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-6 md:p-12 overflow-y-auto justify-between transition-transform duration-500 ease-out ${
+            $isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex justify-start">
+            <button
               onClick={() => isMenuOpen.set(false)}
-            />
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{
-                type: "tween",
-                duration: 0.5,
-                ease: [0.25, 1, 0.5, 1],
-              }}
-              className="relative w-full max-w-sm bg-[#FAF7F2] h-full shadow-2xl flex flex-col p-6 md:p-12 overflow-y-auto justify-between"
+              aria-label={lang === 'pl' ? 'Zamknij menu' : 'Close menu'}
+              className="text-[#8C7C6D] hover:text-[#2C2119] transition-colors focus:outline-none"
             >
-              <div className="flex justify-start">
-                <button
+              <X size={28} strokeWidth={1} />
+            </button>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center my-auto py-4 md:py-8 space-y-6 md:space-y-12">
+            <nav className="flex flex-col items-center md:items-start space-y-5 md:space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase text-center md:text-left">
+              <a
+                href={l('shop')}
+                onClick={() => isMenuOpen.set(false)}
+                className="hover:text-[#8C7C6D] transition-colors"
+              >
+                {t.shop}
+              </a>
+              <a
+                href={l('about')}
+                onClick={() => isMenuOpen.set(false)}
+                className="hover:text-[#8C7C6D] transition-colors"
+              >
+                {t.about}
+              </a>
+              <a
+                href={l('journal')}
+                onClick={() => isMenuOpen.set(false)}
+                className="hover:text-[#8C7C6D] transition-colors"
+              >
+                {t.journal}
+              </a>
+              <a
+                href={l('faq')}
+                onClick={() => isMenuOpen.set(false)}
+                className="hover:text-[#8C7C6D] transition-colors"
+              >
+                {t.faq}
+              </a>
+              <a
+                href={l('contact')}
+                onClick={() => isMenuOpen.set(false)}
+                className="hover:text-[#8C7C6D] transition-colors"
+              >
+                {t.contact}
+              </a>
+            </nav>
+
+            <div className="pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
+              <a
+                href={l('#newsletter')}
+                onClick={handleNewsletterClick}
+                className="hover:text-[#2C2119] cursor-pointer block"
+              >
+                {t.newsletter}
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#2C2119] cursor-pointer block"
+              >
+                Instagram
+              </a>
+
+              {/* Mobile-only Account and Language switcher (just icons side-by-side) */}
+              <div className="flex items-center justify-center sm:justify-start space-x-6 pt-4 sm:hidden">
+                <a
+                  href={$isLoggedIn ? l('account') : l('login')}
                   onClick={() => isMenuOpen.set(false)}
-                  className="text-[#8C7C6D] hover:text-[#2C2119] transition-colors focus:outline-none"
+                  className="hover:text-[#2C2119] text-[#8C7C6D] transition-colors focus:outline-none"
+                  aria-label="Account"
                 >
-                  <X size={28} strokeWidth={1} />
+                  <User size={20} strokeWidth={1.5} />
+                </a>
+                <button
+                  onClick={() => {
+                    isMenuOpen.set(false);
+                    toggleLanguage();
+                  }}
+                  className="flex items-center space-x-2 hover:text-[#2C2119] text-[#8C7C6D] transition-colors focus:outline-none"
+                  aria-label="Toggle language"
+                >
+                  <Globe size={20} strokeWidth={1.5} />
+                  <span className="text-sm font-normal tracking-widest">{t.lang_switch}</span>
                 </button>
               </div>
+            </div>
+          </div>
 
-              <div className="flex-1 flex flex-col justify-center my-auto py-4 md:py-8 space-y-6 md:space-y-12">
-                <nav className="flex flex-col items-center md:items-start space-y-5 md:space-y-8 font-serif text-3xl md:text-4xl text-[#2C2119] uppercase text-center md:text-left">
-                  <a
-                    href={l('shop')}
-                    onClick={() => isMenuOpen.set(false)}
-                    className="hover:text-[#8C7C6D] transition-colors"
-                  >
-                    {t.shop}
-                  </a>
-                  <a
-                    href={l('about')}
-                    onClick={() => isMenuOpen.set(false)}
-                    className="hover:text-[#8C7C6D] transition-colors"
-                  >
-                    {t.about}
-                  </a>
-                  <a
-                    href={l('journal')}
-                    onClick={() => isMenuOpen.set(false)}
-                    className="hover:text-[#8C7C6D] transition-colors"
-                  >
-                    {t.journal}
-                  </a>
-                  <a
-                    href={l('faq')}
-                    onClick={() => isMenuOpen.set(false)}
-                    className="hover:text-[#8C7C6D] transition-colors"
-                  >
-                    {t.faq}
-                  </a>
-                  <a
-                    href={l('contact')}
-                    onClick={() => isMenuOpen.set(false)}
-                    className="hover:text-[#8C7C6D] transition-colors"
-                  >
-                    {t.contact}
-                  </a>
-                </nav>
-
-                <div className="pt-8 border-t border-[#E6DCC9] text-sm uppercase tracking-[0.2em] text-[#8C7C6D] space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
-                  <a
-                    href={l('#newsletter')}
-                    onClick={handleNewsletterClick}
-                    className="hover:text-[#2C2119] cursor-pointer block"
-                  >
-                    {t.newsletter}
-                  </a>
-                  <a
-                    href="https://instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-[#2C2119] cursor-pointer block"
-                  >
-                    Instagram
-                  </a>
-
-                  {/* Mobile-only Account and Language switcher (just icons side-by-side) */}
-                  <div className="flex items-center justify-center sm:justify-start space-x-6 pt-4 sm:hidden">
-                    <a
-                      href={$isLoggedIn ? l('account') : l('login')}
-                      onClick={() => isMenuOpen.set(false)}
-                      className="hover:text-[#2C2119] text-[#8C7C6D] transition-colors focus:outline-none"
-                      aria-label="Account"
-                    >
-                      <User size={20} strokeWidth={1.5} />
-                    </a>
-                    <button
-                      onClick={() => {
-                        isMenuOpen.set(false);
-                        toggleLanguage();
-                      }}
-                      className="flex items-center space-x-2 hover:text-[#2C2119] text-[#8C7C6D] transition-colors focus:outline-none"
-                      aria-label="Toggle language"
-                    >
-                      <Globe size={20} strokeWidth={1.5} />
-                      <span className="text-sm font-normal tracking-widest">{t.lang_switch}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Empty div to visually balance the close button at the top */}
-              <div className="h-8 w-full shrink-0 hidden sm:block" />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Empty div to visually balance the close button at the top */}
+          <div className="h-8 w-full shrink-0 hidden sm:block" />
+        </div>
+      </div>
     </>
   );
 }

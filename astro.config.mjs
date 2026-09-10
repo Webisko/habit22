@@ -9,6 +9,9 @@ export default defineConfig({
   site: 'https://habit22.eu',
   base: '/',
   integrations: [react(), sitemap()],
+  build: {
+    inlineStylesheets: 'always',
+  },
   vite: {
     plugins: [tailwindcss()],
     resolve: {

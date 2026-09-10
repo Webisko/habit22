@@ -143,6 +143,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
               </h3>
               <button
                 onClick={() => isCartOpen.set(false)}
+                aria-label={lang === 'pl' ? 'Zamknij koszyk' : 'Close cart'}
                 className="text-[#8C7C6D] hover:text-[#2C2119] transition-colors"
               >
                 <X size={24} strokeWidth={1} />
@@ -220,6 +221,7 @@ export default function CartDrawer({ lang }: CartDrawerProps) {
                                 </a>
                                 <button
                                   onClick={() => removeFromCart(item.id)}
+                                  aria-label={lang === 'pl' ? `Usuń ${itemProduct.design[lang === 'pl' ? 'pl' : 'en']} z koszyka` : `Remove ${itemProduct.design[lang === 'pl' ? 'pl' : 'en']} from cart`}
                                   className="text-[#8C7C6D] hover:text-[#2C2119] shrink-0"
                                 >
                                   <X size={16} />
