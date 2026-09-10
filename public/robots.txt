@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://habit22.eu/sitemap-index.xml
+LLMs: https://habit22.eu/llms.txt

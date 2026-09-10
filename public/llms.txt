@@ -1,0 +1,29 @@
+# Habit22
+
+> Ręcznie szyte torby projektowe i akcesoria z naturalnego lnu dla miłośniczek dziewiarstwa i rękodzieła.
+
+Habit22 to polska marka rzemieślnicza tworząca torby projektowe i akcesoria do robótek ręcznych z wysokogatunkowego, naturalnego lnu i bawełny. Każdy produkt jest projektowany i szyty ręcznie w Polsce z dbałością o detale, funkcjonalność i ponadczasową estetykę.
+
+## Kluczowe Sekcje Serwisu
+
+- [Kolekcja Toreb](https://habit22.eu/kolekcja): Katalog ręcznie szytych toreb projektowych w rozmiarach 22, 33 i 44 (modele Kratka Vichy, Szałwiowa Zieleń, Głęboki Granat).
+- [O Marce](https://habit22.eu/o-marce): Filozofia rzemiosła, naturalnych materiałów i zrównoważonego podejścia do tworzenia akcesoriów.
+- [Dziennik](https://habit22.eu/dziennik): Artykuły o pielęgnacji lnu, codziennych rytuałach i pasji do dziewiarstwa.
+- [FAQ](https://habit22.eu/faq): Często zadawane pytania dotyczące wymiarów, wysyłki, płatności i pielęgnacji toreb.
+- [Regulamin Sklepu](https://habit22.eu/regulamin): Warunki składania zamówień, płatności, dostawy i zwrotów.
+- [Polityka Prywatności i Cookies](https://habit22.eu/polityka-prywatnosci): Zasady przetwarzania danych osobowych i stosowania plików cookies.
+- [Kontakt](https://habit22.eu/kontakt): Dane kontaktowe i formularz wiadomości.
+
+## English Version
+
+- [Shop Collection](https://habit22.eu/en/shop): Handcrafted linen project bags catalog.
+- [About the Brand](https://habit22.eu/en/about): Story of Habit22 craftsmanship.
+- [Journal](https://habit22.eu/en/journal): Stories and care guide for linen products.
+- [Terms & Conditions](https://habit22.eu/en/terms): Store regulations and policies.
+- [Privacy Policy](https://habit22.eu/en/privacy): Personal data protection principles.
+- [Contact](https://habit22.eu/en/contact): Customer service contact details.
+
+## Opcjonalne Materiały
+
+- [Pełna Specyfikacja (LLMs Full)](https://habit22.eu/llms-full.txt): Kompletna specyfikacja modeli, rozmiarów, materiałów i wymiarów toreb Habit22.
+- [Mapa Witryny XML](https://habit22.eu/sitemap-index.xml): Pełna lista indeksowanych podstron.

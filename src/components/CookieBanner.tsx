@@ -56,7 +56,7 @@ export default function CookieBanner({ lang }: CookieBannerProps) {
             <div className="flex items-center space-x-4 w-full md:w-auto shrink-0 justify-center">
               <button
                 onClick={handleDecline}
-                className="text-xs uppercase tracking-widest text-[#8C7C6D] hover:text-[#2C2119] py-3 px-4 transition-colors"
+                className="text-xs uppercase tracking-widest text-[#4A3E34] hover:text-[#1A140F] font-medium py-3 px-4 transition-colors"
               >
                 {t.cookie_decline}
               </button>

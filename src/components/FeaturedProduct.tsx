@@ -143,7 +143,11 @@ export default function FeaturedProduct({ lang }: FeaturedProductProps) {
                     src={img}
                     alt={`${product.title[lang === 'pl' ? 'pl' : 'en']} - ${currentSize.name[lang === 'pl' ? 'pl' : 'en']}`}
                     className={`w-full h-full ${idx % 3 === 0 ? "object-contain py-[5px] px-2 md:px-8 object-center" : "object-cover"}`}
-                    loading={idx % 3 === 0 ? "eager" : "lazy"}
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    fetchPriority={idx === 0 ? "high" : "auto"}
+                    decoding="async"
+                    width="750"
+                    height="750"
                     draggable={false}
                   />
                 </div>
