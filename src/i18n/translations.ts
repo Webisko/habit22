@@ -130,6 +130,16 @@ export interface TranslationSchema {
   checkout_buy_as_company: string;
   checkout_company_nip: string;
   checkout_company_name: string;
+  checkout_coupon_label: string;
+  checkout_coupon_placeholder: string;
+  checkout_coupon_apply: string;
+  checkout_coupon_applied: string;
+  checkout_coupon_remove: string;
+  checkout_locker_select: string;
+  checkout_locker_change: string;
+  checkout_locker_selected: string;
+  checkout_locker_manual: string;
+  checkout_terms_notice: string;
   account_edit_details: string;
   account_save_details: string;
   account_change_password: string;
@@ -433,6 +443,16 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     checkout_buy_as_company: "Kupuję na firmę",
     checkout_company_nip: "NIP",
     checkout_company_name: "Nazwa firmy",
+    checkout_coupon_label: "Kod rabatowy",
+    checkout_coupon_placeholder: "Wpisz kod (np. HABIT10)",
+    checkout_coupon_apply: "Zastosuj",
+    checkout_coupon_applied: "Rabat",
+    checkout_coupon_remove: "Usuń",
+    checkout_locker_select: "Wybierz Paczkomat na mapie",
+    checkout_locker_change: "Zmień Paczkomat",
+    checkout_locker_selected: "Wybrany Paczkomat",
+    checkout_locker_manual: "Lub wpisz kod Paczkomatu (np. WAW01M)",
+    checkout_terms_notice: "Klikając 'Kupuję i płacę', akceptujesz regulamin sklepu.",
     account_edit_details: "Edytuj dane",
     account_save_details: "Zapisz",
     account_change_password: "Zmień hasło",
@@ -793,6 +813,16 @@ export const TRANSLATIONS: Record<Lang, TranslationSchema> = {
     checkout_buy_as_company: "I'm buying as a company",
     checkout_company_nip: "NIP / VAT ID",
     checkout_company_name: "Company name",
+    checkout_coupon_label: "Promo code",
+    checkout_coupon_placeholder: "Enter code (e.g. HABIT10)",
+    checkout_coupon_apply: "Apply",
+    checkout_coupon_applied: "Discount",
+    checkout_coupon_remove: "Remove",
+    checkout_locker_select: "Select parcel locker on map",
+    checkout_locker_change: "Change parcel locker",
+    checkout_locker_selected: "Selected parcel locker",
+    checkout_locker_manual: "Or enter locker code (e.g. WAW01M)",
+    checkout_terms_notice: "By clicking submit, you accept our store terms.",
     account_edit_details: "Edit details",
     account_save_details: "Save",
     account_change_password: "Change password",
