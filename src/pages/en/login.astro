@@ -7,6 +7,6 @@ const lang = 'en';
 const { t } = useTranslations(lang);
 ---
 
-<Layout title={`${t.login_title} - Habit22`} lang={lang}>
+<Layout title={`${t.login_title} - Habit22`} lang={lang} noindex={true}>
   <LoginForm client:load lang={lang} />
 </Layout>

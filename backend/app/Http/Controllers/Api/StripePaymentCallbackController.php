@@ -27,6 +27,10 @@ class StripePaymentCallbackController extends Controller
         $sigHeader = $request->header('STRIPE_SIGNATURE');
         $webhookSecret = config('services.stripe.webhook_secret');
 
+        if (blank($webhookSecret)) {
+            abort(500, 'Stripe webhook secret is not configured.');
+        }
+
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
         } catch (\UnexpectedValueException $e) {
@@ -85,24 +89,48 @@ class StripePaymentCallbackController extends Controller
             $order = $transaction->order;
 
             if ($session->payment_status === 'paid') {
-                DB::transaction(function () use ($transaction, $order, $session) {
-                    $responsePayload = $transaction->response_payload ?? [];
+                $replayed = false;
+                DB::transaction(function () use ($transaction, $order, $session, &$replayed) {
+                    $lockedOrder = Order::query()->lockForUpdate()->find($order->id);
+                    $lockedTx = PaymentTransaction::query()->lockForUpdate()->find($transaction->id);
+
+                    if ($lockedOrder && $lockedOrder->payment_status === 'paid' && $lockedTx && $lockedTx->status === 'confirmed') {
+                        $replayed = true;
+                        return;
+                    }
+
+                    $responsePayload = $lockedTx?->response_payload ?? [];
                     $responsePayload['callback'] = [
                         'session_id' => $session->id,
                         'payment_status' => $session->payment_status,
                         'received_at' => now()->toIso8601String(),
                     ];
 
-                    $transaction->forceFill([
+                    $lockedTx?->forceFill([
                         'status' => 'confirmed',
                         'response_payload' => $responsePayload,
-                        'confirmed_at' => now(),
+                        'confirmed_at' => $lockedTx->confirmed_at ?? now(),
                     ])->save();
 
-                    $order->forceFill([
+                    $lockedOrder?->forceFill([
                         'payment_status' => 'paid',
                     ])->save();
                 });
+
+                if ($replayed) {
+                    $this->integrationLogService->record(
+                        integration: 'stripe',
+                        event: 'payment_callback_replayed',
+                        status: 'success',
+                        order: $order,
+                        direction: 'incoming',
+                        externalReference: $session->id,
+                        requestPayload: ['session_id' => $session->id, 'payment_status' => $session->payment_status],
+                        responsePayload: ['status' => 'replayed'],
+                    );
+
+                    return response()->json(['received' => true, 'replayed' => true]);
+                }
 
                 $this->integrationLogService->record(
                     integration: 'stripe',
@@ -116,14 +144,21 @@ class StripePaymentCallbackController extends Controller
                 );
             } else {
                 DB::transaction(function () use ($transaction, $order, $session) {
-                    $responsePayload = $transaction->response_payload ?? [];
+                    $lockedOrder = Order::query()->lockForUpdate()->find($order->id);
+                    $lockedTx = PaymentTransaction::query()->lockForUpdate()->find($transaction->id);
+
+                    if ($lockedOrder && $lockedOrder->payment_status === 'paid') {
+                        return;
+                    }
+
+                    $responsePayload = $lockedTx?->response_payload ?? [];
                     $responsePayload['callback'] = [
                         'session_id' => $session->id,
                         'payment_status' => $session->payment_status,
                         'received_at' => now()->toIso8601String(),
                     ];
 
-                    $transaction->forceFill([
+                    $lockedTx?->forceFill([
                         'status' => 'failed',
                         'response_payload' => $responsePayload,
                         'failed_at' => now(),

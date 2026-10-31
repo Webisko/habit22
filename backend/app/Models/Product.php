@@ -274,6 +274,15 @@ class Product extends Model
 
     protected static function booted(): void
     {
+        static::saving(function (Product $product): void {
+            if ($product->isDirty('metadata') && is_array($product->metadata)) {
+                $original = $product->getOriginal('metadata');
+                if (is_array($original)) {
+                    $product->metadata = array_replace_recursive($original, $product->metadata);
+                }
+            }
+        });
+
         static::updating(function (Product $product): void {
             if ($product->isDirty('slug')) {
                 $oldSlug = $product->getOriginal('slug');

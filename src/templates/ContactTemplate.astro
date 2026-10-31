@@ -33,6 +33,12 @@ const { t, l } = useTranslations(lang);
           id="contact-form"
           data-lang={lang}
         >
+          {/* Honeypot field for bot protection */}
+          <div class="hidden" aria-hidden="true" style="display: none;">
+            <label for="contact-hp">Website</label>
+            <input type="text" id="contact-hp" name="hp_name" tabindex="-1" autocomplete="off" />
+          </div>
+
           <div class="flex flex-col">
             <label for="contact-name" class="text-sm uppercase tracking-widest text-[#8C7C6D] mb-2">
               {t.contact_name}
@@ -40,6 +46,7 @@ const { t, l } = useTranslations(lang);
             <input
               type="text"
               id="contact-name"
+              name="name"
               required
               class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
             />
@@ -51,6 +58,7 @@ const { t, l } = useTranslations(lang);
             <input
               type="email"
               id="contact-email"
+              name="email"
               required
               class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] transition-colors font-serif"
             />
@@ -61,6 +69,7 @@ const { t, l } = useTranslations(lang);
             </label>
             <textarea
               id="contact-message"
+              name="message"
               rows="4"
               required
               class="bg-transparent border-b border-[#E6DCC9] py-2 focus:outline-none focus:border-[#2C2119] text-[#2C2119] resize-none transition-colors font-serif"
@@ -76,7 +85,7 @@ const { t, l } = useTranslations(lang);
             </a>
             .
           </p>
-          <button type="submit" class="self-start text-sm font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] transition-colors">
+          <button type="submit" id="contact-submit-btn" class="self-start text-sm font-semibold tracking-widest uppercase border-b border-[#2C2119] pb-1 hover:text-[#8C7C6D] hover:border-[#8C7C6D] transition-colors">
             {t.contact_send}
           </button>
         </form>
@@ -121,12 +130,59 @@ const { t, l } = useTranslations(lang);
   import { showToast } from '../stores/toast';
   import { TRANSLATIONS } from '../i18n/translations';
 
-  const form = document.getElementById('contact-form');
-  form?.addEventListener('submit', (e) => {
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('contact-submit-btn') as HTMLButtonElement | null;
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const lang = (form.getAttribute('data-lang') || 'pl') as 'pl' | 'en';
-    const message = TRANSLATIONS[lang].contact_success_toast;
-    showToast(message, 'success');
-    (e.target as HTMLFormElement).reset();
+    const originalBtnText = submitBtn?.innerText || '';
+
+    const nameInput = form.querySelector('input[name="name"]') as HTMLInputElement;
+    const emailInput = form.querySelector('input[name="email"]') as HTMLInputElement;
+    const messageInput = form.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
+    const hpInput = form.querySelector('input[name="hp_name"]') as HTMLInputElement;
+
+    const payload = {
+      name: nameInput?.value?.trim() || '',
+      email: emailInput?.value?.trim() || '',
+      message: messageInput?.value?.trim() || '',
+      hp_name: hpInput?.value || '',
+    };
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerText = lang === 'pl' ? 'Wysyłanie...' : 'Sending...';
+    }
+
+    try {
+      const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+      const res = await fetch(`${apiUrl}/inquiries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        const message = TRANSLATIONS[lang].contact_success_toast;
+        showToast(message, 'success');
+        form.reset();
+      } else {
+        const errData = await res.json().catch(() => null);
+        const errMsg = errData?.message || (lang === 'pl' ? 'Wystąpił błąd podczas wysyłania formularza.' : 'Error sending form.');
+        showToast(errMsg, 'error');
+      }
+    } catch (err) {
+      console.error('Contact form submission error:', err);
+      showToast(lang === 'pl' ? 'Problem z połączeniem. Spróbuj ponownie później.' : 'Connection problem. Please try again.', 'error');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalBtnText;
+      }
+    }
   });
 </script>

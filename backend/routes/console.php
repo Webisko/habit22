@@ -256,6 +256,10 @@ Schedule::command('app:cleanup-abandoned-carts')
     ->daily()
     ->withoutOverlapping();
 
+Schedule::command('app:cancel-unpaid-orders')
+    ->hourly()
+    ->withoutOverlapping();
+
 Schedule::command('app:generate-sitemap')
     ->dailyAt('03:30')
     ->withoutOverlapping();

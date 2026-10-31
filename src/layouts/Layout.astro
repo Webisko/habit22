@@ -16,6 +16,7 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -24,7 +25,8 @@ const {
   alternateUrl,
   description,
   ogImage,
-  ogType = 'website'
+  ogType = 'website',
+  noindex = false
 } = Astro.props;
 
 const defaultDesc = lang === 'pl'
@@ -52,6 +54,27 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' ||
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.8em' font-size='60' fill='%232C2119' font-family='serif' font-weight='500'>H22</text></svg>">
     <title>{title}</title>
     <link rel="canonical" href={Astro.url.href} />
+
+    {/* Multilingual Alternate Hreflang Tags */}
+    {lang === 'pl' ? (
+      <>
+        <link rel="alternate" hreflang="pl" href={Astro.url.href} />
+        <link rel="alternate" hreflang="en" href={calculatedAlternateUrl} />
+        <link rel="alternate" hreflang="x-default" href={Astro.url.href} />
+      </>
+    ) : (
+      <>
+        <link rel="alternate" hreflang="en" href={Astro.url.href} />
+        <link rel="alternate" hreflang="pl" href={calculatedAlternateUrl} />
+        <link rel="alternate" hreflang="x-default" href={calculatedAlternateUrl} />
+      </>
+    )}
+
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <meta name="robots" content="index, follow" />
+    )}
     
     <meta name="description" content={metaDesc} />
     
@@ -69,14 +92,9 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' ||
     <meta property="twitter:description" content={metaDesc} />
     <meta property="twitter:image" content={metaImage} />
     
-    <!-- Preconnect & Preload Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" media="print" onload="this.media='all'" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" />
-    </noscript>
+    <!-- Self-Hosted Local Webfonts (RODO Zero-Leak Compliant) -->
+    <link rel="preload" as="style" href="/fonts/fonts.css" />
+    <link rel="stylesheet" href="/fonts/fonts.css" />
 
     {isHomePage && (
       <link rel="preload" as="image" href={`${import.meta.env.BASE_URL}hero__1.webp`} type="image/webp" fetchpriority="high" />
@@ -86,34 +104,21 @@ const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '/en' ||
 
     {isHomePage && (
       <>
-        <script type="application/ld+json" is:inline define:vars={{
-          name: "Habit22",
-          url: Astro.url.origin,
-          logo: metaImage,
-          description: defaultDesc
-        }}>
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": name,
-            "url": url,
-            "logo": logo,
-            "description": description
-          })}
-        </script>
-        <script type="application/ld+json" is:inline define:vars={{
-          name: "Habit22",
-          url: Astro.url.origin,
-          description: defaultDesc
-        }}>
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": name,
-            "url": url,
-            "description": description
-          })}
-        </script>
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Habit22",
+          "url": Astro.url.origin,
+          "logo": metaImage,
+          "description": defaultDesc
+        })} />
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Habit22",
+          "url": Astro.url.origin,
+          "description": defaultDesc
+        })} />
       </>
     )}
   </head>

@@ -143,4 +143,79 @@ class StripePaymentTest extends TestCase
             'status' => 'confirmed',
         ]);
     }
+
+    public function test_webhook_returns_500_when_webhook_secret_not_configured(): void
+    {
+        config(['services.stripe.webhook_secret' => null]);
+
+        $response = $this->postJson(
+            '/api/integrations/stripe/payment-callback',
+            ['id' => 'evt_123'],
+            ['STRIPE_SIGNATURE' => 'some_sig']
+        );
+
+        $response->assertStatus(500);
+    }
+
+    public function test_webhook_handles_replayed_completed_session(): void
+    {
+        $order = Order::query()->create([
+            'number' => 'ORD-99999',
+            'status' => 'placed',
+            'payment_status' => 'paid',
+            'currency' => 'PLN',
+            'total_amount' => 15000,
+            'customer_email' => 'test@example.com',
+            'customer_first_name' => 'Jan',
+            'customer_last_name' => 'Kowalski',
+        ]);
+
+        PaymentTransaction::query()->create([
+            'order_id' => $order->id,
+            'provider' => 'stripe',
+            'status' => 'confirmed',
+            'amount' => 15000,
+            'currency' => 'PLN',
+            'external_session_id' => 'cs_test_replayed123',
+            'metadata' => [
+                'stripe_session_id' => 'cs_test_replayed123',
+            ],
+        ]);
+
+        $payload = json_encode([
+            'id' => 'evt_replayed',
+            'type' => 'checkout.session.completed',
+            'data' => [
+                'object' => [
+                    'id' => 'cs_test_replayed123',
+                    'payment_status' => 'paid',
+                    'metadata' => [
+                        'order_number' => 'ORD-99999',
+                    ],
+                ],
+            ],
+        ]);
+
+        $time = time();
+        $webhookSecret = 'whsec_mock';
+        $signedPayload = "{$time}.{$payload}";
+        $signature = hash_hmac('sha256', $signedPayload, $webhookSecret);
+        $sigHeader = "t={$time},v1={$signature}";
+
+        $response = $this->call(
+            'POST',
+            '/api/integrations/stripe/payment-callback',
+            [],
+            [],
+            [],
+            [
+                'HTTP_STRIPE_SIGNATURE' => $sigHeader,
+                'CONTENT_TYPE' => 'application/json',
+            ],
+            $payload
+        );
+
+        $response->assertOk();
+        $this->assertTrue($response->json('replayed') === true);
+    }
 }

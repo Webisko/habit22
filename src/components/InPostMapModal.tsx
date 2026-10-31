@@ -12,6 +12,15 @@ interface InPostMapModalProps {
   defaultCity?: string;
 }
 
+function formatCityName(name: string): string {
+  if (!name) return '';
+  return name
+    .toLowerCase()
+    .split(/([\s-]+)/)
+    .map((part) => (part.trim().length > 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part))
+    .join('');
+}
+
 interface ShipXPoint {
   name: string;
   location: {
@@ -56,11 +65,13 @@ export default function InPostMapModal({
     try {
       let url = 'https://api-shipx-pl.easypack24.net/v1/points?type=parcel_locker&limit=35';
       if (query && query.trim().length > 0) {
-        url += `&query=${encodeURIComponent(query.trim())}`;
+        const formattedQuery = formatCityName(query.trim());
+        url += `&query=${encodeURIComponent(formattedQuery)}`;
       } else if (lat !== undefined && lng !== undefined) {
         url += `&relative_point=${lat},${lng}`;
       } else {
-        url += '&city=Warszawa';
+        const formattedDefault = formatCityName(defaultCity) || 'Warszawa';
+        url += `&city=${encodeURIComponent(formattedDefault)}`;
       }
 
       const res = await fetch(url);
@@ -125,7 +136,7 @@ export default function InPostMapModal({
 
       // Initial fetch based on defaultCity or coordinates
       if (defaultCity && defaultCity.trim().length > 1) {
-        fetchPoints(undefined, undefined, defaultCity.trim());
+        fetchPoints(undefined, undefined, formatCityName(defaultCity.trim()));
       } else {
         fetchPoints(defaultLat, defaultLng);
       }

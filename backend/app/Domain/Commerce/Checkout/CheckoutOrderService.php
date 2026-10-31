@@ -212,6 +212,22 @@ class CheckoutOrderService
                 );
             }
 
+            if ($placeOrder && $resolvedCheckout->coupon) {
+                $coupon = \App\Models\Coupon::query()->lockForUpdate()->find($resolvedCheckout->coupon->id);
+                if ($coupon && $coupon->usage_limit !== null) {
+                    $usedCount = Order::query()
+                        ->where('coupon_id', $coupon->id)
+                        ->whereNotIn('status', ['draft', 'cancelled'])
+                        ->count();
+
+                    if ($usedCount >= $coupon->usage_limit) {
+                        throw ValidationException::withMessages([
+                            'coupon_code' => 'Kupon został już wykorzystany maksymalną liczbę razy.',
+                        ]);
+                    }
+                }
+            }
+
             $order = Order::query()->create([
                 'number' => $this->generateOrderNumber($placeOrder),
                 'user_id' => $customerUser?->id,

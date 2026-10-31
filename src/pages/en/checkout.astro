@@ -7,6 +7,6 @@ const lang = 'en';
 const { t } = useTranslations(lang);
 ---
 
-<Layout title={`${t.checkout} - Habit22`} lang={lang}>
+<Layout title={`${t.checkout} - Habit22`} lang={lang} noindex={true}>
   <CheckoutForm client:load lang={lang} />
 </Layout>

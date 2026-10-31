@@ -487,4 +487,71 @@ class SecurityTest extends TestCase
         $response = $this->get($signedUrl);
         $this->assertNotEquals(403, $response->getStatusCode());
     }
+
+    /**
+     * Audit: Contact inquiry & newsletter honeypot protection.
+     */
+    public function test_contact_inquiry_and_newsletter_honeypot_silently_accepted(): void
+    {
+        // 1. Contact inquiry with honeypot field returns silent 200 without creating DB record
+        $response = $this->postJson('/api/inquiries', [
+            'name' => 'Bot Spammer',
+            'email' => 'bot@spammer.com',
+            'message' => 'Spam message',
+            'hp_name' => 'I am a bot',
+        ]);
+        $response->assertOk()
+            ->assertJsonPath('success', true);
+        $this->assertDatabaseMissing('contact_inquiries', [
+            'email' => 'bot@spammer.com',
+        ]);
+
+        // 2. Newsletter subscribe with honeypot returns silent 200 without creating subscriber
+        $nlResponse = $this->postJson('/api/newsletter/subscribe', [
+            'email' => 'botnl@spammer.com',
+            'website' => 'http://spam.com',
+        ]);
+        $nlResponse->assertOk();
+        $this->assertDatabaseMissing('newsletter_subscribers', [
+            'email' => 'botnl@spammer.com',
+        ]);
+    }
+
+    /**
+     * Audit: Cancel unpaid orders cron command.
+     */
+    public function test_cancel_unpaid_orders_command_cancels_old_placed_orders(): void
+    {
+        $oldOrder = Order::query()->create([
+            'number' => 'ORD-OLD-1',
+            'status' => 'placed',
+            'payment_status' => 'awaiting_payment',
+            'shipping_method_code' => 'courier',
+            'currency' => 'PLN',
+            'total_amount' => 5000,
+            'customer_email' => 'old@example.com',
+            'customer_first_name' => 'Jan',
+            'customer_last_name' => 'Kowalski',
+            'placed_at' => now()->subHours(50),
+        ]);
+
+        $freshOrder = Order::query()->create([
+            'number' => 'ORD-FRESH-1',
+            'status' => 'placed',
+            'payment_status' => 'awaiting_payment',
+            'shipping_method_code' => 'courier',
+            'currency' => 'PLN',
+            'total_amount' => 5000,
+            'customer_email' => 'fresh@example.com',
+            'customer_first_name' => 'Anna',
+            'customer_last_name' => 'Nowak',
+            'placed_at' => now()->subHours(2),
+        ]);
+
+        $this->artisan('app:cancel-unpaid-orders', ['--hours' => 48])
+            ->assertExitCode(0);
+
+        $this->assertEquals('cancelled', $oldOrder->fresh()->status);
+        $this->assertEquals('placed', $freshOrder->fresh()->status);
+    }
 }

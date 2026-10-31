@@ -41,6 +41,9 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
+  // Legal consent state (PL/EU compliance)
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   // Right summary bottom-anchored sticky calculation
   const summaryCardRef = React.useRef<HTMLDivElement>(null);
   const [stickyTop, setStickyTop] = useState<number | null>(null);
@@ -144,40 +147,10 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
         });
         setCouponError(null);
       } else {
-        const codeUpper = couponCode.trim().toUpperCase();
-        if (codeUpper === 'HABIT10') {
-          setAppliedCoupon({
-            code: 'HABIT10',
-            discountAmount: Math.round(subtotal * 0.1),
-          });
-          setCouponError(null);
-        } else if (codeUpper === 'LATO50') {
-          setAppliedCoupon({
-            code: 'LATO50',
-            discountAmount: 50,
-          });
-          setCouponError(null);
-        } else {
-          setCouponError(lang === 'pl' ? 'Nieprawidłowy lub wygasły kod rabatowy.' : 'Invalid or expired promo code.');
-        }
+        setCouponError(lang === 'pl' ? 'Nieprawidłowy lub wygasły kod rabatowy.' : 'Invalid or expired promo code.');
       }
-    } catch {
-      const codeUpper = couponCode.trim().toUpperCase();
-      if (codeUpper === 'HABIT10') {
-        setAppliedCoupon({
-          code: 'HABIT10',
-          discountAmount: Math.round(subtotal * 0.1),
-        });
-        setCouponError(null);
-      } else if (codeUpper === 'LATO50') {
-        setAppliedCoupon({
-          code: 'LATO50',
-          discountAmount: 50,
-        });
-        setCouponError(null);
-      } else {
-        setCouponError(lang === 'pl' ? 'Nieprawidłowy kod rabatowy.' : 'Invalid promo code.');
-      }
+    } catch (err: any) {
+      setCouponError(err?.message || (lang === 'pl' ? 'Nieprawidłowy kod rabatowy.' : 'Invalid promo code.'));
     } finally {
       setIsValidatingCoupon(false);
     }
@@ -234,6 +207,10 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
       setOrderError(lang === 'pl' ? 'Proszę wybrać metodę płatności.' : 'Please choose a payment method.');
       return;
     }
+    if (!termsAccepted) {
+      setOrderError(lang === 'pl' ? 'Zaakceptowanie regulaminu sklepu i polityki prywatności jest wymagane.' : 'Please accept the Terms & Conditions and Privacy Policy.');
+      return;
+    }
 
     setIsPlacingOrder(true);
     setOrderError(null);
@@ -285,7 +262,7 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
         country_code: 'PL',
       },
       delivery_point: checkoutDelivery === 'locker' && selectedLocker ? selectedLocker : null,
-      terms_accepted: true,
+      terms_accepted: termsAccepted,
     };
 
     try {
@@ -363,56 +340,15 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
         }
       }
 
-      navigate(l('thankyou'));
+      navigate(`${l('thankyou')}?number=${encodeURIComponent(placedOrderNumber)}`);
     } catch (err: any) {
-      console.warn('Backend order placement failed, falling back to local order flow:', err);
-
-      const randomNum = Math.floor(100000 + Math.random() * 900000);
-      const fallbackNumber = `#H22-${randomNum}`;
-      const orderDate = new Date().toLocaleDateString(lang === 'pl' ? 'pl-PL' : 'en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-
-      const itemsDetails = $cartItems.map((item) => {
-        const [productId, sizeId] = item.id.split('|');
-        const product = PRODUCTS.find((p) => p.id === productId);
-        const size = product?.sizes.find((s) => s.id === sizeId);
-        return {
-          id: item.id,
-          productId,
-          sizeId,
-          title: product ? product.title[lang === 'pl' ? 'pl' : 'en'] : '',
-          design: product ? product.design[lang === 'pl' ? 'pl' : 'en'] : '',
-          image: product ? product.images[0] : '',
-          sizeName: size ? size.name[lang === 'pl' ? 'pl' : 'en'] : '',
-          quantity: item.quantity,
-          price: product ? product.price : 0
-        };
-      });
-
-      const orderDetails = {
-        orderNumber: fallbackNumber,
-        date: orderDate,
-        delivery: checkoutDelivery,
-        deliveryPoint: selectedLocker,
-        coupon: appliedCoupon,
-        name: isCompany ? companyName : `${firstName} ${lastName}`,
-        nip: isCompany ? nip : '',
-        street,
-        city,
-        zip,
-        phone,
-        email: checkoutEmail,
-        payment: checkoutPayment,
-        total: total,
-        items: itemsDetails,
-      };
-
-      sessionStorage.setItem('last_order_details', JSON.stringify(orderDetails));
-      clearCart();
-      navigate(l('thankyou'));
+      console.error('Order placement failed:', err);
+      setOrderError(
+        err?.message ||
+          (lang === 'pl'
+            ? 'Wystąpił błąd podczas składania zamówienia. Sprawdź wprowadzone dane lub spróbuj ponownie.'
+            : 'An error occurred while placing your order. Please check your data and try again.')
+      );
     } finally {
       setIsPlacingOrder(false);
     }
@@ -1060,9 +996,34 @@ export default function CheckoutForm({ lang }: CheckoutFormProps) {
           </div>
         )}
 
+        {/* Mandatory Legal Consent (Terms & Privacy) */}
+        <div className="flex items-start space-x-3 mb-6 pt-4 border-t border-[#E6DCC9]">
+          <input
+            type="checkbox"
+            id="terms-accepted"
+            checked={termsAccepted}
+            onChange={(e) => {
+              setTermsAccepted(e.target.checked);
+              if (orderError) setOrderError(null);
+            }}
+            className="mt-1 w-5 h-5 accent-[#2C2119] bg-transparent border-[#E6DCC9] cursor-pointer shrink-0"
+          />
+          <label htmlFor="terms-accepted" className="text-xs font-serif text-[#5C4E43] leading-relaxed cursor-pointer select-none">
+            {lang === 'pl' ? (
+              <>
+                Zapoznałem/am się i akceptuję <a href="/regulamin" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#2C2119]">Regulamin</a> oraz <a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#2C2119]">Politykę Prywatności</a> sklepu Habit22. <span className="text-rose-700 font-bold">*</span>
+              </>
+            ) : (
+              <>
+                I have read and agree to the <a href="/en/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#2C2119]">Terms & Conditions</a> and <a href="/en/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#2C2119]">Privacy Policy</a>. <span className="text-rose-700 font-bold">*</span>
+              </>
+            )}
+          </label>
+        </div>
+
         <button
           onClick={handlePlaceOrder}
-          disabled={$cartCount === 0 || !checkoutDelivery || !checkoutPayment || isPlacingOrder}
+          disabled={$cartCount === 0 || !checkoutDelivery || !checkoutPayment || !termsAccepted || isPlacingOrder}
           className="w-full py-5 bg-[#2C2119] text-[#F3EDE3] text-sm font-bold uppercase tracking-[0.2em] hover:bg-[#1A140F] transition-colors mt-auto flex items-center justify-center space-x-3 group relative overflow-hidden disabled:opacity-50 disabled:pointer-events-none"
         >
           {isPlacingOrder ? (

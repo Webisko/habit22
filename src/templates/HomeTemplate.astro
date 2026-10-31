@@ -129,11 +129,18 @@ const { t, l } = useTranslations(lang);
           <p class="text-[#2C2119] font-serif text-lg leading-relaxed mb-12">
             {t.newsletter_desc}
           </p>
-          <form id="newsletter-form" class="w-full relative flex flex-col items-start space-y-6">
+          <form id="newsletter-form" class="w-full relative flex flex-col items-start space-y-6" data-lang={lang}>
+            {/* Honeypot field for bot protection */}
+            <div class="hidden" aria-hidden="true" style="display: none;">
+              <label for="newsletter-hp">Website</label>
+              <input type="text" id="newsletter-hp" name="hp_name" tabindex="-1" autocomplete="off" />
+            </div>
+
             <div class="w-full relative flex flex-col md:flex-row items-center space-y-4 md:space-y-0">
               <input
                 type="email"
                 id="newsletter-email"
+                name="email"
                 required
                 placeholder={t.newsletter_placeholder}
                 aria-label={t.newsletter_placeholder}
@@ -141,7 +148,8 @@ const { t, l } = useTranslations(lang);
               />
               <button
                 type="submit"
-                class="w-full md:w-auto md:absolute md:right-0 md:bottom-0 text-sm font-semibold uppercase tracking-widest text-[#2C2119] hover:text-[#5C4E43] transition-colors py-3 md:py-4 md:px-4 cursor-pointer"
+                id="newsletter-submit-btn"
+                class="w-full md:w-auto md:absolute md:right-0 md:bottom-0 text-sm font-semibold uppercase tracking-widest text-[#2C2119] hover:text-[#5C4E43] transition-colors py-3 md:py-4 md:px-4 cursor-pointer disabled:opacity-50"
               >
                 {t.newsletter_submit}
               </button>
@@ -186,29 +194,73 @@ const { t, l } = useTranslations(lang);
 </Layout>
 
 <script>
+  import { showToast } from '../stores/toast';
+
   document.addEventListener('astro:page-load', () => {
-    const form = document.getElementById('newsletter-form');
+    const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
     const formContainer = document.getElementById('newsletter-form-container');
     const success = document.getElementById('newsletter-success');
+    const submitBtn = document.getElementById('newsletter-submit-btn') as HTMLButtonElement | null;
+
     if (form && formContainer && success) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const lang = form.getAttribute('data-lang') || 'pl';
+        const originalBtnText = submitBtn?.innerText || '';
         
-        // Zapis do sessionStorage (przydatne do ewentualnych testów lub przyszłej analityki)
         const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
-        const email = emailInput ? emailInput.value : '';
-        sessionStorage.setItem('newsletter_subscribed_email', email);
-        
-        // Płynna animacja zanikania całego kontenera (formularz + oryginalne nagłówki)
-        formContainer.classList.add('opacity-0', 'pointer-events-none');
-        setTimeout(() => {
-          formContainer.classList.add('hidden');
-          success.classList.remove('hidden');
-          // Wymuszenie reflow
-          void success.offsetHeight;
-          success.classList.remove('opacity-0');
-          success.classList.add('opacity-100');
-        }, 500);
+        const hpInput = form.querySelector('input[name="hp_name"]') as HTMLInputElement;
+        const email = emailInput ? emailInput.value.trim() : '';
+        const hpName = hpInput ? hpInput.value : '';
+
+        if (!email) return;
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerText = lang === 'pl' ? 'Zapisywanie...' : 'Subscribing...';
+        }
+
+        try {
+          const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+          const res = await fetch(`${apiUrl}/newsletter/subscribe`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify({ email, hp_name: hpName }),
+          });
+
+          if (res.ok) {
+            sessionStorage.setItem('newsletter_subscribed_email', email);
+            
+            // Płynna animacja zanikania całego kontenera (formularz + oryginalne nagłówki)
+            formContainer.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+              formContainer.classList.add('hidden');
+              success.classList.remove('hidden');
+              // Wymuszenie reflow
+              void success.offsetHeight;
+              success.classList.remove('opacity-0');
+              success.classList.add('opacity-100');
+            }, 500);
+          } else {
+            const errData = await res.json().catch(() => null);
+            const errMsg = errData?.message || (lang === 'pl' ? 'Nie udało się zapisać do newslettera.' : 'Could not subscribe to newsletter.');
+            showToast(errMsg, 'error');
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerText = originalBtnText;
+            }
+          }
+        } catch (err) {
+          console.error('Newsletter subscription error:', err);
+          showToast(lang === 'pl' ? 'Problem z połączeniem. Spróbuj ponownie później.' : 'Connection problem. Please try again.', 'error');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+          }
+        }
       });
     }
   });

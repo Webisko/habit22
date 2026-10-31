@@ -27,7 +27,7 @@ class CouponForm
                             ->label('Kod')
                             ->required()
                             ->maxLength(255)
-                            ->unique(ignoreRecord: true)
+                            ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule) => $rule->whereNull('deleted_at'))
                             ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? mb_strtoupper(trim($state)) : null)
                             ->suffixAction(
                                 \Filament\Actions\Action::make('generateCode')

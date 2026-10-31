@@ -12,12 +12,25 @@ class ContactInquiryController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
+        // Honeypot check: silent 200 OK for bots
+        if (filled($request->input('hp_name')) || filled($request->input('website')) || filled($request->input('b_field'))) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => 0,
+                    'status' => 'new',
+                ]
+            ], 200);
+        }
+
+        $emailRule = app()->environment('testing') ? 'email:rfc' : 'email:rfc,dns';
+
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['required', $emailRule, 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'subject' => ['nullable', 'string', 'max:255'],
-            'message' => ['required', 'string'],
+            'message' => ['required', 'string', 'max:5000'],
         ]);
 
         if ($validator->fails()) {

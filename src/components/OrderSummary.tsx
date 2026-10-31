@@ -29,15 +29,50 @@ interface OrderSummaryProps {
 export default function OrderSummary({ lang }: OrderSummaryProps) {
   const { t } = useTranslations(lang);
   const [details, setDetails] = useState<OrderDetails | null>(null);
+  const [backendStatus, setBackendStatus] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
+    let orderNum = '';
+    let email = '';
+
     try {
       const stored = sessionStorage.getItem('last_order_details');
       if (stored) {
-        setDetails(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        setDetails(parsed);
+        orderNum = parsed.orderNumber;
+        email = parsed.email;
       }
     } catch (e) {
       console.error('Failed to parse order details from sessionStorage', e);
+    }
+
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlNumber = searchParams.get('number');
+      if (urlNumber) {
+        orderNum = urlNumber;
+        if (details) {
+          setDetails((prev) => (prev ? { ...prev, orderNumber: urlNumber } : prev));
+        }
+      }
+    }
+
+    if (orderNum && email) {
+      setIsVerifying(true);
+      const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+      fetch(`${apiUrl}/checkout/orders/${encodeURIComponent(orderNum)}?email=${encodeURIComponent(email)}`, {
+        headers: { Accept: 'application/json', 'X-Order-Email': email },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.data?.order?.payment_status) {
+            setBackendStatus(data.data.order.payment_status);
+          }
+        })
+        .catch((err) => console.warn('Could not verify order status:', err))
+        .finally(() => setIsVerifying(false));
     }
   }, []);
 
@@ -124,6 +159,26 @@ export default function OrderSummary({ lang }: OrderSummaryProps) {
             <p className="font-serif text-[#2C2119] text-lg">
               {getPaymentLabel(details.payment)}
             </p>
+            {isVerifying && (
+              <span className="inline-block mt-2 text-xs font-serif text-[#8C7C6D]">
+                {lang === 'pl' ? 'Weryfikacja statusu płatności...' : 'Verifying payment status...'}
+              </span>
+            )}
+            {backendStatus === 'paid' && (
+              <span className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 text-xs font-medium text-emerald-800 bg-emerald-50 border border-emerald-200">
+                ● {lang === 'pl' ? 'Płatność opłacona' : 'Payment confirmed'}
+              </span>
+            )}
+            {backendStatus === 'awaiting_payment' && (
+              <span className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 text-xs font-medium text-amber-800 bg-amber-50 border border-amber-200">
+                ● {lang === 'pl' ? 'Oczekuje na płatność' : 'Awaiting payment'}
+              </span>
+            )}
+            {backendStatus === 'failed' && (
+              <span className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 text-xs font-medium text-rose-800 bg-rose-50 border border-rose-200">
+                ● {lang === 'pl' ? 'Płatność nie powiodła się' : 'Payment failed'}
+              </span>
+            )}
           </div>
 
           <div>

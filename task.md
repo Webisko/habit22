@@ -1,30 +1,38 @@
-# Zadania: Wdrożenie Produkcyjne Sklepu Habit22
+# 6-Stopniowy Audyt Projektu (project-audit-master) — Habit22
 
-## Faza 1: Weryfikacja Lokalna i Przygotowanie (Zakończona Sukcesem)
-- [x] Testy automatyczne backendu Laravel 13 (`php artisan test` - 141/141 passed, 685 asercji) <!-- id: 201 -->
-- [x] Budowa statyczna frontendu Astro 7 (`npm run build` - 42 strony wygenerowane bez błędów) <!-- id: 202 -->
-- [x] Weryfikacja UX: sticky koszyk od dołu na desktopie, responsywna mapka InPost (bez tokena), dwujęzyczny CMS Filament 5 <!-- id: 203 -->
-- [x] Rozpoznanie środowiska produkcyjnego przez SSH <!-- id: 204 -->
+## Krok 0: Inwentaryzacja i Profil Projektu
+- [x] Profil architektury: Typ A (Laravel 13 + FilamentPHP 5 + Astro 7 + React Islands) <!-- id: 200 -->
+- [x] Zidentyfikowanie aktywnych modułów biznesowych (Sklep fizyczny, Stripe, InPost, Newsletter, Kontakt, i18n PL/EN, Cron) <!-- id: 201 -->
 
-## Faza 2: Konfiguracja Domen i Środowiska na Serwerze (Wykonana)
-- [x] Utworzenie subdomeny `panel.habit22.eu` w DirectAdmin (zweryfikowano katalog i serwer WWW LiteSpeed) <!-- id: 205 -->
-- [x] Usunięcie starych plików z `admin.habit22.eu/app` <!-- id: 206 -->
-- [x] Przygotowanie struktury katalogów na serwerze (`domains/panel.habit22.eu/app` oraz `public_html`) <!-- id: 207 -->
-- [x] Konfiguracja produkcyjnego pliku `.env` backendu (`APP_URL=https://panel.habit22.eu`, `ALLOWED_ORIGINS=https://habit22.eu`, `DB_CONNECTION=sqlite`) <!-- id: 208 -->
+## Stopień 1: Cyberbezpieczeństwo Rdzenia, Anti-IDOR, Antyspam i Konfiguracja Serwera
+- [x] Skan Anti-IDOR: weryfikacja publicznych tras pod kątem sekwencyjnego `{id}` i wycieku danych w `routes/api.php` i kontrolerach <!-- id: 202 -->
+- [x] Skan ochrony antyspamowej: rate limiting (`throttle`), podwójny Honeypot, próg czasowy, silent 200 w formularzach kontaktowych i newslettera <!-- id: 203 -->
+- [x] Skan serwera: weryfikacja `public/.htaccess`, routing `/api/*` i `/admin/*` do Laravela, blokady `.env`, `.sqlite`, `.git`, `Options -Indexes`, nagłówki HTTP <!-- id: 204 -->
 
-## Faza 3: Wdrożenie Backendu (Laravel 13 + Filament 5 CMS) (Wykonana)
-- [x] Wgranie paczki backendu na serwer i instalacja zoptymalizowanych pakietów Composer <!-- id: 209 -->
-- [x] Utworzenie i zmigrowanie produkcyjnej bazy SQLite (`panel.habit22.eu/app/database/database.sqlite`) <!-- id: 210 -->
-- [x] Uruchomienie seederów: konta administratora (`admin@webisko.pl`) i managera (`kontakt@habit22.eu`), produkty, warianty, wpisy Dziennika <!-- id: 211 -->
-- [x] Optymalizacja produkcyjna Laravel (`config:cache`, `route:cache`, `view:cache`, link `storage`) <!-- id: 212 -->
-- [x] Zweryfikowanie odpowiedzi panelu Filament (`HTTP 200` na `/admin/login`) oraz API (`HTTP 200` na `/api/catalog` i `/api/store/settings`) <!-- id: 213 -->
+## Stopień 2: Audyt Ścieżki Zakupowej: Koszyk Zero-Trust, Płatności, Magazyn i Dostawa InPost
+- [x] Skan Zero-Trust Frontend: weryfikacja `src/` pod kątem cen zapasowych, hardkodowanych kuponów, fałszywych zamówień w catch <!-- id: 205 -->
+- [x] Skan Płatności (Stripe): Fail-Closed na braku sekretu, porównanie sygnatur, idempotencja transakcyjna (`lockForUpdate`), weryfikacja powrotu ze statusem <!-- id: 206 -->
+- [x] Skan Atomowości Magazynu i Kuponów: `lockForUpdate()` w transakcji zamówienia, uwalnianie towaru przez Cron po określonym czasie (`->withoutOverlapping()`) <!-- id: 207 -->
+- [x] Skan Dostawy InPost: integracja Paczkomatów (Leaflet/OSM / ShipX), parsowanie adresu kurierskiego, dodanie funkcji `formatCityName()` <!-- id: 208 -->
 
-## Faza 4: Wdrożenie Frontendu (Astro 7 SSG) (Wykonana)
-- [x] Budowa produkcyjna Astro z `PUBLIC_API_URL=https://panel.habit22.eu/api` <!-- id: 214 -->
-- [x] Kopia zapasowa poprzedniej wersji `public_html` na serwerze <!-- id: 215 -->
-- [x] Synchronizacja nowego katalogu `dist/` do `/home/srv82431/domains/habit22.eu/public_html` <!-- id: 216 -->
-- [x] Weryfikacja działania na żywo: strona główna `https://habit22.eu` zwraca HTTP/2 200 z nowymi assetami <!-- id: 217 -->
+## Stopień 3: Audyt Synchronizacji 5 Warstw (Baza ⇄ Model ⇄ Filament ⇄ API ⇄ Astro) oraz i18n
+- [x] Skan migracji `order_items`: brak `cascadeOnDelete()` na `product_id`, obecność snapshotów cenowych i nazwy <!-- id: 209 -->
+- [x] Skan modeli Eloquent i Filament: zgodność `$fillable` i `$casts`, ochrona `metadata` JSON przed nadpisaniem w `saving`, obsługa `SoftDeletes` dla kolumn `UNIQUE` <!-- id: 210 -->
+- [x] Skan Wielojęzyczności (`i18n`): język panelu Filament (PL), spójność tłumaczeń PL/EN, wdrożenie tagów hreflang w nagłówku `<head>` <!-- id: 211 -->
+- [x] Skan odporności na pusty katalog w CMS: zachowanie frontu przy braku produktów, brak wywrotki `npm run build` na pustych tablicach <!-- id: 212 -->
+- [x] Podłączenie frontowych formularzy (Kontakt i Newsletter) do backendowego API z honeypotem i obsługą błędów <!-- id: 213b -->
 
-## Faza 5: Certyfikat SSL dla Subdomeny Panelu
-- [ ] Zmiana delegacji serwerów nazw (NS) dla domeny `habit22.eu` w panelu klienta na `ns1.seohost.pl` i `ns2.seohost.pl` <!-- id: 218 -->
-- [ ] Wygenerowanie darmowego certyfikatu Let's Encrypt w DirectAdmin dla `panel.habit22.eu` <!-- id: 219 -->
+## Stopień 4: Audyt Modułów Dodatkowych (Newsletter, CRM, Cron, Agenci AI)
+- [x] Newsletter i CRM: Double Opt-In / zapis ze statusem, brak wycieku kluczy API na froncie, zgody marketingowe <!-- id: 213 -->
+- [x] Zadania Cron i kolejki: `->withoutOverlapping()` w `routes/console.php`, brak publicznych skryptów w `public/` <!-- id: 214 -->
+- [x] Weryfikacja reguły If-Present: brak modułów LMS, Lojalnościowych, Afiliacji, Quizów i AI (nieaktywne w projekcie — brak zgłaszania fałszywych braków) <!-- id: 215 -->
+
+## Stopień 5: Audyt Prawny PL/UE (Cookieless, Baner RODO, Omnibus, GPSR), Mediów (.webp), SEO i UX/WCAG
+- [x] Skan RODO Zero-Leak: brak zewnętrznych czcionek Google Fonts / zewnętrznych trackerów, lokalne `.woff2` <!-- id: 216 -->
+- [x] Skan Banera Cookies: brak Dark Patterns (równa waga przycisków), integracja z rejestrem zgód <!-- id: 217 -->
+- [x] Skan Prawny E-Commerce: wdrożenie obowiązkowego checkboxa akceptacji Regulaminu i Polityki Prywatności w koszyku, etykieta „Kupuję i płacę”, Omnibus, dane firmy <!-- id: 218 -->
+- [x] Skan Mediów (.webp) i SEO: optymalizacja obrazów (100% WebP), preload LCP, dane strukturalne JSON-LD (`Product`, `Organization`), `noindex` na stronach prywatnych, sitemap i robots.txt <!-- id: 219 -->
+
+## Stopień 6: Twarda Bramka Wykonawcza w Terminalu
+- [x] Wykonanie zestawu testów backendu `php artisan test` (100% PASS, 145 testów, 696 asercji) <!-- id: 220 -->
+- [x] Wykonanie kompilacji frontendu `npm run build` (kod wyjścia 0, 42 podstrony bez błędów) <!-- id: 221 -->

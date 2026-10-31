@@ -16,6 +16,21 @@ class NewsletterSubscribeController extends Controller
 
     public function __invoke(Request $request): JsonResponse
     {
+        // Honeypot check: silent 200 OK for bots
+        if (filled($request->input('hp_name')) || filled($request->input('website')) || filled($request->input('b_field'))) {
+            return response()->json([
+                'data' => [
+                    'subscriber' => [
+                        'id' => 0,
+                        'email' => (string) $request->input('email', ''),
+                        'status' => 'pending',
+                        'is_active' => false,
+                        'consented_at' => now()->toIso8601String(),
+                    ],
+                ],
+            ], 200);
+        }
+
         $validated = $request->validate([
             'email' => ['required', 'email:rfc', 'max:255'],
             'first_name' => ['nullable', 'string', 'max:255'],
@@ -42,4 +57,4 @@ class NewsletterSubscribeController extends Controller
             ],
         ], $subscriber->wasRecentlyCreated ? 201 : 200);
     }
-}
+}

@@ -8,7 +8,22 @@ import path from 'path';
 export default defineConfig({
   site: 'https://habit22.eu',
   base: '/',
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      filter: (page) =>
+        !page.includes('/zamowienie') &&
+        !page.includes('/checkout') &&
+        !page.includes('/podziekowanie') &&
+        !page.includes('/thankyou') &&
+        !page.includes('/konto') &&
+        !page.includes('/account') &&
+        !page.includes('/logowanie') &&
+        !page.includes('/login') &&
+        !page.includes('/ustaw-nowe-haslo') &&
+        !page.includes('/set-new-password'),
+    }),
+  ],
   build: {
     inlineStylesheets: 'always',
   },

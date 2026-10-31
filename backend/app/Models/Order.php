@@ -123,6 +123,15 @@ class Order extends Model
 
     protected static function booted(): void
     {
+        static::saving(function (Order $order): void {
+            if ($order->isDirty('metadata') && is_array($order->metadata)) {
+                $original = $order->getOriginal('metadata');
+                if (is_array($original)) {
+                    $order->metadata = array_replace_recursive($original, $order->metadata);
+                }
+            }
+        });
+
         static::updating(function (Order $order): void {
             if ($order->isDirty('status') && $order->status === 'shipped' && $order->getOriginal('status') !== 'shipped') {
                 $order->shipped_at = now();

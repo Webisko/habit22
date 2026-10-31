@@ -28,14 +28,14 @@ const { t, l } = useTranslations(lang);
       <button
         id="cookie-decline"
         type="button"
-        class="text-xs uppercase tracking-widest text-[#4A3E34] hover:text-[#1A140F] font-medium py-3 px-4 transition-colors cursor-pointer"
+        class="border border-[#2C2119] text-[#2C2119] py-3 px-6 text-xs font-semibold uppercase tracking-widest hover:bg-[#2C2119] hover:text-[#F3EDE3] transition-colors shrink-0 cursor-pointer"
       >
         {t.cookie_decline}
       </button>
       <button
         id="cookie-accept"
         type="button"
-        class="bg-[#2C2119] text-[#F3EDE3] py-3 px-8 text-xs font-semibold uppercase tracking-widest hover:bg-[#1A140F] transition-colors shrink-0 cursor-pointer"
+        class="border border-[#2C2119] bg-[#2C2119] text-[#F3EDE3] py-3 px-6 text-xs font-semibold uppercase tracking-widest hover:bg-[#1A140F] hover:border-[#1A140F] transition-colors shrink-0 cursor-pointer"
       >
         {t.cookie_accept}
       </button>
@@ -83,6 +83,15 @@ const { t, l } = useTranslations(lang);
       const hideBanner = (status) => {
         try {
           localStorage.setItem('habit22_cookie_consent', status);
+          const apiUrl = (typeof window !== 'undefined' && window.__PUBLIC_API_URL) || '/api';
+          fetch(`${apiUrl}/cookie-consents`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              consent_analytics: status === 'accepted',
+              consent_marketing: status === 'accepted',
+            }),
+          }).catch(() => {});
         } catch (e) {}
         banner.classList.add('translate-y-full', 'pointer-events-none');
         setTimeout(() => {
