@@ -13,13 +13,13 @@ export interface UserProfile {
 }
 
 const DEFAULT_PROFILE: UserProfile = {
-  firstName: "Adriana",
-  lastName: "Kowalska",
-  email: "adriana.kowalska@example.com",
-  phone: "500600700",
-  street: "Miodowa 12",
-  city: "Warszawa",
-  zip: "00-001"
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  street: "",
+  city: "",
+  zip: ""
 };
 
 // Store if user is logged in, persistent

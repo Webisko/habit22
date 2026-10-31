@@ -19,22 +19,24 @@ class Habit22DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Admin & Manager Users
-        $superadmin = User::query()->updateOrCreate(
+        $initialPassword = Hash::make((string) env('ADMIN_INITIAL_PASSWORD', 'password123'));
+
+        $superadmin = User::query()->firstOrCreate(
             ['email' => 'admin@webisko.pl'],
             [
                 'name' => 'Webisko Admin',
-                'password' => Hash::make('password123'),
+                'password' => $initialPassword,
                 'role' => 'admin',
                 'email_verified_at' => now(),
             ]
         );
         $superadmin->forceFill(['is_admin' => true])->save();
 
-        $clientManager = User::query()->updateOrCreate(
+        $clientManager = User::query()->firstOrCreate(
             ['email' => 'kontakt@habit22.eu'],
             [
                 'name' => 'Habit22 Menedżer',
-                'password' => Hash::make('password123'),
+                'password' => $initialPassword,
                 'role' => 'manager',
                 'email_verified_at' => now(),
             ]

@@ -53,7 +53,14 @@ class NewsletterSubscriptionService
             ]);
         }
 
-        Mail::to($subscriber->email)->send(new NewsletterDoubleOptInMail($subscriber));
+        try {
+            Mail::to($subscriber->email)->send(new NewsletterDoubleOptInMail($subscriber));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Nie udało się wysłać wiadomości powitalnej newslettera Double Opt-In: ' . $e->getMessage(), [
+                'subscriber_id' => $subscriber->id,
+                'email' => $subscriber->email,
+            ]);
+        }
 
         return $subscriber;
     }

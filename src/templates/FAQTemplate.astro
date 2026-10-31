@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { useTranslations } from '../i18n/utils';
+import { fetchFaqSafe } from '../data/apiClient';
 
 interface Props {
   lang: string;
@@ -8,6 +9,20 @@ interface Props {
 
 const { lang } = Astro.props;
 const { t } = useTranslations(lang);
+
+// Bezpieczna próba pobrania pytań z API CMS, z fallbackiem do lokalnego słownika tłumaczeń
+const apiFaqItems = await fetchFaqSafe();
+const faqSections = (apiFaqItems && apiFaqItems.length > 0)
+  ? [
+      {
+        title: lang === 'pl' ? 'Najczęściej zadawane pytania' : 'Frequently asked questions',
+        items: apiFaqItems.map(item => ({
+          q: item.question,
+          a: item.answer,
+        })),
+      },
+    ]
+  : t.faq_page_content;
 
 function slugify(text: string): string {
   const polishChars: Record<string, string> = {
@@ -26,7 +41,7 @@ function slugify(text: string): string {
 }
 
 // Flat list of all questions across categories for Table of Contents
-const questions = t.faq_page_content.flatMap(section => 
+const questions = faqSections.flatMap(section => 
   section.items.map(item => ({
     q: item.q,
     id: slugify(item.q)
@@ -42,7 +57,7 @@ const questions = t.faq_page_content.flatMap(section =>
       </h1>
 
       <div class="flex flex-col space-y-16">
-        {t.faq_page_content.map((section) => (
+        {faqSections.map((section) => (
           <div class="flex flex-col">
             <h2 class="text-2xl font-serif font-semibold text-[#2C2119] mb-8 uppercase tracking-widest">
               {section.title}

@@ -25,30 +25,67 @@ class InPostLogisticsProvider implements LogisticsProviderInterface
             ];
         }
 
-        $pickupPointId = data_get($order->metadata, 'shipping.pickup_point_id'); // Id paczkomatu ze slownika
+        $pickupPointId = data_get($order->metadata, 'delivery_point.id') 
+            ?? data_get($order->metadata, 'shipping.pickup_point_id');
+
+        $receiverPhone = $order->customer_phone 
+            ?: data_get($order->shipping_address, 'phone') 
+            ?: data_get($order->billing_address, 'phone') 
+            ?: data_get($order->metadata, 'shipping.phone');
+
+        $receiver = [
+            'first_name' => $order->customer_first_name,
+            'last_name' => $order->customer_last_name,
+            'email' => $order->customer_email,
+        ];
+
+        if (filled($receiverPhone)) {
+            $receiver['phone'] = $receiverPhone;
+        }
+
+        if (! $pickupPointId) {
+            $addressData = $order->shipping_address ?: $order->billing_address ?: [];
+            $street = (string) ($addressData['street'] ?? '');
+            $buildingNumber = (string) ($addressData['building_number'] ?? $addressData['building'] ?? '');
+            $flatNumber = (string) ($addressData['flat_number'] ?? $addressData['apartment'] ?? '');
+
+            if (blank($buildingNumber) && filled($street)) {
+                if (preg_match('/^(.*?)\s+(\d+[a-zA-Z]?)(\s*[\/\-]\s*(\d+[a-zA-Z]?))?$/u', $street, $matches)) {
+                    $street = trim($matches[1]);
+                    $buildingNumber = trim($matches[2]);
+                    if (! empty($matches[4])) {
+                        $flatNumber = trim($matches[4]);
+                    }
+                }
+            }
+
+            $receiver['address'] = array_filter([
+                'street' => $street,
+                'building_number' => $buildingNumber,
+                'flat_number' => $flatNumber ?: null,
+                'city' => (string) ($addressData['city'] ?? ''),
+                'post_code' => (string) ($addressData['postal_code'] ?? $addressData['post_code'] ?? ''),
+                'country_code' => strtoupper((string) ($addressData['country_code'] ?? $addressData['country'] ?? 'PL')),
+            ], fn ($v) => $v !== null && $v !== '');
+        }
 
         $payload = [
-            'receiver' => [
-                'first_name' => $order->customer_first_name,
-                'last_name' => $order->customer_last_name,
-                'email' => $order->customer_email,
-                'phone' => data_get($order->metadata, 'shipping.phone') ?: '+48123456789',
-            ],
+            'receiver' => $receiver,
             'parcels' => [
                 [
                     'template' => 'small', // small, medium, large
                     'weight' => [
                         'amount' => $order->weight ?: 1.0,
-                        'unit' => 'kg'
-                    ]
-                ]
+                        'unit' => 'kg',
+                    ],
+                ],
             ],
             'service' => $pickupPointId ? 'inpost_locker_standard' : 'inpost_courier_standard',
         ];
 
         if ($pickupPointId) {
             $payload['custom_attributes'] = [
-                'target_point' => $pickupPointId
+                'target_point' => $pickupPointId,
             ];
         }
 

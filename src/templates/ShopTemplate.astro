@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { PRODUCTS } from '../data/products';
+import { PRODUCTS, type Product } from '../data/products';
+import { fetchCatalogSafe } from '../data/apiClient';
 import ProductPrice from '../components/ProductPrice';
 import { useTranslations } from '../i18n/utils';
 
@@ -10,6 +11,24 @@ interface Props {
 
 const { lang } = Astro.props;
 const { t, l } = useTranslations(lang);
+
+// Bezpieczna synchronizacja z katalogiem API w CMS (z pełnym fallbackiem do danych lokalnych)
+const apiCatalog = await fetchCatalogSafe();
+const products: Product[] = PRODUCTS.map((localProduct) => {
+  if (!apiCatalog || apiCatalog.length === 0) return localProduct;
+  const match = apiCatalog.find(
+    (p) => p.slug === localProduct.slugs.pl || p.slug === localProduct.slugs.en || p.sku === localProduct.id
+  );
+  if (!match) return localProduct;
+  return {
+    ...localProduct,
+    price: match.current_price_amount ? match.current_price_amount / 100 : localProduct.price,
+    title: {
+      pl: match.name || localProduct.title.pl,
+      en: localProduct.title.en,
+    },
+  };
+});
 ---
 
 <Layout title={t.meta_title_shop} lang={lang} description={t.meta_desc_shop}>
@@ -26,7 +45,7 @@ const { t, l } = useTranslations(lang);
     </div>
 
     <div class="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16 w-full max-w-7xl mx-auto">
-      {PRODUCTS.map((prod, index) => (
+      {products.map((prod, index) => (
         <div
           class="group flex flex-col cursor-pointer h-full w-full md:w-[calc((100%-3rem)/2)] lg:w-[calc((100%-8rem)/3)] animate-fade-in-up-heavy"
           style={`animation-delay: ${index * 100}ms;`}

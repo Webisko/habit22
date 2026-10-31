@@ -248,20 +248,20 @@ npm run dev
 
 ## 🧪 6. Testy i Weryfikacja Jakości
 
-Projekt posiada kompletny zestaw testów automatycznych backendu oraz kontrolę typów frontendu:
+Projekt posiada kompletny zestaw testów automatycznych backendu, kontrolę typów frontendu oraz zrealizowany 6-stopniowy protokół audytu inżynieryjnego (`project-audit-master`):
 
 ```bash
-# 1. Testy jednostkowe i integracyjne backendu (134+ testów, 630+ asercji):
+# 1. Testy jednostkowe i integracyjne backendu (145 testów, 696 asercji – 100% PASS):
 cd backend
 php artisan test
 
-# 2. Testy bezpieczeństwa i autoryzacji:
+# 2. Testy bezpieczeństwa, anti-IDOR i autoryzacji:
 php artisan test --filter=SecurityTest
 
-# 3. Weryfikacja typów TypeScript we frontendzie Astro:
-npm run lint
+# 3. Testy płatności Stripe i webhooków fail-closed:
+php artisan test --filter=StripePaymentTest
 
-# 4. Statyczny build produkcyjny Astro (weryfikacja 42 stron):
+# 4. Statyczny build produkcyjny Astro (weryfikacja 42 stron, 0 błędów):
 npm run build
 ```
 

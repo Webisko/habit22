@@ -1,4 +1,46 @@
 User-agent: *
 Allow: /
+Disallow: /zamowienie
+Disallow: /checkout
+Disallow: /podziekowanie
+Disallow: /thankyou
+Disallow: /konto
+Disallow: /account
+Disallow: /logowanie
+Disallow: /login
+Disallow: /ustaw-nowe-haslo
+Disallow: /set-new-password
+Disallow: /admin
+
+# AI Search Crawlers
+User-agent: GPTBot
+Allow: /
+Disallow: /zamowienie
+Disallow: /checkout
+Disallow: /podziekowanie
+Disallow: /thankyou
+Disallow: /konto
+Disallow: /account
+Disallow: /admin
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /zamowienie
+Disallow: /checkout
+Disallow: /podziekowanie
+Disallow: /thankyou
+Disallow: /konto
+Disallow: /account
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /zamowienie
+Disallow: /checkout
+Disallow: /podziekowanie
+Disallow: /thankyou
+Disallow: /konto
+Disallow: /account
+Disallow: /admin
 
 Sitemap: https://habit22.eu/sitemap-index.xml

@@ -1,6 +1,7 @@
 ---
 import ProductTemplate from '../../../templates/ProductTemplate.astro';
 import { PRODUCTS } from '../../../data/products';
+import { fetchCatalogSafe } from '../../../data/apiClient';
 
 export function getStaticPaths() {
   return PRODUCTS.map((product) => ({
@@ -9,7 +10,16 @@ export function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const product = PRODUCTS.find((p) => p.slugs.en === slug)!;
+const baseProduct = PRODUCTS.find((p) => p.slugs.en === slug)!;
+
+// Synchronizacja aktualnych cen i danych z API CMS (z bezpiecznym fallbackiem)
+const apiCatalog = await fetchCatalogSafe();
+const apiProduct = apiCatalog?.find((p) => p.slug === slug || p.sku === baseProduct.id);
+
+const product = apiProduct ? {
+  ...baseProduct,
+  price: apiProduct.current_price_amount ? apiProduct.current_price_amount / 100 : baseProduct.price,
+} : baseProduct;
 ---
 
 <ProductTemplate product={product} lang="en" />
