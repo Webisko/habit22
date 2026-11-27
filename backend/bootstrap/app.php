@@ -23,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(AddSecurityHeaders::class);
         $middleware->append(AddNoindexHeaders::class);
         $middleware->append(SetLocaleMiddleware::class);
+        $middleware->alias([
+            'ops.auth' => \App\Http\Middleware\VerifyOpsToken::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -1,6 +1,18 @@
 # Disable Directory Browsing
 Options -Indexes
 
+# Force HTTPS and canonical non-www (excluding Let's Encrypt ACME challenge)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://habit22.eu%{REQUEST_URI} [L,R=301]
+
+    RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+    RewriteCond %{HTTP_HOST} ^www\.habit22\.eu$ [NC]
+    RewriteRule ^ https://habit22.eu%{REQUEST_URI} [L,R=301]
+</IfModule>
+
 # Block access to sensitive files
 <FilesMatch "(^\.env|\.sqlite|\.log|^\.git|composer\.(json|lock)|package(-lock)?\.json)$">
     <IfModule mod_authz_core.c>
